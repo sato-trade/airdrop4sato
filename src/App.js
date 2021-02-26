@@ -44,6 +44,12 @@ function App() {
                 params: [msg, from, 'Example password'],
             })
             setSignResult(sign)
+            let payload = {
+                data: msg,
+                sig: sign,
+                address: addr
+            }
+            console.log('payload: ', payload)
         } catch (err) {
             console.error(err)
             setSignResult(`Error: ${err.message}`)
