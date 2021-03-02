@@ -38,14 +38,16 @@ function App() {
         const exampleMessage = 'Example `personal_sign` message'
         try {
             const from = addr
-            const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
+            // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
+            const msg = Web3.utils.soliditySha3(exampleMessage);
+
             const sign = await window.ethereum.request({
                 method: 'personal_sign',
-                params: [msg, from, 'Example password'],
+                params: [msg, from],
             })
             setSignResult(sign)
             let payload = {
-                data: msg,
+                data: exampleMessage,
                 sig: sign,
                 address: addr
             }
@@ -63,8 +65,10 @@ function App() {
         const exampleMessage = 'Example `personal_sign` message'
         try {
             const from = addr
-            const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
+            // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
             const sign = signResult
+            const msg = Web3.utils.soliditySha3(exampleMessage);
+
             const recoveredAddr = recoverPersonalSignature({
                 'data': msg,
                 'sig': sign,
