@@ -46,12 +46,18 @@ function Home() {
                 params: [msg, from],
             })
             setSignResult(sign)
+            /***
+             * need to send network id to java backend & symbol (? huobi eco chain) -- 210205
+             * @type {{sig: *, address: string, data: string}}
+             */
             let payload = {
                 data: exampleMessage,
                 sig: sign,
                 address: addr
             }
+
             console.log('payload: ', payload)
+
         } catch (err) {
             console.error(err)
             setSignResult(`Error: ${err.message}`)
