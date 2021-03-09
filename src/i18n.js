@@ -18,10 +18,13 @@ i18n
     .use(initReactI18next) // passes i18n down to react-i18next
     .init({
         resources,
-        lng: localStorage.getItem('lng')||'en',
+        lng: localStorage.getItem('lng')||'cn',
         keySeparator: false, // we do not use keys in form messages.welcome
         interpolation: {
             escapeValue: false // react already safes from xss
-        }
+        },
+        whitelist: ['en', 'cn'],
+        preload: ['en', 'cn']
+
     });
 export default i18n;

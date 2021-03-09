@@ -1,11 +1,13 @@
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
+import React, { useState, useEffect } from 'react';
+import { Typography, Grid, Button, Card, CardContent, CardActions } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import './Home.css';
-import React, { useState, useEffect } from 'react';
+import { withTranslation } from 'react-i18next';
 import MetaMaskOnboarding from '@metamask/onboarding'
 import { recoverPersonalSignature } from 'eth-sig-util'
+import { isValidAddress } from 'ethereumjs-util'
+import useWindowDimensions from '../../utils/WindowDimensions'
+
 const Web3 = require("web3");
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
@@ -13,7 +15,7 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'
     : undefined
 
-function Home() {
+function Home({t, navBarHeight}) {
     const [ connected, setConnected ] = useState(false)
     const [ chainId, setChainId ] = useState(0)
     const [ network, setNetwork ] = useState('')
@@ -22,14 +24,60 @@ function Home() {
     const [ recoveryResult, setRecoverResult ] = useState('')
     const [ ecRecoveryResult, setEcRecoverResult ] = useState('')
     const [button1, setButton1] = useState('')
-    const [button2, setButton2] = useState('SIGN')
+    const [button2, setButton2] = useState(t('unlock'))
     const [button3, setButton3] = useState('VERIFY')
     const [button1Disabled, setButton1Disabled] = useState(true)
     const [button2Disabled, setButton2Disabled] = useState(true)
     const [button3Disabled, setButton3Disabled] = useState(true)
     const [onBoard, setOnboard] = useState(new MetaMaskOnboarding({ forwarderOrigin }))
 
+
+    const { height, width } = useWindowDimensions();
+    const useStyles = makeStyles((theme) => ({
+        root: {
+            ...theme.typography.button,
+            backgroundColor: '#010846',
+            padding: theme.spacing(1),
+            flexGrow: 1,
+            height: height - navBarHeight,
+            width: '100%',
+            textAlign: 'center'
+        },
+        walletBox: {
+            width: 441,
+            borderRadius: 24,
+            backgroundColor: '#101B66',
+            justifyContent: 'center',
+            display: 'inline-flex',
+            marginTop: 100,
+            paddingTop: 30,
+            paddingBottom: 30
+        },
+        walletContent: {
+            width: 300,
+            alignItems: 'flex-start',
+        },
+        wrapper: {
+            color: 'white',
+            alignItems: 'flex-start',
+            display: 'flex'
+        },
+        result: {
+            fontSize: 10,
+            color: '#000000',
+            width: 200
+        },
+        btn: {
+            backgroundColor: '#83ACF4',
+            color: '#010846',
+            borderColor: 'transparent',
+            borderRadius: 25,
+            height: 45,
+            fontWeight: 600
+        }
+    }));
     const classes = useStyles();
+
 
     /**
      * Personal Sign
@@ -211,7 +259,7 @@ function Home() {
         return() => {
             console.log('cleared')
         }
-    }, [button1Disabled, button2Disabled, button3Disabled, button1 ])
+    }, [button1Disabled, button2Disabled, button3Disabled, button1, addr ])
 
     useEffect(() => {
         getNetworkAndChainId()
@@ -220,41 +268,75 @@ function Home() {
         }
     }, [chainId, network])
 
+    useEffect(() => {
+        setButton2(t('unlock'))
+    }, [t])
+
+    useEffect(() => {
+        console.log('here: ', width, height)
+    }, [height, width])
+
     return (
-        <Grid className="App">
-            <header className={classes.root}>
-                <Button onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect } disabled={button1Disabled} variant="outlined" color="primary">
-                    {button1}
-                </Button>
-                <Button onClick={sign} variant="outlined" color="primary" disabled={button2Disabled}>
-                    {button2}
-                </Button>
-                <Typography variant="h5" component="h5" className={classes.result}>
-                    {signResult}
-                </Typography>
-                <Button onClick={verify} variant="outlined" color="primary" disabled={button3Disabled}>
-                    {button3}
-                </Button>
-                <Typography variant="h5" component="h5" className={classes.result}>
-                    {recoveryResult}
-                </Typography>
-            </header>
-        </Grid>
+        <div className={classes.root}>
+            <Card className={classes.walletBox}>
+                <CardContent className={classes.walletContent}>
+                    <Grid container spacing={2} >
+                        <Grid item xs={12} >
+                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
+                                {t('walletTitle')}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Button style={{ width: 100 }}  className={classes.btn} onClick={sign} disabled={button2Disabled}>
+                                {t('deposit')}
+                            </Button>
+                        </Grid>
+                        <Grid item xs={8}>
+                            <Button style={{ width: 180 }}  className={classes.btn} onClick={sign} disabled={button2Disabled}>
+                                {t('withdraw')}
+                            </Button>
+                        </Grid>
+                        {/*<Grid item xs={3} />*/}
+                    </Grid>
+                    <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
+                    <Grid container spacing={2} >
+                        <Grid item xs={12} >
+                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
+                                {t('capitalTitle')}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} >
+                            <Typography className={classes.wrapper}>
+                                {
+                                    addr.length < 42 || !isValidAddress(addr) ?
+                                        <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect} disabled={button1Disabled}
+                                        >
+                                            {button1}
+                                        </Button> : null
+                                }
+                                {
+                                    addr.length === 42 && isValidAddress(addr) ?
+                                        <Button style={{ width: 197 }} className={classes.btn} onClick={sign} variant="outlined" color="primary" disabled={button2Disabled}>
+                                            {button2}
+                                        </Button> : null
+                                }
+                                <Typography variant="h5" component="h5" className={classes.result}>
+                                    {signResult}
+                                </Typography>
+                                {/*<Button onClick={verify} variant="outlined" color="primary" disabled={button3Disabled}>*/}
+                                {/*    {button3}*/}
+                                {/*</Button>*/}
+                                {/*<Typography variant="h5" component="h5" className={classes.result}>*/}
+                                {/*    {recoveryResult}*/}
+                                {/*</Typography>*/}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </Card>
+
+        </div>
     );
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        ...theme.typography.button,
-        backgroundColor: theme.palette.background.paper,
-        padding: theme.spacing(1),
-        flexGrow: 1,
-    },
-    result: {
-        fontSize: 10,
-        color: '#000000',
-        width: 200
-    }
-}));
-
-export default Home;
+export default withTranslation()(Home);

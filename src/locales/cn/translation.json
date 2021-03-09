@@ -1,5 +1,12 @@
 {
-  "Home": "首页",
-  "Pool": "矿池",
-  "Swap": "兑换"
+  "home": "首页",
+  "wallet": "侧链钱包",
+  "swap": "侧链兑换",
+  "pool": "侧链流动池",
+  "lang": "英文",
+  "unlock": "解锁钱包",
+  "walletTitle": "SwapAll 侧链钱包",
+  "deposit": "充值到侧链",
+  "withdraw": "提现到Metamask",
+  "capitalTitle": "资产详情"
 }

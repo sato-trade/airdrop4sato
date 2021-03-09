@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 
@@ -14,15 +14,27 @@ import Swap from './components/Swap/Swap'
 import Footer from './components/Footer/Footer';
 
 function App(){
+    const [navBarHeight, setNavBarHeight] = useState(0)
+    const sendBackHeight = (height) => {
+        setNavBarHeight(height)
+    }
+
+
     return(
         <Router>
-            <Navbar/>
+            <Navbar sendBackHeight={sendBackHeight} />
             <Switch>
-                <Route path='/' exact component = {Home} />
-                <Route path='/pool' component = {Pool} />
-                <Route path='/swap' component = {Swap} />
+                <Route exact path='/' >
+                    <Home navBarHeight={navBarHeight} />
+                </Route>
+                <Route path='/pool' >
+                    <Pool navBarHeight={navBarHeight} />
+                </Route>
+                <Route path='/swap' component = {Swap} >
+                    <Swap navBarHeight={navBarHeight} />
+                </Route>
             </Switch>
-            <Footer/>
+            <Footer />
         </Router>
     )
 }
