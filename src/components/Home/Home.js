@@ -84,6 +84,7 @@ function Home({t, navBarHeight}) {
      */
     const sign = async () => {
         const exampleMessage = 'Example `personal_sign` message'
+        console.log('chainId: ', window.ethereum)
         try {
             const from = addr
             // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
@@ -98,10 +99,22 @@ function Home({t, navBarHeight}) {
              * need to send network id to java backend & symbol (? huobi eco chain) -- 210205
              * @type {{sig: *, address: string, data: string}}
              */
+
+            const chainId = await window.ethereum.request({
+                method: 'eth_chainId',
+            })
+
+            const networkId = await window.ethereum.request({
+                method: 'net_version',
+            })
+
+
             let payload = {
                 data: exampleMessage,
                 sig: sign,
-                address: addr
+                address: addr,
+                chainId: Web3.utils.hexToNumber(chainId),
+                networkId: Number(networkId)
             }
 
             console.log('payload: ', payload)

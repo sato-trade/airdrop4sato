@@ -6,6 +6,21 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Paper, Typography } from '@material-ui/core';
 
 function Footer({t}){
+    const useStyles = makeStyles({
+        footer: {
+            position: 'absolute',
+            bottom: 0,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: '#010846'
+        },
+        footerText: {
+            color: 'white',
+            display: 'flex',
+            justifyContent: 'center'
+        }
+    });
     const classes = useStyles();
     return(
         <div className={classes.footer}>
@@ -14,20 +29,6 @@ function Footer({t}){
     )
 }
 
-const useStyles = makeStyles({
-    footer: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: '#010846'
-    },
-    footerText: {
-        color: 'white',
-        display: 'flex',
-        justifyContent: 'center'
-    }
-});
+
 
 export default withTranslation()(Footer);
