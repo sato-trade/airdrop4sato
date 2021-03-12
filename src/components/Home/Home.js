@@ -8,6 +8,9 @@ import { recoverPersonalSignature } from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import useWindowDimensions from '../../utils/WindowDimensions'
 
+import {Auth} from '../../redux/actions/authActions';
+import { useDispatch, useSelector } from 'react-redux';
+
 const Web3 = require("web3");
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
@@ -30,7 +33,6 @@ function Home({t, navBarHeight}) {
     const [button2Disabled, setButton2Disabled] = useState(true)
     const [button3Disabled, setButton3Disabled] = useState(true)
     const [onBoard, setOnboard] = useState(new MetaMaskOnboarding({ forwarderOrigin }))
-
 
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -78,13 +80,15 @@ function Home({t, navBarHeight}) {
     }));
     const classes = useStyles();
 
+    const loggingIn = useSelector(state => state.auth.loggingIn);
+    const dispatch = useDispatch();
+
 
     /**
      * Personal Sign
      */
     const sign = async () => {
         const exampleMessage = 'Example `personal_sign` message'
-        console.log('chainId: ', window.ethereum)
         try {
             const from = addr
             // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
@@ -117,7 +121,9 @@ function Home({t, navBarHeight}) {
                 networkId: Number(networkId)
             }
 
-            console.log('payload: ', payload)
+            console.log('payload: ', chainId, typeof chainId, payload)
+
+            dispatch()
 
         } catch (err) {
             console.error(err)
@@ -286,7 +292,6 @@ function Home({t, navBarHeight}) {
     }, [t])
 
     useEffect(() => {
-        console.log('here: ', width, height)
     }, [height, width])
 
     return (
