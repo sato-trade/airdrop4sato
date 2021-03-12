@@ -7,14 +7,14 @@ import {
     REGISTER,
     CHECK_EXIST
 } from '../constants';
-import { history } from '../_helpers';
+import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
 
 export const authActions = {
     checkUser,
-    register,
-    login,
-    logOut
+    // register,
+    // login,
+    // logOut
 }
 
 
@@ -41,68 +41,68 @@ function checkUser(address, from) {
     function failure(error) { return { type: LOGIN_FAILED, error } }
 }
 
-function register() {
-    return dispatch => {
-        dispatch(request({ username }));
-
-        authService.login(username, password)
-            .then(
-                user => {
-                    dispatch(success(user));
-                    history.push(from);
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
-                }
-            );
-    };
-
-    function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
-}
-
-function login() {
-    return dispatch => {
-        dispatch(request({ username }));
-
-        authService.login(username, password)
-            .then(
-                user => {
-                    dispatch(success(user));
-                    history.push(from);
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
-                }
-            );
-    };
-
-    function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
-}
-
-function logOut() {
-    return dispatch => {
-        dispatch(request({ username }));
-
-        authService.login(username, password)
-            .then(
-                user => {
-                    dispatch(success(user));
-                    history.push(from);
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
-                }
-            );
-    };
-
-    function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-    function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-    function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
-}
+// function register() {
+//     return dispatch => {
+//         dispatch(request({ username }));
+//
+//         authService.login(username, password)
+//             .then(
+//                 user => {
+//                     dispatch(success(user));
+//                     history.push(from);
+//                 },
+//                 error => {
+//                     dispatch(failure(error.toString()));
+//                     dispatch(alertActions.error(error.toString()));
+//                 }
+//             );
+//     };
+//
+//     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
+//     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+//     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
+// }
+//
+// function login() {
+//     return dispatch => {
+//         dispatch(request({ username }));
+//
+//         authService.login(username, password)
+//             .then(
+//                 user => {
+//                     dispatch(success(user));
+//                     history.push(from);
+//                 },
+//                 error => {
+//                     dispatch(failure(error.toString()));
+//                     dispatch(alertActions.error(error.toString()));
+//                 }
+//             );
+//     };
+//
+//     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
+//     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+//     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
+// }
+//
+// function logOut() {
+//     return dispatch => {
+//         dispatch(request({ username }));
+//
+//         authService.login(username, password)
+//             .then(
+//                 user => {
+//                     dispatch(success(user));
+//                     history.push(from);
+//                 },
+//                 error => {
+//                     dispatch(failure(error.toString()));
+//                     dispatch(alertActions.error(error.toString()));
+//                 }
+//             );
+//     };
+//
+//     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
+//     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
+//     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
+// }

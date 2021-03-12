@@ -1,4 +1,4 @@
-import { SUCCESS, ERROR, CLEAR } from '../_constants';
+import { SUCCESS, ERROR, CLEAR } from '../constants';
 
 export const alertActions = {
     success,
