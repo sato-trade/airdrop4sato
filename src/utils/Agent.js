@@ -5,12 +5,18 @@ const superagent = superagentPromise(_superagent, global.Promise);
 
 
 const success = res => {
+    console.log('success: ', res)
+
     return res.body
 };
 
 const failed = res => {
-    console.log('failed: ', res)
-    return res
+    console.log('failed: ', res.response.body)
+    // for(let i in res) {
+    //     console.log(i)
+    //     console.log(res[i])
+    // }
+    return res.response.body
 }
 
 let token = null;
