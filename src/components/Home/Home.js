@@ -32,7 +32,6 @@ function Home({t, navBarHeight}) {
     const [button3, setButton3] = useState('VERIFY')
     const [button1Disabled, setButton1Disabled] = useState(true)
     const [button2Disabled, setButton2Disabled] = useState(true)
-    const [button3Disabled, setButton3Disabled] = useState(true)
     const [onBoard, setOnboard] = useState(new MetaMaskOnboarding({ forwarderOrigin }))
 
     const { height, width } = useWindowDimensions();
@@ -43,7 +42,6 @@ function Home({t, navBarHeight}) {
             padding: theme.spacing(1),
             flexGrow: 1,
             height: height - navBarHeight,
-            width: '100%',
             textAlign: 'center'
         },
         walletBox: {
@@ -81,7 +79,8 @@ function Home({t, navBarHeight}) {
     }));
     const classes = useStyles();
 
-    const loggingIn = useSelector(state => state.auth.loggingIn);
+    const loading = useSelector(state => state.auth.loading);
+    const registered = useSelector(state => state.auth.registered)
     const dispatch = useDispatch();
     const location = useLocation();
 
@@ -113,21 +112,27 @@ function Home({t, navBarHeight}) {
                 method: 'net_version',
             })
 
-
             let payload = {
                 data: exampleMessage,
                 sig: sign,
-                address: addr,
+                pubKeyAddress: addr,
                 chainId: Web3.utils.hexToNumber(chainId),
                 networkId: Number(networkId)
             }
 
             console.log('payload: ', payload)
-            const { _from } = location.state || { from: { pathname: "/" } };
-            if (addr.length === 42 && isValidAddress(addr)) {
-                dispatch(authActions.checkUser(addr, from))
-            }
 
+            if (registered !== undefined) {
+                if (registered) {
+                    console.log('logging!')
+                    dispatch(authActions.logIn(payload))
+                } else {
+                    console.log('registering!')
+                    dispatch(authActions.signUp(payload))
+                }
+            } else {
+                console.log('not found!')
+            }
         } catch (err) {
             console.error(err)
             setSignResult(`Error: ${err.message}`)
@@ -196,10 +201,8 @@ function Home({t, navBarHeight}) {
         const accountButtonsDisabled = !isMetaMaskInstalled() || !isMetaMaskConnected()
         if (accountButtonsDisabled) {
             setButton2Disabled(true)
-            setButton3Disabled(true)
         } else {
             setButton2Disabled(false)
-            setButton3Disabled(false)
         }
 
 
@@ -274,29 +277,46 @@ function Home({t, navBarHeight}) {
             }
         })
         return() => {
-            console.log('cleared')
+            console.log('clear initialization')
         }
+        console.log('is registered: ', registered)
     }, [])
 
     useEffect(() => {
         updateButtons()
         return() => {
-            console.log('cleared')
+            console.log('clear button')
         }
-    }, [button1Disabled, button2Disabled, button3Disabled, button1, addr ])
+    }, [button1Disabled, button2Disabled, button1, addr ])
+
+    useEffect(() => {
+        const { _from } = location.state || { from: { pathname: "/" } };
+        if (addr.length === 42 && isValidAddress(addr)) {
+            dispatch(authActions.checkUser(addr, _from))
+        }
+        return() => {
+            console.log('clear check')
+        }
+    }, [addr])
 
     useEffect(() => {
         getNetworkAndChainId()
         return() => {
-            console.log('cleared')
+            console.log('clear networkId')
         }
     }, [chainId, network])
 
     useEffect(() => {
         setButton2(t('unlock'))
+        return() => {
+            console.log('clear unlock')
+        }
     }, [t])
 
     useEffect(() => {
+        return() => {
+            console.log('clear window')
+        }
     }, [height, width])
 
     return (

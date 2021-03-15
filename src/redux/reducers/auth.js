@@ -1,36 +1,45 @@
 import {
     LOGIN,
-    LOGIN_SUCCESSFUL,
+    LOGIN_SUCCEED,
     LOGIN_FAILED,
     LOGOUT,
-    REGISTER,
+
+    SIGNUP,
+    SIGNUP_SUCCEED,
+    SIGNUP_FAILED,
+
+
     CHECK_EXIST,
-    NOT_REGISTERED,
-    REGISTERED,
-    FETCH_POSTS
+    CHECK_SUCCEED,
+    CHECK_FAILED,
 } from '../constants';
 
 export function auth (state = {}, action) {
+    console.log('action here: ', action)
     switch (action.type) {
-        case FETCH_POSTS:
+        case SIGNUP:
             return {
-                test: action.success
+                loading: true
             }
-        case REGISTER:
+        case SIGNUP_SUCCEED:
             return {
                 registered: action.success
             }
+        case SIGNUP_FAILED:
+            return {
+                message: action.message
+            }
         case CHECK_EXIST:
             return {
-                registered: true
+                loading: true
             }
-        case NOT_REGISTERED:
+        case CHECK_SUCCEED:
             return {
-                registered: false
+                registered: action.registered
             }
-        case REGISTERED:
+        case CHECK_FAILED:
             return {
-                registered: true
+                message: action.message
             }
         case LOGIN:
             return {
@@ -38,7 +47,7 @@ export function auth (state = {}, action) {
                 loggingIn: false,
                 errors: action.error ? action.payload.errors : null
             };
-        case LOGIN_SUCCESSFUL:
+        case LOGIN_SUCCEED:
             return {
                 loggedIn: true,
                 loggingIn: false

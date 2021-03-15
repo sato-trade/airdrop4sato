@@ -4,7 +4,14 @@ import _superagent from 'superagent';
 const superagent = superagentPromise(_superagent, global.Promise);
 
 
-const responseBody = res => res.body;
+const success = res => {
+    return res.body
+};
+
+const failed = res => {
+    console.log('failed: ', res)
+    return res
+}
 
 let token = null;
 const tokenPlugin = req => {
@@ -15,13 +22,14 @@ const tokenPlugin = req => {
 
 const Request = {
     del: url =>
-        superagent.del(`${url}`).use(tokenPlugin).then(responseBody),
+        superagent.del(`${url}`).use(tokenPlugin).then(success),
     get: url =>
-        superagent.get(`${url}`).use(tokenPlugin).then(responseBody),
+        superagent.get(`${url}`).use(tokenPlugin).then(success),
     put: (url, body) =>
-        superagent.put(`${url}`, body).use(tokenPlugin).then(responseBody),
-    post: (url, body) =>
-        superagent.post(`${url}`, body).use(tokenPlugin).then(responseBody)
+        superagent.put(`${url}`, body).use(tokenPlugin).then(success),
+    post: (url, body) => {
+        superagent.post(`${url}`, body).use(tokenPlugin).then(success).catch(failed)
+    }
 };
 
 export default {

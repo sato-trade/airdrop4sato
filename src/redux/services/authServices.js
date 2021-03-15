@@ -17,72 +17,29 @@ import { authHeader } from '../../utils/AuthHeader';
 // }
 
 export const authService = {
-    // login,
-    // logOut,
-    // register,
+    logIn,
+    logOut,
+    signUp,
     checkUser
 };
 
 function checkUser(address) {
-    // let res = Agent.Request.get(Url.CHECK_USER, { address })
-
-    const requestOptions = {
-        method: 'GET',
-        headers: authHeader(),
-    };
-
-    return fetch(Url.CHECK_USER + address, requestOptions)
-        .then(handleResponse)
-        .then(res => {
-            console.log('res: ', res)
-
-            return true;
-        });
+    return Agent.Request.get(Url.CHECK_USER, { address })
 }
 
-function login(address, data, sig, chainId, networkId) {
+function signUp(payload) {
+    try {
+        return Agent.Request.post(Url.SIGN_UP, payload )
+    } catch(error) {
+        return error
+    }
+}
+
+function logIn(address, data, sig, chainId, networkId) {
     return Agent.Request.post(Url.LOGIN, { address, data, sig, chainId, networkId })
-        .then(handleResponse)
-        .then(res => {
-            console.log('login res is here: ', res)
-            // localStorage.setItem('user', JSON.stringify(user));
-            //
-            // return user;
-        });
 }
 
-function signUp(address, data, sig, chainId, networkId) {
-    return Agent.Request.post(Url.SIGN_UP, { address, data, sig, chainId, networkId })
-        .then(handleResponse)
-        .then(res => {
-            console.log('signUp res is here: ', res)
-            // localStorage.setItem('user', JSON.stringify(user));
-            //
-            // return user;
-        });
-}
-
-function logout() {
+function logOut() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
-}
-
-function handleResponse(response) {
-    console.log('at handle response: ', response)
-    return response.text().then(text => {
-        const data = text && JSON.parse(text);
-        if (!response.ok) {
-            if (response.status === 401) {
-                // auto logout if 401 response returned from api
-                logout();
-                // eslint-disable-next-line no-restricted-globals
-                location.reload();
-            }
-
-            const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
-        }
-
-        return data;
-    });
 }

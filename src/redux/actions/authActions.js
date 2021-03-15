@@ -1,25 +1,29 @@
 import { authService } from '../services/authServices';
 import {
     LOGIN,
-    LOGIN_SUCCESSFUL,
+
+    LOGIN_SUCCEED,
     LOGIN_FAILED,
     LOGOUT,
-    REGISTER,
+
+    SIGNUP,
+    SIGNUP_SUCCEED,
+    SIGNUP_FAILED,
+
     CHECK_EXIST,
-    REGISTERED,
-    NOT_REGISTERED,
-    FETCH_POSTS
+    CHECK_FAILED,
+    CHECK_SUCCEED
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
-import {authHeader} from "../../utils/AuthHeader";
+import { authHeader } from "../../utils/AuthHeader";
 import * as Url from "../../config/Url";
 
 export const authActions = {
     checkUser,
-    // register,
-    // login,
-    // logOut
+    signUp,
+    logIn,
+    logOut
 }
 
 function checkUser(address, from) {
@@ -27,12 +31,10 @@ function checkUser(address, from) {
         dispatch(request({ address }));
         authService.checkUser(address)
             .then(
-                address => {
-                    console.log('here: ', address)
-                    dispatch(success());
+                res => {
+                    dispatch(success(!res.success));
                 },
                 error => {
-                    console.log('here instead: ', error)
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }
@@ -40,72 +42,70 @@ function checkUser(address, from) {
     };
 
     function request(address) { return { type: CHECK_EXIST, address } }
-    function success(registered) { return { type: REGISTERED, registered } }
-    function failure(error) { return { type: NOT_REGISTERED, error } }
+    function success(registered) { return { type: CHECK_SUCCEED, registered } }
+    function failure(error) { return { type: CHECK_FAILED, error } }
 }
 
-// function register() {
-//     return dispatch => {
-//         dispatch(request({ username }));
-//
-//         authService.login(username, password)
-//             .then(
-//                 user => {
-//                     dispatch(success(user));
-//                     history.push(from);
-//                 },
-//                 error => {
-//                     dispatch(failure(error.toString()));
-//                     dispatch(alertActions.error(error.toString()));
-//                 }
-//             );
-//     };
-//
-//     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-//     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-//     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
-// }
-//
-// function login() {
-//     return dispatch => {
-//         dispatch(request({ username }));
-//
-//         authService.login(username, password)
-//             .then(
-//                 user => {
-//                     dispatch(success(user));
-//                     history.push(from);
-//                 },
-//                 error => {
-//                     dispatch(failure(error.toString()));
-//                     dispatch(alertActions.error(error.toString()));
-//                 }
-//             );
-//     };
-//
-//     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-//     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-//     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
-// }
-//
-// function logOut() {
-//     return dispatch => {
-//         dispatch(request({ username }));
-//
-//         authService.login(username, password)
-//             .then(
-//                 user => {
-//                     dispatch(success(user));
-//                     history.push(from);
-//                 },
-//                 error => {
-//                     dispatch(failure(error.toString()));
-//                     dispatch(alertActions.error(error.toString()));
-//                 }
-//             );
-//     };
-//
-//     function request(user) { return { type: userConstants.LOGIN_REQUEST, user } }
-//     function success(user) { return { type: userConstants.LOGIN_SUCCESS, user } }
-//     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
-// }
+function signUp(payload) {
+    return dispatch => {
+        dispatch(request());
+        authService.signUp(payload)
+            .then(
+                res => {
+                    if (res.success) {
+                        dispatch(success(res.success));
+                    } else {
+                        console.log('here: ', res)
+                    }
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+
+    function request() { return { type: SIGNUP } }
+    function success(registered) { return { type: SIGNUP_SUCCEED, registered } }
+    function failure(error) { return { type: SIGNUP_FAILED, error } }
+}
+
+function logIn(address, from) {
+    return dispatch => {
+        dispatch(request({ address }));
+        authService.logIn(address)
+            .then(
+                res => {
+                    dispatch(success(!res.success));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+
+    function request(address) { return { type: CHECK_EXIST, address } }
+    function success(registered) { return { type: CHECK_SUCCEED, registered } }
+    function failure(error) { return { type: CHECK_FAILED, error } }
+}
+
+function logOut(address, from) {
+    return dispatch => {
+        dispatch(request({ address }));
+        authService.logOut(address)
+            .then(
+                res => {
+                    dispatch(success(!res.success));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+
+    function request(address) { return { type: CHECK_EXIST, address } }
+    function success(registered) { return { type: CHECK_SUCCEED, registered } }
+    function failure(error) { return { type: CHECK_FAILED, error } }
+}
