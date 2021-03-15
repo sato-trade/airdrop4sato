@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Typography, Grid, Button, Card, CardContent, CardActions } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import './Home.css';
@@ -8,7 +9,7 @@ import { recoverPersonalSignature } from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import useWindowDimensions from '../../utils/WindowDimensions'
 
-import {Auth} from '../../redux/actions/authActions';
+import { authActions } from '../../redux/actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Web3 = require("web3");
@@ -82,7 +83,7 @@ function Home({t, navBarHeight}) {
 
     const loggingIn = useSelector(state => state.auth.loggingIn);
     const dispatch = useDispatch();
-
+    const location = useLocation();
 
     /**
      * Personal Sign
@@ -121,14 +122,18 @@ function Home({t, navBarHeight}) {
                 networkId: Number(networkId)
             }
 
-            console.log('payload: ', chainId, typeof chainId, payload)
-
-            dispatch()
+            console.log('payload: ', payload)
+            const { _from } = location.state || { from: { pathname: "/" } };
+            if (addr.length === 42 && isValidAddress(addr)) {
+                dispatch(authActions.checkUser(addr, from))
+            }
 
         } catch (err) {
             console.error(err)
             setSignResult(`Error: ${err.message}`)
         }
+
+
     }
 
     /**
@@ -324,7 +329,7 @@ function Home({t, navBarHeight}) {
                             </Typography>
                         </Grid>
                         <Grid item xs={12} >
-                            <Typography className={classes.wrapper}>
+                            <div className={classes.wrapper}>
                                 {
                                     addr.length < 42 || !isValidAddress(addr) ?
                                         <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect} disabled={button1Disabled}
@@ -347,7 +352,7 @@ function Home({t, navBarHeight}) {
                                 {/*<Typography variant="h5" component="h5" className={classes.result}>*/}
                                 {/*    {recoveryResult}*/}
                                 {/*</Typography>*/}
-                            </Typography>
+                            </div>
                         </Grid>
                     </Grid>
                 </CardContent>

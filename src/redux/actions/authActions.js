@@ -5,10 +5,15 @@ import {
     LOGIN_FAILED,
     LOGOUT,
     REGISTER,
-    CHECK_EXIST
+    CHECK_EXIST,
+    REGISTERED,
+    NOT_REGISTERED,
+    FETCH_POSTS
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
+import {authHeader} from "../../utils/AuthHeader";
+import * as Url from "../../config/Url";
 
 export const authActions = {
     checkUser,
@@ -17,19 +22,17 @@ export const authActions = {
     // logOut
 }
 
-
-
 function checkUser(address, from) {
     return dispatch => {
         dispatch(request({ address }));
-
         authService.checkUser(address)
             .then(
-                user => {
-                    dispatch(success(user));
-                    history.push(from);
+                address => {
+                    console.log('here: ', address)
+                    dispatch(success());
                 },
                 error => {
+                    console.log('here instead: ', error)
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }
@@ -37,8 +40,8 @@ function checkUser(address, from) {
     };
 
     function request(address) { return { type: CHECK_EXIST, address } }
-    function success(address) { return { type: LOGIN_SUCCESSFUL, address } }
-    function failure(error) { return { type: LOGIN_FAILED, error } }
+    function success(registered) { return { type: REGISTERED, registered } }
+    function failure(error) { return { type: NOT_REGISTERED, error } }
 }
 
 // function register() {
