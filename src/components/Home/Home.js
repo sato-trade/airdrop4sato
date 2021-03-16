@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Typography, Grid, Button, Card, CardContent, CardActions } from '@material-ui/core';
+import { Typography, Grid, Button, Card, CardContent, Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import './Home.css';
 import { withTranslation } from 'react-i18next';
@@ -19,7 +19,7 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'
     : undefined
 
-function Home({t, navBarHeight}) {
+function Home({t, navBarHeight, sendBackAddr}) {
     const [ connected, setConnected ] = useState(false)
     const [ chainId, setChainId ] = useState(0)
     const [ network, setNetwork ] = useState('')
@@ -79,8 +79,7 @@ function Home({t, navBarHeight}) {
     }));
     const classes = useStyles();
 
-    const loading = useSelector(state => state.auth.loading);
-    const registered = useSelector(state => state.auth.registered)
+    const { registered, token, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
 
@@ -120,7 +119,7 @@ function Home({t, navBarHeight}) {
                 networkId: Number(networkId)
             }
 
-            console.log('payload: ', payload)
+            // console.log('payload: ', payload)
 
             if (registered !== undefined) {
                 if (registered) {
@@ -231,6 +230,7 @@ function Home({t, navBarHeight}) {
 
     function handleNewAccounts (addr) {
         setAddr(addr[0])
+        sendBackAddr(addr[0])
         updateButtons()
     }
 
@@ -279,7 +279,6 @@ function Home({t, navBarHeight}) {
         return() => {
             console.log('clear initialization')
         }
-        console.log('is registered: ', registered)
     }, [])
 
     useEffect(() => {
@@ -318,6 +317,27 @@ function Home({t, navBarHeight}) {
             console.log('clear window')
         }
     }, [height, width])
+
+    useEffect(() => {
+        if (loading) {
+            setButton2(t('loading'))
+        }
+        if (loggingIn) {
+            setButton2(t('loggingIn'))
+        } else {
+            if (registered) {
+                if (loggedIn) {
+                    setButton2(t('loggedIn'))
+                    setButton2Disabled(true)
+                } else {
+                    setButton2(t('registered'))
+                }
+            }
+        }
+        return() => {
+            console.log('clear registration')
+        }
+    }, [registered, loggedIn, loggingIn, loading])
 
     return (
         <div className={classes.root}>
@@ -359,25 +379,15 @@ function Home({t, navBarHeight}) {
                                 }
                                 {
                                     addr.length === 42 && isValidAddress(addr) ?
-                                        <Button style={{ width: 197 }} className={classes.btn} onClick={sign} variant="outlined" color="primary" disabled={button2Disabled}>
+                                        <Button style={{ width: 197 }} className={classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                             {button2}
                                         </Button> : null
                                 }
-                                <Typography variant="h5" component="h5" className={classes.result}>
-                                    {signResult}
-                                </Typography>
-                                {/*<Button onClick={verify} variant="outlined" color="primary" disabled={button3Disabled}>*/}
-                                {/*    {button3}*/}
-                                {/*</Button>*/}
-                                {/*<Typography variant="h5" component="h5" className={classes.result}>*/}
-                                {/*    {recoveryResult}*/}
-                                {/*</Typography>*/}
                             </div>
                         </Grid>
                     </Grid>
                 </CardContent>
             </Card>
-
         </div>
     );
 }

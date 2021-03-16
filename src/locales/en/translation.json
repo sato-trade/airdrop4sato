@@ -8,5 +8,9 @@
   "walletTitle": "SwapAll Side-Chain Wallet",
   "deposit": "Deposit to L2 Wallet",
   "withdraw": "Withdraw to L1 Wallet",
-  "capitalTitle": "My Capitals"
+  "capitalTitle": "My Capitals",
+  "loading": "Loading",
+  "loggingIn": "Logging In",
+  "loggedIn": "LoggedIn",
+  "registered": "Login"
 }

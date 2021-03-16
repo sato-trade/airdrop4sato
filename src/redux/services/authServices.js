@@ -24,22 +24,54 @@ export const authService = {
 };
 
 function checkUser(address) {
-    return Agent.Request.get(Url.CHECK_USER, { address })
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader()
+    };
+
+    return fetch(Url.CHECK_USER + address, requestOptions).then(handleResponse);
 }
 
-function signUp(payload) {
-    try {
-        return Agent.Request.post(Url.SIGN_UP, payload )
-    } catch(error) {
-        return error
-    }
+async function signUp(payload) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    };
+
+    return fetch(Url.SIGN_UP, requestOptions).then(handleResponse);
+
 }
 
-function logIn(address, data, sig, chainId, networkId) {
-    return Agent.Request.post(Url.LOGIN, { address, data, sig, chainId, networkId })
+function logIn(payload) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    };
+
+    return fetch(Url.LOGIN, requestOptions).then(handleResponse);
 }
 
 function logOut() {
     // remove user from local storage to log user out
     localStorage.removeItem('user');
 }
+
+function handleResponse(response) {
+    return response.text().then(text => {
+        const data = text && JSON.parse(text);
+        if (!response.ok) {
+            if (response.status === 401) {
+                logOut();
+                // eslint-disable-next-line no-restricted-globals
+                location.reload();
+            }
+
+            const error = (data && data.message) || response.statusText;
+            return Promise.reject(error);
+        }
+        return data;
+    });
+}
+

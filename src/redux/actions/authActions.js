@@ -1,7 +1,6 @@
 import { authService } from '../services/authServices';
 import {
     LOGIN,
-
     LOGIN_SUCCEED,
     LOGIN_FAILED,
     LOGOUT,
@@ -35,8 +34,13 @@ function checkUser(address, from) {
                     dispatch(success(!res.success));
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    console.log('error: ', error === 'This username has been used by another account.')
+                    if (error === 'This username has been used by another account.') {
+                        dispatch(success(true));
+                    } else {
+                        dispatch(failure(error.toString()));
+                        dispatch(alertActions.error(error.toString()));
+                    }
                 }
             );
     };
@@ -52,10 +56,8 @@ function signUp(payload) {
         authService.signUp(payload)
             .then(
                 res => {
-                    if (res.success) {
+                    if (res) {
                         dispatch(success(res.success));
-                    } else {
-                        console.log('here: ', res)
                     }
                 },
                 error => {
@@ -70,13 +72,13 @@ function signUp(payload) {
     function failure(error) { return { type: SIGNUP_FAILED, error } }
 }
 
-function logIn(address, from) {
+function logIn(payload) {
     return dispatch => {
-        dispatch(request({ address }));
-        authService.logIn(address)
+        dispatch(request());
+        authService.logIn(payload)
             .then(
                 res => {
-                    dispatch(success(!res.success));
+                    dispatch(success(res.data));
                 },
                 error => {
                     dispatch(failure(error.toString()));
@@ -85,9 +87,9 @@ function logIn(address, from) {
             );
     };
 
-    function request(address) { return { type: CHECK_EXIST, address } }
-    function success(registered) { return { type: CHECK_SUCCEED, registered } }
-    function failure(error) { return { type: CHECK_FAILED, error } }
+    function request(payload) { return { type: LOGIN, payload } }
+    function success(data) { return { type: LOGIN_SUCCEED, data } }
+    function failure(error) { return { type: LOGIN_FAILED, error } }
 }
 
 function logOut(address, from) {

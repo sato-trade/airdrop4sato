@@ -9,17 +9,22 @@ import Footer from './components/Footer/Footer';
 
 function App(){
     const [navBarHeight, setNavBarHeight] = useState(0)
+    const [address, setAddress] = useState('')
     const sendBackHeight = (height) => {
         setNavBarHeight(height)
+    }
+
+    const sendBackAddr = (addr) => {
+        setAddress(addr)
     }
 
 
     return(
         <Router>
-            <Navbar sendBackHeight={sendBackHeight} />
+            <Navbar address={address} sendBackHeight={sendBackHeight} />
             <Switch>
                 <Route exact path='/' >
-                    <Home navBarHeight={navBarHeight} />
+                    <Home sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
                 </Route>
                 <Route path='/pool' >
                     <Pool navBarHeight={navBarHeight} />

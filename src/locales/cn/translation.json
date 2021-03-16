@@ -8,5 +8,10 @@
   "walletTitle": "SwapAll 侧链钱包",
   "deposit": "充值到侧链",
   "withdraw": "提现到Metamask",
-  "capitalTitle": "资产详情"
+  "capitalTitle": "资产详情",
+  "loading": "处理中",
+  "loggingIn": "登陆中",
+  "loggedIn": "已登陆",
+  "registered": "登陆",
+  "metamaskConnected": "已连接到Metamask"
 }

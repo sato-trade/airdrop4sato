@@ -6,16 +6,11 @@ const superagent = superagentPromise(_superagent, global.Promise);
 
 const success = res => {
     console.log('success: ', res)
-
-    return res.body
-};
+    return res
+}
 
 const failed = res => {
     console.log('failed: ', res.response.body)
-    // for(let i in res) {
-    //     console.log(i)
-    //     console.log(res[i])
-    // }
     return res.response.body
 }
 
@@ -34,7 +29,7 @@ const Request = {
     put: (url, body) =>
         superagent.put(`${url}`, body).use(tokenPlugin).then(success),
     post: (url, body) => {
-        superagent.post(`${url}`, body).use(tokenPlugin).then(success).catch(failed)
+        superagent.post(`${url}`, body).use(tokenPlugin).then(success, failed)
     }
 };
 

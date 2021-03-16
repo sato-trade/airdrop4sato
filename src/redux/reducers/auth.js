@@ -39,24 +39,26 @@ export function auth (state = {}, action) {
             }
         case CHECK_FAILED:
             return {
-                message: action.message
+                message: action
             }
         case LOGIN:
             return {
                 ...state,
-                loggingIn: false,
+                loggingIn: true,
                 errors: action.error ? action.payload.errors : null
             };
         case LOGIN_SUCCEED:
             return {
                 loggedIn: true,
-                loggingIn: false
+                loggingIn: false,
+                registered: true,
+                token: action.data
             };
         case LOGIN_FAILED:
             return {
                 loggedIn: false,
                 loggingIn: false,
-                errors: action.error ? action.payload.errors : null
+                errors: action
             };
         case LOGOUT:
             return {
