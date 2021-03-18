@@ -45,16 +45,19 @@ function App(){
                 <Route exact path='/' >
                     <Home sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
                 </Route>
-                <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' >
-                    <Wallet sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
-                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet/withdraw' >
-                        <Withdraw sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
-                    </LoggedInRoute>
-                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet/deposit' >
-                        <Deposit sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
-                    </LoggedInRoute>
-                </LoggedInRoute>
-
+                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
+                        <>
+                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/`} exact >
+                                <Wallet sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                            </LoggedInRoute>
+                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/withdraw`} >
+                                <Withdraw sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                            </LoggedInRoute>
+                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/deposit`} >
+                                <Deposit sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                            </LoggedInRoute>
+                        </>
+                    )} />
                 <LoggedInRoute isLoggedIn={loggedIn} path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
                 </LoggedInRoute>

@@ -77,7 +77,6 @@ function logIn(payload) {
         authService.logIn(payload)
             .then(
                 res => {
-                    console.log('here: ', res.data)
                     dispatch(success(res.data));
                 },
                 error => {

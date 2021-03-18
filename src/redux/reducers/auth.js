@@ -24,11 +24,13 @@ export function auth (state = {
             }
         case SIGNUP_SUCCEED:
             return {
-                registered: action.success
+                registered: true,
+                loading: false
             }
         case SIGNUP_FAILED:
             return {
-                message: action.message
+                message: action.message,
+                loading: false
             }
         case CHECK_EXIST:
             return {
@@ -36,11 +38,13 @@ export function auth (state = {
             }
         case CHECK_SUCCEED:
             return {
-                registered: action.registered
+                registered: action.registered,
+                loading: false
             }
         case CHECK_FAILED:
             return {
-                message: action
+                message: action,
+                loading: false
             }
         case LOGIN:
             return {
@@ -65,7 +69,8 @@ export function auth (state = {
             console.log('calling logout')
             return {
                 loggedIn: false,
-                token: ''
+                token: '',
+                loading: false
             }
         default:
             return state;

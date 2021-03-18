@@ -73,9 +73,6 @@ function Wallet({t, navBarHeight, sendBackAddr}) {
     const { registered, token, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
-    console.log('we are at wallet actually----------------------------------------------------: ', loggedIn)
-
-
 
     function handleNewChain (chainId) {
         setChainId(chainId)

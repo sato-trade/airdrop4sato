@@ -91,8 +91,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
     const { registered, token, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
-    console.log('we are at Home  no !!!!!!!!!!!----------------------------------------------------: ', loggedIn)
-
     /**
      * Personal Sign
      */
@@ -144,6 +142,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
                     dispatch(authActions.logIn(payload))
                 } else {
                     dispatch(authActions.signUp(payload))
+
                 }
             } else {
                 console.log('not found!')
@@ -269,6 +268,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
     }, [button1Disabled, button2Disabled, button1, addr ])
 
     useEffect(() => {
+        console.log('updated addr: ')
         const { _from } = location.state || { from: { pathname: "/" } };
         if (addr.length === 42 && isValidAddress(addr)) {
             dispatch(authActions.checkUser(addr, _from))
@@ -309,9 +309,9 @@ function Home({t, navBarHeight, sendBackAddr}) {
                 if (loggedIn) {
                     setButton2(t('loggedIn'))
                     setButton2Disabled(true)
-                } else {
-                    setButton2(t('registered'))
                 }
+            } else {
+                setButton2(t('unlock'))
             }
         }
         return() => {
