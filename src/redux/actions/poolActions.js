@@ -4,7 +4,6 @@ import {
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
-import * as Url from "../../config/Url";
 
 export const authActions = {
     addLiquidity,
