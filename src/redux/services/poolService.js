@@ -10,7 +10,7 @@ export const poolService = {
 async function addLiquidity(payload) {
     const requestOptions = {
         method: 'POST',
-        headers: authHeader,
+        headers: authHeader(payload.token),
         body: JSON.stringify(payload)
     };
     return fetch(Url.ADD_LIQUIDITY, requestOptions).then(handleResponse);
@@ -19,7 +19,7 @@ async function addLiquidity(payload) {
 async function removeLiquidity(payload) {
     const requestOptions = {
         method: 'POST',
-        headers: authHeader,
+        headers: authHeader(payload.token),
         body: JSON.stringify(payload)
     };
     return fetch(Url.REMOVE_LIQUIDITY, requestOptions).then(handleResponse);

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link, Redirect } from 'react-router-dom';
 import { Typography, Grid, Button, Card, CardContent, Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import './Home.css';
@@ -91,6 +91,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
     const { registered, token, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
+    console.log('we are at Home  no !!!!!!!!!!!----------------------------------------------------: ', loggedIn)
 
     /**
      * Personal Sign
@@ -140,10 +141,8 @@ function Home({t, navBarHeight, sendBackAddr}) {
 
             if (registered !== undefined) {
                 if (registered) {
-                    console.log('logging!')
                     dispatch(authActions.logIn(payload))
                 } else {
-                    console.log('registering!')
                     dispatch(authActions.signUp(payload))
                 }
             } else {
@@ -160,42 +159,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
     /**
      * Personal Sign Verify
      */
-    const verify = async () => {
-        const exampleMessage = 'Example `personal_sign` message'
-        try {
-            const from = addr
-            // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
-            const sign = signResult
-            const msg = Web3.utils.soliditySha3(exampleMessage);
-
-            const recoveredAddr = recoverPersonalSignature({
-                'data': msg,
-                'sig': sign,
-            })
-            if (recoveredAddr === from) {
-                console.log(`SigUtil Successfully verified signer as ${recoveredAddr}`)
-                setRecoverResult(recoveredAddr)
-            } else {
-                console.log(`SigUtil Failed to verify signer when comparing ${recoveredAddr} to ${from}`)
-                console.log(`Failed comparing ${recoveredAddr} to ${from}`)
-            }
-            const ecRecoverAddr = await window.ethereum.request({
-                method: 'personal_ecRecover',
-                params: [msg, sign],
-            })
-            if (ecRecoverAddr === from) {
-                console.log(`Successfully ecRecovered signer as ${ecRecoverAddr}`)
-                setEcRecoverResult(ecRecoverAddr)
-            } else {
-                console.log(`Failed to verify signer when comparing ${ecRecoverAddr} to ${from}`)
-            }
-        } catch (err) {
-            console.error(err)
-            setRecoverResult(`Error: ${err.message}`)
-            setEcRecoverResult(`Error: ${err.message}`)
-        }
-    }
-
     const onClickInstall = () => {
         setButton1('Onboarding in progress')
         setButton1Disabled(true)
@@ -358,53 +321,56 @@ function Home({t, navBarHeight, sendBackAddr}) {
 
     return (
         <div className={classes.root}>
-            <Card className={classes.walletBox}>
-                <CardContent className={classes.walletContent}>
-                    <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('walletTitle')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Button style={{ width: 100 }}  className={classes.btn} onClick={sign} disabled={button2Disabled}>
-                                {t('deposit')}
-                            </Button>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Button style={{ width: 180 }}  className={classes.btn} onClick={sign} disabled={button2Disabled}>
-                                {t('withdraw')}
-                            </Button>
-                        </Grid>
-                        {/*<Grid item xs={3} />*/}
-                    </Grid>
-                    <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
-                    <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('capitalTitle')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <div className={classes.wrapper}>
-                                {
-                                    addr.length < 42 || !isValidAddress(addr) ?
-                                        <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect} disabled={button1Disabled}
-                                        >
-                                            {button1}
-                                        </Button> : null
-                                }
-                                {
-                                    addr.length === 42 && isValidAddress(addr) ?
-                                        <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
-                                            {button2}
-                                        </Button> : null
-                                }
-                            </div>
-                        </Grid>
-                    </Grid>
-                </CardContent>
-            </Card>
+            {
+                loggedIn ? <Redirect to='/wallet' /> :
+                    <Card className={classes.walletBox}>
+                        <CardContent className={classes.walletContent}>
+                            <Grid container spacing={2} >
+                                <Grid item xs={12} >
+                                    <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
+                                        {t('walletTitle')}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Button style={{ width: 100 }}  className={classes.btn} disabled={button2Disabled}>
+                                        {t('deposit')}
+                                    </Button>
+                                </Grid>
+                                <Grid item xs={8}>
+                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={button2Disabled}>
+                                        {t('withdraw')}
+                                    </Button>
+                                </Grid>
+                                {/*<Grid item xs={3} />*/}
+                            </Grid>
+                            <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
+                            <Grid container spacing={2} >
+                                <Grid item xs={12} >
+                                    <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
+                                        {t('capitalTitle')}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <div className={classes.wrapper}>
+                                        {
+                                            addr.length < 42 || !isValidAddress(addr) ?
+                                                <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect} disabled={button1Disabled}
+                                                >
+                                                    {button1}
+                                                </Button> : null
+                                        }
+                                        {
+                                            addr.length === 42 && isValidAddress(addr) ?
+                                                <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
+                                                    {button2}
+                                                </Button> : null
+                                        }
+                                    </div>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+            }
         </div>
     );
 }

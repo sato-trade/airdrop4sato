@@ -79,7 +79,6 @@ function logIn(payload) {
                 res => {
                     console.log('here: ', res.data)
                     dispatch(success(res.data));
-                    localStorage.setItem('user', res.data)
                 },
                 error => {
                     dispatch(failure(error.toString()));
@@ -93,22 +92,10 @@ function logIn(payload) {
     function failure(error) { return { type: LOGIN_FAILED, error } }
 }
 
-function logOut(address, from) {
+function logOut() {
     return dispatch => {
-        dispatch(request({ address }));
-        authService.logOut(address)
-            .then(
-                res => {
-                    dispatch(success(!res.success));
-                },
-                error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
-                }
-            );
-    };
+        dispatch(request());
 
-    function request(address) { return { type: CHECK_EXIST, address } }
-    function success(registered) { return { type: CHECK_SUCCEED, registered } }
-    function failure(error) { return { type: CHECK_FAILED, error } }
+    };
+    function request() { return { type: LOGOUT } }
 }

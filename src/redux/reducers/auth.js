@@ -14,8 +14,9 @@ import {
     CHECK_FAILED,
 } from '../constants';
 
-export function auth (state = {}, action) {
-    console.log('action here: ', action)
+export function auth (state = {
+    loggedIn: false
+}, action) {
     switch (action.type) {
         case SIGNUP:
             return {
@@ -61,8 +62,10 @@ export function auth (state = {}, action) {
                 errors: action
             };
         case LOGOUT:
+            console.log('calling logout')
             return {
-                loggedIn: false
+                loggedIn: false,
+                token: ''
             }
         default:
             return state;

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar'
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 import Home from './components/Home/Home';
+import Wallet from './components/Home/Wallet';
 import Pool from './components/Pool/Pool'
 import Swap from './components/Swap/Swap'
+import Withdraw from './components/Withdraw/Withdraw'
+import Deposit from './components/Deposit/Deposit'
 import Footer from './components/Footer/Footer';
+import {useSelector} from "react-redux";
 
 function App(){
     const [navBarHeight, setNavBarHeight] = useState(0)
@@ -18,6 +22,21 @@ function App(){
         setAddress(addr)
     }
 
+    const { loggedIn } = useSelector(state => state.auth)
+
+    const withLoggedInState = Component => {
+        return function NewComponent({ isLoggedIn, ...props }) {
+            console.log('isLoggedIn----------------------------------------------------: ', loggedIn)
+            return (
+                <div>
+                    {!isLoggedIn && <Redirect to='/' />}
+                    <Component {...props} />
+                </div>
+            )
+        }
+    }
+
+    const LoggedInRoute = withLoggedInState(Route)
 
     return(
         <Router>
@@ -26,12 +45,22 @@ function App(){
                 <Route exact path='/' >
                     <Home sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
                 </Route>
-                <Route path='/pool' >
+                <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' >
+                    <Wallet sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet/withdraw' >
+                        <Withdraw sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                    </LoggedInRoute>
+                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet/deposit' >
+                        <Deposit sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                    </LoggedInRoute>
+                </LoggedInRoute>
+
+                <LoggedInRoute isLoggedIn={loggedIn} path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
-                </Route>
-                <Route path='/swap' component = {Swap} >
+                </LoggedInRoute>
+                <LoggedInRoute isLoggedIn={loggedIn} path='/swap' component = {Swap} >
                     <Swap navBarHeight={navBarHeight} />
-                </Route>
+                </LoggedInRoute>
             </Switch>
             <Footer />
         </Router>

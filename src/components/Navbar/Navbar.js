@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './Navbar.css';
 import { withTranslation } from 'react-i18next';
+import { NavLink, useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import {IconButton, List, ListItem, ListItemText, AppBar, Button, Toolbar, Container, Modal, Fade, Backdrop} from '@material-ui/core';
 import logo from '../../images/logo.png'
 import i18n from '../../i18n';
+import {useDispatch, useSelector} from "react-redux";
+import {authActions} from "../../redux/actions";
 
 let tempHeight = null;
 
@@ -25,6 +28,12 @@ function Navbar({t, sendBackHeight, address}){
             textDecoration: `none`,
             textTransform: `uppercase`,
             color: `white`,
+            alignSelf: 'center'
+        },
+        selected: {
+            textDecoration: `none`,
+            textTransform: `uppercase`,
+            color: `green`,
             alignSelf: 'center'
         },
         logo: {
@@ -57,21 +66,27 @@ function Navbar({t, sendBackHeight, address}){
         },
     }));
     const classes = useStyles();
+
+    const [open, setOpen] = useState(false)
+    const { loggedIn } = useSelector(state => state.auth)
+    const history = useHistory();
+    const dispatch = useDispatch();
+
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
         i18n.changeLanguage(newLang);
         localStorage.setItem('lng', newLang)
     }
 
-    const [open, setOpen] = useState(false)
 
     const navLinks = [
-        { title: t('wallet'), path: `/` },
+        { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
         { title: t('swap'), path: `/swap` },
         { title: t('pool'), path: `/pool` },
     ]
 
     const barRef = React.useRef(null);
+
 
     const handleOpen = () => {
         setOpen(true);
@@ -81,13 +96,19 @@ function Navbar({t, sendBackHeight, address}){
         setOpen(false);
     };
 
-    const disconnect = async () => {
+    const switchAccount = async () => {
         await window.ethereum.request({
             method: 'wallet_requestPermissions',
             params: [{
                 eth_accounts: {},
             }]
-        });
+        }).then(res => {
+            handleClose()
+            dispatch(authActions.logOut())
+        })
+
+
+
     };
 
     useEffect(() => {
@@ -96,6 +117,8 @@ function Navbar({t, sendBackHeight, address}){
             sendBackHeight(tempHeight)
         }
     }, [])
+
+    console.log('address changed: ', address)
 
     return(
         <div ref={barRef}>
@@ -111,11 +134,20 @@ function Navbar({t, sendBackHeight, address}){
                             className={classes.navDisplayFlex}
                         >
                             {navLinks.map(({ title, path }) => (
-                                <a href={path} key={title} className={classes.linkText}>
+                                <NavLink to={path} key={title} className={classes.linkText}
+                                         activeClassName={classes.selected}
+                                         isActive={(match, location) => {
+                                             console.log('here: ', location, path)
+                                             if (location.pathname !== path) {
+                                                 return false;
+                                             }
+                                             return true
+                                         }}
+                                >
                                     <ListItem button>
                                         <ListItemText primary={title} />
                                     </ListItem>
-                                </a>
+                                </NavLink>
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
                             <Button className={classes.addrBtn} onClick={handleOpen} variant="contained">
@@ -143,7 +175,7 @@ function Navbar({t, sendBackHeight, address}){
                         <p id="transition-modal-description">{address}</p>
                         {
                             window.ethereum ?
-                                <Button className={classes.addrBtn} onClick={disconnect} variant="contained">
+                                <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
                                     {t('switch')}
                                 </Button> : null
                         }
