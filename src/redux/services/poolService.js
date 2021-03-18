@@ -10,21 +10,17 @@ export const poolService = {
 async function addLiquidity(payload) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeader,
         body: JSON.stringify(payload)
     };
-
     return fetch(Url.ADD_LIQUIDITY, requestOptions).then(handleResponse);
-
 }
 
 async function removeLiquidity(payload) {
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeader,
         body: JSON.stringify(payload)
     };
-
     return fetch(Url.REMOVE_LIQUIDITY, requestOptions).then(handleResponse);
-
 }

@@ -97,8 +97,6 @@ function Navbar({t, sendBackHeight, address}){
         }
     }, [])
 
-    console.log('addr: ', address)
-
     return(
         <div ref={barRef}>
             <AppBar className={classes.bar} position="static">

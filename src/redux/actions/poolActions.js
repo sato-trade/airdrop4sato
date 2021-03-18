@@ -11,10 +11,10 @@ export const authActions = {
     removeLiquidity
 }
 
-function addLiquidity(address, from) {
+function addLiquidity(payload) {
     return dispatch => {
-        dispatch(request({ address }));
-        poolService.addLiquidity(address)
+        dispatch(request());
+        poolService.addLiquidity(payload)
             .then(
                 res => {
                     dispatch(success(!res.success));

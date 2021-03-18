@@ -128,7 +128,15 @@ function Home({t, navBarHeight, sendBackAddr}) {
                 networkId: Number(networkId)
             }
 
-            // console.log('payload: ', payload)
+
+            let payload2 = {
+                data: exampleMessage,
+                sig: sign,
+                pubKeyAddress: addr,
+                chainId: Web3.utils.hexToNumber(chainId),
+                networkId: Number(networkId)
+            }
+
 
             if (registered !== undefined) {
                 if (registered) {
