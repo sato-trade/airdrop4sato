@@ -74,7 +74,16 @@ function Home({t, navBarHeight, sendBackAddr}) {
             borderColor: 'transparent',
             borderRadius: 25,
             height: 45,
-            fontWeight: 600
+            fontWeight: 600,
+        },
+        btn_disabled: {
+            backgroundColor: '#83ACF4',
+            color: '#010846',
+            borderColor: 'transparent',
+            borderRadius: 25,
+            height: 45,
+            fontWeight: 600,
+            opacity: 0.2
         }
     }));
     const classes = useStyles();
@@ -379,7 +388,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
                                 }
                                 {
                                     addr.length === 42 && isValidAddress(addr) ?
-                                        <Button style={{ width: 197 }} className={classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
+                                        <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                             {button2}
                                         </Button> : null
                                 }

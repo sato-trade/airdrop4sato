@@ -52,7 +52,8 @@ function Navbar({t, sendBackHeight, address}){
             border: 'transparent',
             // boxShadow: theme.shadows[5],
             padding: theme.spacing(2, 4, 3),
-            borderRadius: 20
+            borderRadius: 20,
+            textAlign: 'center'
         },
     }));
     const classes = useStyles();
@@ -78,6 +79,15 @@ function Navbar({t, sendBackHeight, address}){
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const disconnect = async () => {
+        await window.ethereum.request({
+            method: 'wallet_requestPermissions',
+            params: [{
+                eth_accounts: {},
+            }]
+        });
     };
 
     useEffect(() => {
@@ -133,6 +143,13 @@ function Navbar({t, sendBackHeight, address}){
                     <div className={classes.paper}>
                         <h2 id="transition-modal-title">{t('metamaskConnected')}</h2>
                         <p id="transition-modal-description">{address}</p>
+                        {
+                            window.ethereum ?
+                                <Button className={classes.addrBtn} onClick={disconnect} variant="contained">
+                                    {t('switch')}
+                                </Button> : null
+                        }
+
                     </div>
                 </Fade>
             </Modal>

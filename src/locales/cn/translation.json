@@ -13,5 +13,6 @@
   "loggingIn": "登陆中",
   "loggedIn": "已登陆",
   "registered": "登陆",
-  "metamaskConnected": "已连接到Metamask"
+  "metamaskConnected": "已连接到Metamask",
+  "switch": "切换账号"
 }

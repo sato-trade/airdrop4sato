@@ -15,7 +15,6 @@ import {
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
-import { authHeader } from "../../utils/AuthHeader";
 import * as Url from "../../config/Url";
 
 export const authActions = {
@@ -78,7 +77,9 @@ function logIn(payload) {
         authService.logIn(payload)
             .then(
                 res => {
+                    console.log('here: ', res.data)
                     dispatch(success(res.data));
+                    localStorage.setItem('user', res.data)
                 },
                 error => {
                     dispatch(failure(error.toString()));

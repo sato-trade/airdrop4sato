@@ -12,5 +12,6 @@
   "loading": "Loading",
   "loggingIn": "Logging In",
   "loggedIn": "LoggedIn",
-  "registered": "Login"
+  "registered": "Login",
+  "switch": "Switch"
 }
