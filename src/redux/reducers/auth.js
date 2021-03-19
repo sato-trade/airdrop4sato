@@ -48,7 +48,6 @@ export function auth (state = {
             }
         case LOGIN:
             return {
-                ...state,
                 loggingIn: true,
                 errors: action.error ? action.payload.errors : null
             };

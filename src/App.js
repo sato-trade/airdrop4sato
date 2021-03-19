@@ -26,7 +26,6 @@ function App(){
 
     const withLoggedInState = Component => {
         return function NewComponent({ isLoggedIn, ...props }) {
-            console.log('isLoggedIn----------------------------------------------------: ', loggedIn)
             return (
                 <div>
                     {!isLoggedIn && <Redirect to='/' />}

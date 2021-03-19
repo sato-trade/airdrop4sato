@@ -137,8 +137,8 @@ function Navbar({t, sendBackHeight, address}){
                                 <NavLink to={path} key={title} className={classes.linkText}
                                          activeClassName={classes.selected}
                                          isActive={(match, location) => {
-                                             console.log('match: ', match)
-                                             if (location.pathname !== path) {
+                                             // console.log('match: ', path, location)
+                                             if (location.pathname !== path && (!location.pathname.includes(path))) {
                                                  return false;
                                              }
                                              return true

@@ -14,5 +14,6 @@
   "loggedIn": "已登陆",
   "registered": "登陆",
   "metamaskConnected": "已连接到Metamask",
-  "switch": "切换账号"
+  "switch": "切换账号",
+  "noCapitals": "暂无可用资产"
 }
