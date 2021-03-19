@@ -131,9 +131,7 @@ function Wallet({t, navBarHeight, sendBackAddr}) {
             console.log('clear window')
         }
     }, [height, width])
-
-    console.log('userCapital: ', userCapitals)
-
+    
     return (
         <div className={classes.root}>
             <Card className={classes.walletBox}>
@@ -174,7 +172,7 @@ function Wallet({t, navBarHeight, sendBackAddr}) {
                                     <List className={classes.capitalList}>
                                         {
                                             userCapitals.map(item => (
-                                                <ListItem button>
+                                                <ListItem key={item.id} button>
                                                     <ListItemAvatar>
                                                         <Avatar alt="Travis Howard" src={getIcons(item.token, '', true)} />
                                                     </ListItemAvatar>
