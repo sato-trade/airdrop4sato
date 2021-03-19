@@ -8,10 +8,12 @@ import logo from '../../images/logo.png'
 import i18n from '../../i18n';
 import {useDispatch, useSelector} from "react-redux";
 import {authActions} from "../../redux/actions";
+import MetaMaskOnboarding from "@metamask/onboarding";
+const { isMetaMaskInstalled } = MetaMaskOnboarding
 
 let tempHeight = null;
 
-function Navbar({t, sendBackHeight, address}){
+function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId}){
     const useStyles = makeStyles((theme) => ({
         bar: {
             background: '#010846'
@@ -68,6 +70,12 @@ function Navbar({t, sendBackHeight, address}){
     const classes = useStyles();
 
     const [open, setOpen] = useState(false)
+
+    const [ chainId, setChainId ] = useState(0)
+    const [ network, setNetwork ] = useState('')
+    const [ addr, setAddr ] = useState('')
+    const [ startWatch, setStartWatch ] = useState(false)
+
     const { loggedIn } = useSelector(state => state.auth)
     const history = useHistory();
     const dispatch = useDispatch();
@@ -104,12 +112,68 @@ function Navbar({t, sendBackHeight, address}){
             }]
         }).then(res => {
             handleClose()
-            dispatch(authActions.logOut())
         })
-
-
-
     };
+
+
+    function handleNewChain (chainId) {
+        setChainId(chainId)
+        sendBackChainId(chainId)
+    }
+
+    function handleNewNetwork (networkId) {
+        setNetwork(networkId)
+        sendBackNetworkId(networkId)
+    }
+
+    function handleNewAccounts (addr) {
+        let address = addr === undefined || addr.length < 1 ? '' : addr[0]
+        setAddr(address)
+        sendBackAddr(address)
+    }
+
+    const initialize = async () => {
+        if (isMetaMaskInstalled()) {
+            try {
+                const newAccounts = await window.ethereum.request({
+                    method: 'eth_accounts',
+                })
+                const chainId = await window.ethereum.request({
+                    method: 'eth_chainId',
+                })
+
+                const networkId = await window.ethereum.request({
+                    method: 'net_version',
+                })
+                handleNewChain(chainId)
+                handleNewNetwork(networkId)
+                handleNewAccounts(newAccounts)
+            } catch (err) {
+                console.error('Error on init when getting accounts', err)
+            }
+            window.ethereum.autoRefreshOnNetworkChange = false
+            window.ethereum.on('chainChanged', handleNewChain)
+            window.ethereum.on('networkChanged', handleNewNetwork)
+            window.ethereum.on('accountsChanged', handleNewAccounts)
+            setStartWatch(true)
+        }
+    }
+
+    useEffect(() => {
+        console.log('updating: ', addr, chainId, network)
+        if (startWatch) {
+            dispatch(authActions.logOut())
+        }
+    }, [chainId, network, addr])
+
+
+
+    useEffect(() => {
+        initialize()
+        return() => {
+            console.log('clear initialization')
+        }
+    }, [])
 
     useEffect(() => {
         if (barRef.current && tempHeight === null) {
@@ -118,7 +182,6 @@ function Navbar({t, sendBackHeight, address}){
         }
     }, [])
 
-    console.log('address changed: ', address)
 
     return(
         <div ref={barRef}>
@@ -151,7 +214,7 @@ function Navbar({t, sendBackHeight, address}){
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
                             <Button className={classes.addrBtn} onClick={handleOpen} variant="contained">
-                                {`${address.slice(0,5)} ... ${address.slice(address.length - 3)}`}
+                                {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
                             </Button>
                         </List>
                     </Container>
@@ -172,7 +235,7 @@ function Navbar({t, sendBackHeight, address}){
                 <Fade in={open}>
                     <div className={classes.paper}>
                         <h2 id="transition-modal-title">{t('metamaskConnected')}</h2>
-                        <p id="transition-modal-description">{address}</p>
+                        <p id="transition-modal-description">{addr}</p>
                         {
                             window.ethereum ?
                                 <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">

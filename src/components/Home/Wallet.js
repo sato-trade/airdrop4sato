@@ -15,10 +15,7 @@ import { getIcons } from "../../utils/Common";
 
 const Web3 = require("web3");
 const { isMetaMaskInstalled } = MetaMaskOnboarding
-function Wallet({t, navBarHeight, sendBackAddr}) {
-    const [ chainId, setChainId ] = useState(0)
-    const [ network, setNetwork ] = useState('')
-    const [ addr, setAddr ] = useState('')
+function Wallet({t, navBarHeight}) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -83,55 +80,17 @@ function Wallet({t, navBarHeight, sendBackAddr}) {
     const dispatch = useDispatch();
     const location = useLocation();
 
-    function handleNewChain (chainId) {
-        setChainId(chainId)
-    }
-
-    function handleNewNetwork (networkId) {
-        setNetwork(networkId)
-    }
-
-    function handleNewAccounts (addr) {
-        setAddr(addr[0])
-        sendBackAddr(addr[0])
-    }
-
-
-    const initialize = async () => {
-        if (isMetaMaskInstalled()) {
-            window.ethereum.autoRefreshOnNetworkChange = false
-            window.ethereum.on('chainChanged', handleNewChain)
-            window.ethereum.on('networkChanged', handleNewNetwork)
-            window.ethereum.on('accountsChanged', handleNewAccounts)
-        }
-    }
 
     useEffect(() => {
-        initialize().then(async () => {
-
+        if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
-
-            try {
-                const newAccounts = await window.ethereum.request({
-                    method: 'eth_accounts',
-                })
-                handleNewAccounts(newAccounts)
-            } catch (err) {
-                console.error('Error on init when getting accounts', err)
-            }
-        })
+        }
         return() => {
             console.log('clear initialization')
         }
     }, [])
 
 
-    useEffect(() => {
-        return() => {
-            console.log('clear window')
-        }
-    }, [height, width])
-    
     return (
         <div className={classes.root}>
             <Card className={classes.walletBox}>

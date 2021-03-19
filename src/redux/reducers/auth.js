@@ -17,7 +17,6 @@ import {
 export function auth (state = {
     loggedIn: false
 }, action) {
-    console.log('payload is here: ', action)
     switch (action.type) {
         case SIGNUP:
             return {
