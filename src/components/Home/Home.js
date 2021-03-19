@@ -25,11 +25,8 @@ function Home({t, navBarHeight, sendBackAddr}) {
     const [ network, setNetwork ] = useState('')
     const [ addr, setAddr ] = useState('')
     const [ signResult, setSignResult ] = useState('')
-    const [ recoveryResult, setRecoverResult ] = useState('')
-    const [ ecRecoveryResult, setEcRecoverResult ] = useState('')
     const [button1, setButton1] = useState('')
     const [button2, setButton2] = useState(t('unlock'))
-    const [button3, setButton3] = useState('VERIFY')
     const [button1Disabled, setButton1Disabled] = useState(true)
     const [button2Disabled, setButton2Disabled] = useState(true)
     const [onBoard, setOnboard] = useState(new MetaMaskOnboarding({ forwarderOrigin }))
@@ -88,7 +85,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
     }));
     const classes = useStyles();
 
-    const { registered, token, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
+    const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
     /**
@@ -120,15 +117,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
             })
 
             let payload = {
-                data: exampleMessage,
-                sig: sign,
-                pubKeyAddress: addr,
-                chainId: Web3.utils.hexToNumber(chainId),
-                networkId: Number(networkId)
-            }
-
-
-            let payload2 = {
                 data: exampleMessage,
                 sig: sign,
                 pubKeyAddress: addr,
@@ -341,7 +329,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
                                         {t('withdraw')}
                                     </Button>
                                 </Grid>
-                                {/*<Grid item xs={3} />*/}
                             </Grid>
                             <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
                             <Grid container spacing={2} >
