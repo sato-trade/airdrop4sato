@@ -13,7 +13,9 @@ import {useSelector} from "react-redux";
 
 function App(){
     const [navBarHeight, setNavBarHeight] = useState(0)
-    const [address, setAddress] = useState('')
+    const [ address, setAddress ] = useState('')
+    const [ chainId, setChainId ] = useState(0)
+    const [ network, setNetwork ] = useState('')
     const sendBackHeight = (height) => {
         setNavBarHeight(height)
     }
@@ -22,11 +24,18 @@ function App(){
         setAddress(addr)
     }
 
+    const sendBackChainId = (chainId) => {
+        setChainId(chainId)
+    }
+
+    const sendBackNetworkId = (networkId) => {
+        setNetwork(networkId)
+    }
+
     const { loggedIn } = useSelector(state => state.auth)
 
     const withLoggedInState = Component => {
         return function NewComponent({ isLoggedIn, ...props }) {
-            console.log('isLoggedIn----------------------------------------------------: ', loggedIn)
             return (
                 <div>
                     {!isLoggedIn && <Redirect to='/' />}
@@ -40,21 +49,21 @@ function App(){
 
     return(
         <Router>
-            <Navbar address={address} sendBackHeight={sendBackHeight} />
+            <Navbar sendBackAddr={sendBackAddr} sendBackChainId={sendBackChainId} sendBackNetworkId={sendBackNetworkId} sendBackHeight={sendBackHeight} />
             <Switch>
                 <Route exact path='/' >
-                    <Home sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                    <Home address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight} />
                 </Route>
                     <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
                         <>
                             <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/`} exact >
-                                <Wallet sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                                <Wallet  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                             </LoggedInRoute>
                             <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/withdraw`} >
-                                <Withdraw sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                                <Withdraw  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                             </LoggedInRoute>
                             <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/deposit`} >
-                                <Deposit sendBackAddr={sendBackAddr} navBarHeight={navBarHeight} />
+                                <Deposit  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                             </LoggedInRoute>
                         </>
                     )} />

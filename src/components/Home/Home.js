@@ -19,17 +19,11 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'
     : undefined
 
-function Home({t, navBarHeight, sendBackAddr}) {
+function Home({t, navBarHeight, address, network, chainId}) {
     const [ connected, setConnected ] = useState(false)
-    const [ chainId, setChainId ] = useState(0)
-    const [ network, setNetwork ] = useState('')
-    const [ addr, setAddr ] = useState('')
     const [ signResult, setSignResult ] = useState('')
-    const [ recoveryResult, setRecoverResult ] = useState('')
-    const [ ecRecoveryResult, setEcRecoverResult ] = useState('')
     const [button1, setButton1] = useState('')
     const [button2, setButton2] = useState(t('unlock'))
-    const [button3, setButton3] = useState('VERIFY')
     const [button1Disabled, setButton1Disabled] = useState(true)
     const [button2Disabled, setButton2Disabled] = useState(true)
     const [onBoard, setOnboard] = useState(new MetaMaskOnboarding({ forwarderOrigin }))
@@ -88,7 +82,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
     }));
     const classes = useStyles();
 
-    const { registered, token, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
+    const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
     /**
@@ -97,7 +91,7 @@ function Home({t, navBarHeight, sendBackAddr}) {
     const sign = async () => {
         const exampleMessage = 'Example `personal_sign` message'
         try {
-            const from = addr
+            const from = address
             // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
             const msg = Web3.utils.soliditySha3(exampleMessage);
 
@@ -111,31 +105,14 @@ function Home({t, navBarHeight, sendBackAddr}) {
              * @type {{sig: *, address: string, data: string}}
              */
 
-            const chainId = await window.ethereum.request({
-                method: 'eth_chainId',
-            })
-
-            const networkId = await window.ethereum.request({
-                method: 'net_version',
-            })
 
             let payload = {
                 data: exampleMessage,
                 sig: sign,
-                pubKeyAddress: addr,
+                pubKeyAddress: address,
                 chainId: Web3.utils.hexToNumber(chainId),
-                networkId: Number(networkId)
+                networkId: Number(network)
             }
-
-
-            let payload2 = {
-                data: exampleMessage,
-                sig: sign,
-                pubKeyAddress: addr,
-                chainId: Web3.utils.hexToNumber(chainId),
-                networkId: Number(networkId)
-            }
-
 
             if (registered !== undefined) {
                 if (registered) {
@@ -151,8 +128,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
             console.error(err)
             setSignResult(`Error: ${err.message}`)
         }
-
-
     }
 
     /**
@@ -165,11 +140,12 @@ function Home({t, navBarHeight, sendBackAddr}) {
     }
 
     const onClickConnect = async () => {
+        console.log('clicked!!!!!!')
         try {
             const newAccounts = await window.ethereum.request({
                 method: 'eth_requestAccounts',
             })
-            handleNewAccounts(newAccounts)
+            // handleNewAccounts(newAccounts)
         } catch (error) {
             console.error(error)
         }
@@ -199,91 +175,30 @@ function Home({t, navBarHeight, sendBackAddr}) {
         }
     }
 
-    function handleNewChain (chainId) {
-        setChainId(chainId)
-    }
-
-    function handleNewNetwork (networkId) {
-        setNetwork(networkId)
-    }
-
-    function handleNewAccounts (addr) {
-        setAddr(addr[0])
-        sendBackAddr(addr[0])
-        updateButtons()
-    }
-
-    async function getNetworkAndChainId () {
-        try {
-            const chainId = await window.ethereum.request({
-                method: 'eth_chainId',
-            })
-            handleNewChain(chainId)
-
-            const networkId = await window.ethereum.request({
-                method: 'net_version',
-            })
-            handleNewNetwork(networkId)
-        } catch (err) {
-            console.error(err)
-        }
-    }
-
-
-    const initialize = async () => {
-        if (isMetaMaskInstalled()) {
-            window.ethereum.autoRefreshOnNetworkChange = false
-            window.ethereum.on('chainChanged', handleNewChain)
-            window.ethereum.on('networkChanged', handleNewNetwork)
-            window.ethereum.on('accountsChanged', handleNewAccounts)
-        }
-    }
-
     const isMetaMaskConnected = () => {
-        setConnected(addr !== '')
-        return addr !== ''
+        setConnected(address !== '')
+        return address !== ''
     }
 
-    useEffect(() => {
-        initialize().then(async () => {
-            try {
-                const newAccounts = await window.ethereum.request({
-                    method: 'eth_accounts',
-                })
-                handleNewAccounts(newAccounts)
-            } catch (err) {
-                console.error('Error on init when getting accounts', err)
-            }
-        })
-        return() => {
-            console.log('clear initialization')
-        }
-    }, [])
 
     useEffect(() => {
         updateButtons()
         return() => {
             console.log('clear button')
         }
-    }, [button1Disabled, button2Disabled, button1, addr ])
+    }, [button1Disabled, button2Disabled, button1, address ])
 
     useEffect(() => {
-        console.log('updated addr: ')
+        console.log('checking user')
         const { _from } = location.state || { from: { pathname: "/" } };
-        if (addr.length === 42 && isValidAddress(addr)) {
-            dispatch(authActions.checkUser(addr, _from))
+        if (address.length === 42 && isValidAddress(address)) {
+            dispatch(authActions.checkUser(address, _from))
         }
         return() => {
             console.log('clear check')
         }
-    }, [addr])
+    }, [address, network, chainId])
 
-    useEffect(() => {
-        getNetworkAndChainId()
-        return() => {
-            console.log('clear networkId')
-        }
-    }, [chainId, network])
 
     useEffect(() => {
         setButton2(t('unlock'))
@@ -291,12 +206,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
             console.log('clear unlock')
         }
     }, [t])
-
-    useEffect(() => {
-        return() => {
-            console.log('clear window')
-        }
-    }, [height, width])
 
     useEffect(() => {
         if (loading) {
@@ -341,7 +250,6 @@ function Home({t, navBarHeight, sendBackAddr}) {
                                         {t('withdraw')}
                                     </Button>
                                 </Grid>
-                                {/*<Grid item xs={3} />*/}
                             </Grid>
                             <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
                             <Grid container spacing={2} >
@@ -353,14 +261,14 @@ function Home({t, navBarHeight, sendBackAddr}) {
                                 <Grid item xs={12} >
                                     <div className={classes.wrapper}>
                                         {
-                                            addr.length < 42 || !isValidAddress(addr) ?
+                                            address.length < 42 || !isValidAddress(address) ?
                                                 <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect} disabled={button1Disabled}
                                                 >
                                                     {button1}
                                                 </Button> : null
                                         }
                                         {
-                                            addr.length === 42 && isValidAddress(addr) ?
+                                            address.length === 42 && isValidAddress(address) ?
                                                 <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                                     {button2}
                                                 </Button> : null

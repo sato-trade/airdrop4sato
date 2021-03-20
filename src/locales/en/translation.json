@@ -13,5 +13,6 @@
   "loggingIn": "Logging In",
   "loggedIn": "LoggedIn",
   "registered": "Login",
-  "switch": "Switch"
+  "switch": "Switch",
+  "noCapitals": "No available capitals"
 }

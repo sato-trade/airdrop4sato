@@ -48,7 +48,6 @@ export function auth (state = {
             }
         case LOGIN:
             return {
-                ...state,
                 loggingIn: true,
                 errors: action.error ? action.payload.errors : null
             };
@@ -57,7 +56,10 @@ export function auth (state = {
                 loggedIn: true,
                 loggingIn: false,
                 registered: true,
-                token: action.data
+                token: action.data.data,
+                address: action.data.address,
+                networkId: action.data.networkId,
+                chainId: action.data.chainId
             };
         case LOGIN_FAILED:
             return {
