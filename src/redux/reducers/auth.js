@@ -20,39 +20,47 @@ export function auth (state = {
     switch (action.type) {
         case SIGNUP:
             return {
+                ...state,
                 loading: true
             }
         case SIGNUP_SUCCEED:
             return {
+                ...state,
                 registered: true,
                 loading: false
             }
         case SIGNUP_FAILED:
             return {
+                ...state,
                 message: action.message,
                 loading: false
             }
         case CHECK_EXIST:
             return {
+                ...state,
                 loading: true
             }
         case CHECK_SUCCEED:
             return {
+                ...state,
                 registered: action.registered,
                 loading: false
             }
         case CHECK_FAILED:
             return {
+                ...state,
                 message: action,
                 loading: false
             }
         case LOGIN:
             return {
+                ...state,
                 loggingIn: true,
                 errors: action.error ? action.payload.errors : null
             };
         case LOGIN_SUCCEED:
             return {
+                ...state,
                 loggedIn: true,
                 loggingIn: false,
                 registered: true,
@@ -63,6 +71,7 @@ export function auth (state = {
             };
         case LOGIN_FAILED:
             return {
+                ...state,
                 loggedIn: false,
                 loggingIn: false,
                 errors: action
@@ -70,6 +79,7 @@ export function auth (state = {
         case LOGOUT:
             console.log('calling logout')
             return {
+                ...state,
                 loggedIn: false,
                 token: '',
                 loading: false

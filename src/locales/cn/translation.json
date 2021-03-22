@@ -13,7 +13,12 @@
   "loggingIn": "登陆中",
   "loggedIn": "已登陆",
   "registered": "登陆",
-  "metamaskConnected": "已连接到Metamask",
+  "metamaskConnected": "Connected to Metamask",
   "switch": "切换账号",
-  "noCapitals": "暂无可用资产"
+  "noCapitals": "暂无可用资产",
+  "depositContent": "SwapAll 是建立在侧链（Layer 2）上的去中心化交易所，您需要先将去中心化钱包里的资产充值到 SwapAll 侧链钱包中，才能进行零费用和瞬间到账的兑换和流动性操作，侧链中的资产由去中心化智能合约托管，您通过私钥自主掌控，安全可靠，可以随时提现到去中心化钱包。\n\n",
+  "depositAmount": "充值金额",
+  "all": "全部",
+  "availableCapital": "钱包余额：",
+  "confirm": "确认"
 }

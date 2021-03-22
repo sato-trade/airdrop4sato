@@ -5,6 +5,7 @@ import { handleResponse } from '../../utils/HandleResponse'
 export const walletService = {
     getUserCapital,
     withdraw,
+    getAllTokenStatus,
     // deposit
 };
 
@@ -23,6 +24,14 @@ async function withdraw(payload) {
         body: JSON.stringify(payload)
     };
     return fetch(Url.WITHDRAW, requestOptions).then(handleResponse);
+}
+
+async function getAllTokenStatus(token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(token),
+    };
+    return fetch(Url.GET_ALL_TOKENS_STATUS, requestOptions).then(handleResponse);
 }
 
 // async function deposit(payload) {
