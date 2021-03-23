@@ -5,7 +5,6 @@ import { Typography, Grid, Button, Card, CardContent,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
-import MetaMaskOnboarding from '@metamask/onboarding'
 import useWindowDimensions from '../../utils/WindowDimensions'
 
 import { walletActions } from '../../redux/actions/walletActions';
@@ -13,8 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { roundingDown } from '../../utils/RoundingDown'
 import { getIcons } from "../../utils/Common";
 
-const Web3 = require("web3");
-const { isMetaMaskInstalled } = MetaMaskOnboarding
 function Wallet({t, navBarHeight}) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -75,10 +72,9 @@ function Wallet({t, navBarHeight}) {
     }));
     const classes = useStyles();
 
-    const { token, loggedIn, loading } = useSelector(state => state.auth)
+    const { token, loggedIn } = useSelector(state => state.auth)
     const { userCapitals } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
-    const location = useLocation();
 
 
     useEffect(() => {
@@ -115,7 +111,6 @@ function Wallet({t, navBarHeight}) {
                                 </Button>
                             </Link>
                         </Grid>
-                        {/*<Grid item xs={3} />*/}
                     </Grid>
                     <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
                     <Grid container spacing={2} >

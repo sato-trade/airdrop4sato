@@ -34,3 +34,7 @@ export function getIcons(coinName, map, isSmall) {
         return unknowCoinIcon
     }
 }
+
+export function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}

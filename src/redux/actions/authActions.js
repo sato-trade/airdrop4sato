@@ -24,7 +24,7 @@ export const authActions = {
     logOut
 }
 
-function checkUser(address, from) {
+function checkUser(address) {
     return dispatch => {
         dispatch(request({ address }));
         authService.checkUser(address)
