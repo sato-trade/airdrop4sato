@@ -81,38 +81,6 @@ function Home({t, navBarHeight, address, network, chainId,
     const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
-    /**
-     * Personal Sign
-     */
-
-    const updateButtons = () => {
-        const accountButtonsDisabled = !isMetaMaskInstalled() || !isMetaMaskConnected()
-        if (accountButtonsDisabled) {
-            sendBackButton2Disabled(true)
-        } else {
-            sendBackButton2Disabled(false)
-        }
-        if (!isMetaMaskInstalled()) {
-            sendBackButton1('Click here to install MetaMask!')
-            sendBackButton1Disabled(false)
-        } else if (isMetaMaskConnected()) {
-            sendBackButton1(t('connected'))
-            sendBackButton1Disabled(true)
-            if (onBoard) {
-                onBoard.stopOnboarding()
-            }
-        } else {
-            sendBackButton1('Connect')
-            sendBackButton1Disabled(false)
-        }
-    }
-
-    useEffect(() => {
-        updateButtons()
-        return() => {
-            console.log('clear button')
-        }
-    }, [button1Disabled, button2Disabled, button1, address ])
 
     useEffect(() => {
         console.log('checking user')
@@ -124,14 +92,6 @@ function Home({t, navBarHeight, address, network, chainId,
             console.log('clear check')
         }
     }, [address, network, chainId])
-
-
-    useEffect(() => {
-        sendBackButton2(t('unlock'))
-        return() => {
-            console.log('clear unlock')
-        }
-    }, [t])
 
     useEffect(() => {
         if (loading) {

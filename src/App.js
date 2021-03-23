@@ -11,6 +11,7 @@ import Deposit from './components/Deposit/Deposit'
 import Footer from './components/Footer/Footer';
 import {useSelector} from "react-redux";
 import {withTranslation} from "react-i18next";
+import {isMetaMaskConnected, isMetaMaskInstalled, onBoard} from "./utils/Sign";
 
 function App({t}){
     const [navBarHeight, setNavBarHeight] = useState(0)
@@ -66,6 +67,36 @@ function App({t}){
             )
         }
     }
+
+    const updateButtons = () => {
+        const accountButtonsDisabled = !isMetaMaskInstalled() || !isMetaMaskConnected()
+        if (accountButtonsDisabled) {
+            sendBackButton2Disabled(true)
+        } else {
+            sendBackButton2Disabled(false)
+        }
+        if (!isMetaMaskInstalled()) {
+            sendBackButton1('Click here to install MetaMask!')
+            sendBackButton1Disabled(false)
+        } else if (isMetaMaskConnected()) {
+            sendBackButton1(t('connected'))
+            sendBackButton1Disabled(true)
+            if (onBoard) {
+                onBoard.stopOnboarding()
+            }
+        } else {
+            sendBackButton1('Connect')
+            sendBackButton1Disabled(false)
+        }
+    }
+
+    useEffect(() => {
+        updateButtons()
+        return() => {
+            console.log('clear button')
+        }
+    }, [button1Disabled, button2Disabled, button1, address ])
+
 
     const LoggedInRoute = withLoggedInState(Route)
 
