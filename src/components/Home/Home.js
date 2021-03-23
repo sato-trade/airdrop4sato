@@ -65,6 +65,7 @@ function Home({t, navBarHeight, address, network, chainId,
             borderRadius: 25,
             height: 45,
             fontWeight: 600,
+            minWidth: 100
         },
         btn_disabled: {
             backgroundColor: '#83ACF4',
@@ -77,42 +78,9 @@ function Home({t, navBarHeight, address, network, chainId,
         }
     }));
     const classes = useStyles();
-
     const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
     const location = useLocation();
-
-    useEffect(() => {
-        console.log('checking user')
-        const { _from } = location.state || { from: { pathname: "/" } };
-        if (address.length === 42 && isValidAddress(address)) {
-            dispatch(authActions.checkUser(address, _from))
-        }
-        return() => {
-            console.log('clear check')
-        }
-    }, [address, network, chainId])
-
-    useEffect(() => {
-        if (loading) {
-            sendBackButton2(t('loading'))
-        }
-        if (loggingIn) {
-            sendBackButton2(t('loggingIn'))
-        } else {
-            if (registered) {
-                if (loggedIn) {
-                    sendBackButton2(t('loggedIn'))
-                    sendBackButton2Disabled(true)
-                }
-            } else {
-                sendBackButton2(t('unlock'))
-            }
-        }
-        return() => {
-            console.log('clear registration')
-        }
-    }, [registered, loggedIn, loggingIn, loading])
 
     return (
         <div className={classes.root}>

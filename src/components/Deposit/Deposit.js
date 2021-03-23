@@ -68,6 +68,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
             borderRadius: 25,
             height: 45,
             fontWeight: 600,
+            minWidth: 100
         },
         btn_disabled: {
             backgroundColor: '#83ACF4',

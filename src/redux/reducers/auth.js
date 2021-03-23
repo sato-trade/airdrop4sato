@@ -15,7 +15,10 @@ import {
 } from '../constants';
 
 export function auth (state = {
-    loggedIn: false
+    loggedIn: false,
+    loggingIn: false,
+    loading: false,
+    registered: false
 }, action) {
     switch (action.type) {
         case SIGNUP:

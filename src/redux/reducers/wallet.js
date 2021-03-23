@@ -12,7 +12,6 @@ import {
 } from '../constants';
 
 export function wallet (state = {
-    loggedIn: false,
     userCapitals: [],
     tokenList: []
 }, action) {

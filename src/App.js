@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar'
-import {BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route, Link, Redirect, useLocation} from "react-router-dom";
 import Home from './components/Home/Home';
 import Wallet from './components/Home/Wallet';
 import Pool from './components/Pool/Pool'
@@ -9,9 +9,11 @@ import Swap from './components/Swap/Swap'
 import Withdraw from './components/Withdraw/Withdraw'
 import Deposit from './components/Deposit/Deposit'
 import Footer from './components/Footer/Footer';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {withTranslation} from "react-i18next";
 import {isMetaMaskConnected, isMetaMaskInstalled, onBoard} from "./utils/Sign";
+import {isValidAddress} from "ethereumjs-util";
+import {authActions} from "./redux/actions";
 
 function App({t}){
     const [navBarHeight, setNavBarHeight] = useState(0)
@@ -55,7 +57,8 @@ function App({t}){
         setNetwork(networkId)
     }
 
-    const { loggedIn } = useSelector(state => state.auth)
+    const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
+    const dispatch = useDispatch();
 
     const withLoggedInState = Component => {
         return function NewComponent({ isLoggedIn, ...props }) {
@@ -71,24 +74,52 @@ function App({t}){
     const updateButtons = () => {
         const accountButtonsDisabled = !isMetaMaskInstalled() || !isMetaMaskConnected()
         if (accountButtonsDisabled) {
-            sendBackButton2Disabled(true)
+            setButton2Disabled(true)
         } else {
-            sendBackButton2Disabled(false)
+            setButton2Disabled(false)
         }
         if (!isMetaMaskInstalled()) {
-            sendBackButton1('Click here to install MetaMask!')
-            sendBackButton1Disabled(false)
+            setButton1('Click here to install MetaMask!')
+            setButton1Disabled(false)
         } else if (isMetaMaskConnected()) {
-            sendBackButton1(t('connected'))
-            sendBackButton1Disabled(true)
+            setButton1(t('connected'))
+            setButton1Disabled(true)
             if (onBoard) {
                 onBoard.stopOnboarding()
             }
         } else {
-            sendBackButton1('Connect')
-            sendBackButton1Disabled(false)
+            setButton1('Connect')
+            setButton1Disabled(false)
         }
     }
+
+
+    useEffect(() => {
+        if (address.length === 42 && isValidAddress(address)) {
+            dispatch(authActions.checkUser(address))
+        }
+        return() => {
+            console.log('clear check')
+        }
+    }, [address, network, chainId])
+
+    useEffect(() => {
+        if (loggingIn) {
+            setButton2(t('loggingIn'))
+        } else {
+            if (registered) {
+                if (loggedIn) {
+                    setButton2(t('loggedIn'))
+                    setButton2Disabled(true)
+                }
+            } else {
+                setButton2(t('unlock'))
+            }
+        }
+        return() => {
+            console.log('clear registration')
+        }
+    }, [registered, loggedIn, loggingIn, loading])
 
     useEffect(() => {
         updateButtons()
@@ -109,25 +140,25 @@ function App({t}){
                           sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
                           address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight} />
                 </Route>
-                    <Route isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
-                        <>
-                            <Route isLoggedIn={loggedIn} path={`${url}/`} exact >
-                                <Wallet  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                       sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                                         address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </Route>
-                            <Route isLoggedIn={loggedIn} path={`${url}/withdraw`} >
-                                <Withdraw  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                         sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                                           address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </Route>
-                            <Route isLoggedIn={loggedIn} path={`${url}/deposit`} >
-                                <Deposit  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                        sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                                          address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </Route>
-                        </>
-                    )} />
+                <Route  path='/wallet' render={({ match: { url } }) => (
+                    <>
+                        <Route path={`${url}/`} exact >
+                            <Wallet  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                     address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                        </Route>
+                        <Route path={`${url}/withdraw`} >
+                            <Withdraw  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                     address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                        </Route>
+                        <Route path={`${url}/deposit`} >
+                            <Deposit  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                     address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                        </Route>
+                    </>
+                )} />
                 <Route isLoggedIn={loggedIn} path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
                 </Route>
