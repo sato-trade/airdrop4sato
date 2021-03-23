@@ -16,10 +16,11 @@ import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
 import { isNumeric } from "../../utils/Common";
 import {wallet} from "../../redux/reducers/wallet";
-
+import { unlock } from '../../utils/Sign'
 const Web3 = require("web3");
+
 const { isMetaMaskInstalled } = MetaMaskOnboarding
-function Deposit({t, navBarHeight}) {
+function Deposit({t, navBarHeight, address, chainId, network}) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -115,7 +116,7 @@ function Deposit({t, navBarHeight}) {
     const [canDeposit, setCanDeposit] = React.useState(false)
 
 
-    const { token, loggedIn, loading } = useSelector(state => state.auth)
+    const { token, loggedIn, registered } = useSelector(state => state.auth)
     const { userCapitals, tokenList } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
@@ -284,9 +285,15 @@ function Deposit({t, navBarHeight}) {
                             </TextField>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={canDeposit}>
-                                {t('deposit')}
-                            </Button>
+                            {
+                                loggedIn ?
+                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={canDeposit}>
+                                        {t('deposit')}
+                                    </Button> :
+                                    <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={canDeposit}>
+                                        {t('unlock')}
+                                    </Button>
+                            }
                         </Grid>
                     </Grid>
                 </CardContent>

@@ -54,25 +54,25 @@ function App(){
                 <Route exact path='/' >
                     <Home address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight} />
                 </Route>
-                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
+                    <Route isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
                         <>
-                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/`} exact >
+                            <Route isLoggedIn={loggedIn} path={`${url}/`} exact >
                                 <Wallet  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </LoggedInRoute>
-                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/withdraw`} >
+                            </Route>
+                            <Route isLoggedIn={loggedIn} path={`${url}/withdraw`} >
                                 <Withdraw  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </LoggedInRoute>
-                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/deposit`} >
+                            </Route>
+                            <Route isLoggedIn={loggedIn} path={`${url}/deposit`} >
                                 <Deposit  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </LoggedInRoute>
+                            </Route>
                         </>
                     )} />
-                <LoggedInRoute isLoggedIn={loggedIn} path='/pool' >
+                <Route isLoggedIn={loggedIn} path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
-                </LoggedInRoute>
-                <LoggedInRoute isLoggedIn={loggedIn} path='/swap' component = {Swap} >
+                </Route>
+                <Route isLoggedIn={loggedIn} path='/swap' component = {Swap} >
                     <Swap navBarHeight={navBarHeight} />
-                </LoggedInRoute>
+                </Route>
             </Switch>
             <Footer />
         </Router>

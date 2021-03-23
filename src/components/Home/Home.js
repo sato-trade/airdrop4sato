@@ -5,9 +5,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import './Home.css';
 import { withTranslation } from 'react-i18next';
 import MetaMaskOnboarding from '@metamask/onboarding'
-import { recoverPersonalSignature } from 'eth-sig-util'
 import { isValidAddress } from 'ethereumjs-util'
 import useWindowDimensions from '../../utils/WindowDimensions'
+import { unlock } from '../../utils/Sign'
 
 import { authActions } from '../../redux/actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,8 +20,6 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
     : undefined
 
 function Home({t, navBarHeight, address, network, chainId}) {
-    const [ connected, setConnected ] = useState(false)
-    const [ signResult, setSignResult ] = useState('')
     const [button1, setButton1] = useState('')
     const [button2, setButton2] = useState(t('unlock'))
     const [button1Disabled, setButton1Disabled] = useState(true)
@@ -88,51 +86,7 @@ function Home({t, navBarHeight, address, network, chainId}) {
     /**
      * Personal Sign
      */
-    const sign = async () => {
-        const exampleMessage = 'Example `personal_sign` message'
-        try {
-            const from = address
-            // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
-            const msg = Web3.utils.soliditySha3(exampleMessage);
 
-            const sign = await window.ethereum.request({
-                method: 'personal_sign',
-                params: [msg, from],
-            })
-            setSignResult(sign)
-            /***
-             * need to send network id to java backend & symbol (? huobi eco chain) -- 210205
-             * @type {{sig: *, address: string, data: string}}
-             */
-
-
-            let payload = {
-                data: exampleMessage,
-                sig: sign,
-                pubKeyAddress: address,
-                chainId: Web3.utils.hexToNumber(chainId),
-                networkId: Number(network)
-            }
-
-            if (registered !== undefined) {
-                if (registered) {
-                    dispatch(authActions.logIn(payload))
-                } else {
-                    dispatch(authActions.signUp(payload))
-
-                }
-            } else {
-                console.log('not found!')
-            }
-        } catch (err) {
-            console.error(err)
-            setSignResult(`Error: ${err.message}`)
-        }
-    }
-
-    /**
-     * Personal Sign Verify
-     */
     const onClickInstall = () => {
         setButton1('Onboarding in progress')
         setButton1Disabled(true)
@@ -176,7 +130,6 @@ function Home({t, navBarHeight, address, network, chainId}) {
     }
 
     const isMetaMaskConnected = () => {
-        setConnected(address !== '')
         return address !== ''
     }
 
@@ -241,14 +194,18 @@ function Home({t, navBarHeight, address, network, chainId}) {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={4}>
-                                    <Button style={{ width: 100 }}  className={classes.btn} disabled={button2Disabled}>
-                                        {t('deposit')}
-                                    </Button>
+                                    <Link to='/wallet/deposit'>
+                                        <Button style={{ width: 100 }}  className={classes.btn}>
+                                            {t('deposit')}
+                                        </Button>
+                                    </Link>
                                 </Grid>
                                 <Grid item xs={8}>
-                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={button2Disabled}>
-                                        {t('withdraw')}
-                                    </Button>
+                                    <Link to='/wallet/withdraw'>
+                                        <Button style={{ width: 180 }}  className={classes.btn}>
+                                            {t('withdraw')}
+                                        </Button>
+                                    </Link>
                                 </Grid>
                             </Grid>
                             <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
@@ -269,7 +226,7 @@ function Home({t, navBarHeight, address, network, chainId}) {
                                         }
                                         {
                                             address.length === 42 && isValidAddress(address) ?
-                                                <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? sign : null} variant="outlined" color="primary" disabled={button2Disabled}>
+                                                <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                                     {button2}
                                                 </Button> : null
                                         }
