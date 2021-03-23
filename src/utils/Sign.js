@@ -1,4 +1,12 @@
 import {authActions} from "../redux/actions";
+import MetaMaskOnboarding from "@metamask/onboarding";
+export const { isMetaMaskInstalled } = MetaMaskOnboarding
+const currentUrl = new URL(window.location.href)
+const forwarderOrigin = currentUrl.hostname === 'localhost'
+    ? 'http://localhost:9010'
+    : undefined
+
+export const onBoard = new MetaMaskOnboarding({ forwarderOrigin })
 
 export const unlock = async (msg, address, chainId, network, Web3, registered, dispatch) => {
     try {
@@ -36,5 +44,25 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
         }
     } catch (err) {
         console.error(err)
+    }
+}
+
+export const isMetaMaskConnected = (address) => {
+    return address !== ''
+}
+
+export const onClickInstall = (setButton1, setButton1Disabled ) => {
+    onBoard.startOnboarding()
+    setButton1('Onboarding in progress')
+    setButton1Disabled(true)
+}
+
+export const onClickConnect = async () => {
+    try {
+        await window.ethereum.request({
+            method: 'eth_requestAccounts',
+        })
+    } catch (error) {
+        console.error(error)
     }
 }

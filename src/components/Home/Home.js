@@ -7,24 +7,22 @@ import { withTranslation } from 'react-i18next';
 import MetaMaskOnboarding from '@metamask/onboarding'
 import { isValidAddress } from 'ethereumjs-util'
 import useWindowDimensions from '../../utils/WindowDimensions'
-import { unlock } from '../../utils/Sign'
+import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
 
 import { authActions } from '../../redux/actions/authActions';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Web3 = require("web3");
-const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'
     : undefined
 
-function Home({t, navBarHeight, address, network, chainId}) {
-    const [button1, setButton1] = useState('')
-    const [button2, setButton2] = useState(t('unlock'))
-    const [button1Disabled, setButton1Disabled] = useState(true)
-    const [button2Disabled, setButton2Disabled] = useState(true)
-    const [onBoard, setOnboard] = useState(new MetaMaskOnboarding({ forwarderOrigin }))
+function Home({t, navBarHeight, address, network, chainId,
+                  sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+                  sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+}) {
+
 
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -87,52 +85,27 @@ function Home({t, navBarHeight, address, network, chainId}) {
      * Personal Sign
      */
 
-    const onClickInstall = () => {
-        setButton1('Onboarding in progress')
-        setButton1Disabled(true)
-        onBoard.startOnboarding()
-    }
-
-    const onClickConnect = async () => {
-        console.log('clicked!!!!!!')
-        try {
-            const newAccounts = await window.ethereum.request({
-                method: 'eth_requestAccounts',
-            })
-            // handleNewAccounts(newAccounts)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
     const updateButtons = () => {
         const accountButtonsDisabled = !isMetaMaskInstalled() || !isMetaMaskConnected()
         if (accountButtonsDisabled) {
-            setButton2Disabled(true)
+            sendBackButton2Disabled(true)
         } else {
-            setButton2Disabled(false)
+            sendBackButton2Disabled(false)
         }
-
-
         if (!isMetaMaskInstalled()) {
-            setButton1('Click here to install MetaMask!')
-            setButton1Disabled(false)
+            sendBackButton1('Click here to install MetaMask!')
+            sendBackButton1Disabled(false)
         } else if (isMetaMaskConnected()) {
-            setButton1('Connected')
-            setButton1Disabled(true)
+            sendBackButton1(t('connected'))
+            sendBackButton1Disabled(true)
             if (onBoard) {
                 onBoard.stopOnboarding()
             }
         } else {
-            setButton1('Connect')
-            setButton1Disabled(false)
+            sendBackButton1('Connect')
+            sendBackButton1Disabled(false)
         }
     }
-
-    const isMetaMaskConnected = () => {
-        return address !== ''
-    }
-
 
     useEffect(() => {
         updateButtons()
@@ -154,7 +127,7 @@ function Home({t, navBarHeight, address, network, chainId}) {
 
 
     useEffect(() => {
-        setButton2(t('unlock'))
+        sendBackButton2(t('unlock'))
         return() => {
             console.log('clear unlock')
         }
@@ -162,18 +135,18 @@ function Home({t, navBarHeight, address, network, chainId}) {
 
     useEffect(() => {
         if (loading) {
-            setButton2(t('loading'))
+            sendBackButton2(t('loading'))
         }
         if (loggingIn) {
-            setButton2(t('loggingIn'))
+            sendBackButton2(t('loggingIn'))
         } else {
             if (registered) {
                 if (loggedIn) {
-                    setButton2(t('loggedIn'))
-                    setButton2Disabled(true)
+                    sendBackButton2(t('loggedIn'))
+                    sendBackButton2Disabled(true)
                 }
             } else {
-                setButton2(t('unlock'))
+                sendBackButton2(t('unlock'))
             }
         }
         return() => {
@@ -219,7 +192,7 @@ function Home({t, navBarHeight, address, network, chainId}) {
                                     <div className={classes.wrapper}>
                                         {
                                             address.length < 42 || !isValidAddress(address) ?
-                                                <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? onClickInstall : onClickConnect} disabled={button1Disabled}
+                                                <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                                 >
                                                     {button1}
                                                 </Button> : null

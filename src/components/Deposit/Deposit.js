@@ -5,7 +5,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
-import MetaMaskOnboarding from '@metamask/onboarding'
 import useWindowDimensions from '../../utils/WindowDimensions'
 
 import { walletActions } from '../../redux/actions/walletActions';
@@ -16,11 +15,14 @@ import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
 import { isNumeric } from "../../utils/Common";
 import {wallet} from "../../redux/reducers/wallet";
-import { unlock } from '../../utils/Sign'
+import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
+import {isValidAddress} from "ethereumjs-util";
 const Web3 = require("web3");
 
-const { isMetaMaskInstalled } = MetaMaskOnboarding
-function Deposit({t, navBarHeight, address, chainId, network}) {
+function Deposit({t, navBarHeight, address, chainId, network,
+                     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+                     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+                 }) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -192,8 +194,6 @@ function Deposit({t, navBarHeight, address, chainId, network}) {
 
     },[coin])
 
-    console.log('data: ', tokenList)
-
     return (
         <div className={classes.root}>
             <Card className={classes.depositBox}>
@@ -286,13 +286,21 @@ function Deposit({t, navBarHeight, address, chainId, network}) {
                         </Grid>
                         <Grid item xs={12}>
                             {
-                                loggedIn ?
+                                address.length < 42 || !isValidAddress(address) ?
+                                    <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                    >
+                                        {button1}
+                                    </Button> : null
+                            }
+                            {
+                                address.length === 42 && isValidAddress(address) ?
+                                    loggedIn ?
                                     <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={canDeposit}>
                                         {t('deposit')}
                                     </Button> :
-                                    <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={canDeposit}>
+                                    <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
                                         {t('unlock')}
-                                    </Button>
+                                    </Button> : null
                             }
                         </Grid>
                     </Grid>

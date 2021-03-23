@@ -5,6 +5,8 @@
   "pool": "侧链流动池",
   "lang": "英文",
   "unlock": "解锁钱包",
+  "connected": "已连接",
+  "connect": "连接钱包",
   "walletTitle": "SwapAll 侧链钱包",
   "deposit": "充值到侧链",
   "withdraw": "提现到Metamask",
