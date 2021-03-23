@@ -15,5 +15,7 @@
   "registered": "登陆",
   "metamaskConnected": "已连接到Metamask",
   "switch": "切换账号",
-  "noCapitals": "暂无可用资产"
+  "noCapitals": "暂无可用资产",
+  "collectReward": "领取奖励"
+
 }

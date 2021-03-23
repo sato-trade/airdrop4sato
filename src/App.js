@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar'
-import {BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
 import Home from './components/Home/Home';
+import CollectReward from './components/CollectReward/CollectReward';
+
 import Wallet from './components/Home/Wallet';
 import Pool from './components/Pool/Pool'
 import Swap from './components/Swap/Swap'
 import Withdraw from './components/Withdraw/Withdraw'
 import Deposit from './components/Deposit/Deposit'
 import Footer from './components/Footer/Footer';
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
-function App(){
+function App() {
     const [navBarHeight, setNavBarHeight] = useState(0)
-    const [ address, setAddress ] = useState('')
-    const [ chainId, setChainId ] = useState(0)
-    const [ network, setNetwork ] = useState('')
+    const [address, setAddress] = useState('')
+    const [chainId, setChainId] = useState(0)
+    const [network, setNetwork] = useState('')
     const sendBackHeight = (height) => {
         setNavBarHeight(height)
     }
@@ -47,31 +49,34 @@ function App(){
 
     const LoggedInRoute = withLoggedInState(Route)
 
-    return(
+    return (
         <Router>
             <Navbar sendBackAddr={sendBackAddr} sendBackChainId={sendBackChainId} sendBackNetworkId={sendBackNetworkId} sendBackHeight={sendBackHeight} />
             <Switch>
                 <Route exact path='/' >
-                    <Home address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight} />
+                    <Home address={address} network={network} chainId={chainId} navBarHeight={navBarHeight} />
                 </Route>
-                    <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
-                        <>
-                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/`} exact >
-                                <Wallet  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </LoggedInRoute>
-                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/withdraw`} >
-                                <Withdraw  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </LoggedInRoute>
-                            <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/deposit`} >
-                                <Deposit  address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
-                            </LoggedInRoute>
-                        </>
-                    )} />
+                <LoggedInRoute isLoggedIn={loggedIn} path='/wallet' render={({ match: { url } }) => (
+                    <>
+                        <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/`} exact >
+                            <Wallet address={address} network={network} chainId={chainId} navBarHeight={navBarHeight} />
+                        </LoggedInRoute>
+                        <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/withdraw`} >
+                            <Withdraw address={address} network={network} chainId={chainId} navBarHeight={navBarHeight} />
+                        </LoggedInRoute>
+                        <LoggedInRoute isLoggedIn={loggedIn} path={`${url}/deposit`} >
+                            <Deposit address={address} network={network} chainId={chainId} navBarHeight={navBarHeight} />
+                        </LoggedInRoute>
+                    </>
+                )} />
                 <LoggedInRoute isLoggedIn={loggedIn} path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
                 </LoggedInRoute>
-                <LoggedInRoute isLoggedIn={loggedIn} path='/swap' component = {Swap} >
+                <LoggedInRoute isLoggedIn={loggedIn} path='/swap' component={Swap} >
                     <Swap navBarHeight={navBarHeight} />
+                </LoggedInRoute>
+                <LoggedInRoute isLoggedIn={!loggedIn} path='/collectReward' component={CollectReward} >
+                    <CollectReward navBarHeight={navBarHeight} />
                 </LoggedInRoute>
             </Switch>
             <Footer />

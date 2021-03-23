@@ -14,5 +14,7 @@
   "loggedIn": "LoggedIn",
   "registered": "Login",
   "switch": "Switch",
-  "noCapitals": "No available capitals"
+  "noCapitals": "No available capitals",
+  "collectReward": "Reward"
+
 }
