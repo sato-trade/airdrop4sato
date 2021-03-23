@@ -166,8 +166,19 @@ function Deposit({t, navBarHeight, address, chainId, network,
         setCoin(event.target.value);
     };
 
-    const confirmDeposit = () => {
-        console.log('deposit!')
+    const confirmDeposit = async () => {
+        let payload = {
+            l1Address: address,
+            l2Address: address,
+            amount: depositAmount,
+            coin: coin,
+        }
+        try {
+            dispatch(walletActions.deposit(payload))
+
+        } catch(err) {
+            console.log('deposit failed: ', err)
+        }
     }
 
     useEffect(() => {
@@ -296,7 +307,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={canDeposit}>
+                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={false}>
                                         {t('deposit')}
                                     </Button> :
                                     <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
