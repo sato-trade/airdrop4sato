@@ -14,7 +14,7 @@ export function getIcons(coinName, map, isSmall) {
         } else {
             url = map[coinName].bigLogoUrl === undefined || map[coinName].bigLogoUrl === null? '' : map[coinName].bigLogoUrl
         }
-        return url === '' ? unknowCoinIcon : { uri : url }
+        return url === '' ? unknowCoinIcon : url
     } else {
         return unknowCoinIcon
     }

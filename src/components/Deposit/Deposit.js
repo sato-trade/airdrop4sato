@@ -121,7 +121,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { userCapitals, tokenList } = useSelector(state => state.wallet)
+    const { userCapitals, tokenList, tokenIcons } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
@@ -180,6 +180,16 @@ function Deposit({t, navBarHeight, address, chainId, network,
             console.log('clear initialization')
         }
     }, [])
+
+    useEffect(() => {
+        if (loggedIn) {
+            dispatch(walletActions.getUserCapital(token))
+            dispatch(walletActions.getAllTokenStatus(token))
+        }
+        return() => {
+            console.log('clear login')
+        }
+    }, [loggedIn])
 
     useEffect(() => {
         let _coins = []
@@ -295,7 +305,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
+                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
                                             </Grid>
                                             <Grid item xs={6} >
                                                 {option.label}

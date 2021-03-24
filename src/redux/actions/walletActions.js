@@ -2,7 +2,7 @@ import { walletService } from '../services/walletService';
 import {
     GET_USER_CAPITAL, GET_USER_CAPITAL_FAILED, GET_USER_CAPITAL_SUCCEED,
     WITHDRAW, WITHDRAW_FAILED, WITHDRAW_SUCCEED,
-    GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED,
+    GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_ICONS_SUCCEED,
     DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED
 } from '../constants';
 import { history } from '../../utils/History';
@@ -101,7 +101,15 @@ function getAllTokenStatus(token) {
             .then(
                 res => {
                     dispatch(success(res.data));
-                    // let iconMaps
+                    let iconMaps = {}
+                    for ( let i = 0; i< res.data.length; i++ ) {
+                        let name = res.data[i].token
+                        let logo = {}
+                        logo.bigLogoUrl = res.data[i].bigLogoUrl
+                        logo.smallLogoUrl = res.data[i].smallLogoUrl
+                        iconMaps[name] = logo
+                    }
+                    dispatch(successIcon(iconMaps));
                 },
                 error => {
                     if (error === 'This username has been used by another account.') {
@@ -115,6 +123,7 @@ function getAllTokenStatus(token) {
     };
 
     function request() { return { type: GET_ALL_TOKEN_STATUS } }
+    function successIcon(iconMaps) { return { type: GET_ALL_TOKEN_ICONS_SUCCEED, iconMaps } }
     function success(data) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, data } }
     function failure(error) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, error } }
 }
