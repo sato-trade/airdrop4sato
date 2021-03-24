@@ -167,6 +167,9 @@ function App({t}){
                 <Route isLoggedIn={loggedIn} path='/swap' component = {Swap} >
                     <Swap navBarHeight={navBarHeight} />
                 </Route>
+                <Route isLoggedIn={!loggedIn} path='/collectReward' component={CollectReward} >
+                    <CollectReward navBarHeight={navBarHeight} />
+                </Route>
             </Switch>
             <Footer />
         </Router>
