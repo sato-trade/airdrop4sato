@@ -7,30 +7,34 @@ import unknowCoinIcon from '../images/unknowCoinIcon.png';
 
 
 export function getIcons(coinName, map, isSmall) {
-    // if (Object.keys(map).length !== 0 && map[coinName] !== undefined ) {
-    //     let url = ''
-    //     if (isSmall) {
-    //         url = map[coinName].smallLogoUrl === undefined || map[coinName].smallLogoUrl === null ? '' : map[coinName].smallLogoUrl
-    //     } else {
-    //         url = map[coinName].bigLogoUrl === undefined || map[coinName].bigLogoUrl === null? '' : map[coinName].bigLogoUrl
-    //     }
-    //     return url === '' ? unknowCoinIcon : { uri : url }
-    // } else {
-    //     return unknowCoinIcon
-    // }
-
-    if (isSmall) {
-        switch (coinName) {
-            case "USDT":
-                return usdtIcon
-            case "ETH":
-                return ethIcon
-            case "SAP":
-                return sapIcon
-            default:
-                return unknowCoinIcon
+    if (Object.keys(map).length !== 0 && map[coinName] !== undefined ) {
+        let url = ''
+        if (isSmall) {
+            url = map[coinName].smallLogoUrl === undefined || map[coinName].smallLogoUrl === null ? '' : map[coinName].smallLogoUrl
+        } else {
+            url = map[coinName].bigLogoUrl === undefined || map[coinName].bigLogoUrl === null? '' : map[coinName].bigLogoUrl
         }
+        return url === '' ? unknowCoinIcon : { uri : url }
     } else {
         return unknowCoinIcon
     }
+
+    // if (isSmall) {
+    //     switch (coinName) {
+    //         case "USDT":
+    //             return usdtIcon
+    //         case "ETH":
+    //             return ethIcon
+    //         case "SAP":
+    //             return sapIcon
+    //         default:
+    //             return unknowCoinIcon
+    //     }
+    // } else {
+    //     return unknowCoinIcon
+    // }
+}
+
+export function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
 }
