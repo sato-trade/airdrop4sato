@@ -8,15 +8,17 @@ import {
     DEPOSIT,
     DEPOSIT_FAILED,
     DEPOSIT_SUCCEED,
-    GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED
+    GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED,
+    GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
 } from '../constants';
 
 export function wallet (state = {
     userCapitals: [],
     tokenList: [],
-    tokenIcons: {}
+    tokenIcons: {},
+    l1Capital: []
 }, action) {
-    console.log('action: ', action)
+    // console.log('action: ', action)
     switch (action.type) {
         case GET_USER_CAPITAL:
             return {
@@ -56,6 +58,16 @@ export function wallet (state = {
             return {
                 ...state,
                 tokenIcons: action.iconMaps
+            }
+        case GET_L1_CAPITAL_SUCCEED:
+            return {
+                ...state,
+                l1Capital: action.data
+            }
+        case GET_ALL_TOKEN_STATUS_FAILED:
+            return {
+                ...state,
+                message: action.message,
             }
         default:
             return state;

@@ -3,15 +3,18 @@ import {
     GET_USER_CAPITAL, GET_USER_CAPITAL_FAILED, GET_USER_CAPITAL_SUCCEED,
     WITHDRAW, WITHDRAW_FAILED, WITHDRAW_SUCCEED,
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_ICONS_SUCCEED,
+    GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
     DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
+
 export const walletActions = {
     getUserCapital,
     withdraw,
     getAllTokenStatus,
-    deposit
+    deposit,
+    getL1Capital
     /**
      * raw transaction deposit into contract
      * maker transaction towards contract address through metamask transaction
@@ -125,5 +128,25 @@ function getAllTokenStatus(token) {
     function request() { return { type: GET_ALL_TOKEN_STATUS } }
     function successIcon(iconMaps) { return { type: GET_ALL_TOKEN_ICONS_SUCCEED, iconMaps } }
     function success(data) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, data } }
-    function failure(error) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, error } }
+    function failure(message) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, message } }
+}
+
+function getL1Capital(address) {
+    return dispatch => {
+        walletService.getL1Capital(address)
+            .then(
+                res => {
+                    console.log('get l1Capital succeed: ', res)
+                    dispatch(success(res));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    }
+
+
+    function success(data) { return { type: GET_L1_CAPITAL_SUCCEED, data } }
+    function failure(message) { return { type: GET_L1_CAPITAL_FAILED, message } }
 }

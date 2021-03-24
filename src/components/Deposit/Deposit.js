@@ -121,7 +121,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { userCapitals, tokenList, tokenIcons } = useSelector(state => state.wallet)
+    const { userCapitals, tokenList, tokenIcons, l1Capital } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
@@ -134,7 +134,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
         console.log('amount: ', amount)
         setDepositAmount( amount );
         if (isNumeric(amount)) {
-            if ( parseFloat(amount) <= capital) {
+            if ( parseFloat(amount) <= capital.free) {
                 setWarning('')
                 setCanDeposit(true)
             } else {
@@ -175,6 +175,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
+            dispatch(walletActions.getL1Capital(address))
         }
         return() => {
             console.log('clear initialization')
@@ -185,6 +186,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
+            dispatch(walletActions.getL1Capital(address))
         }
         return() => {
             console.log('clear login')
@@ -211,7 +213,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
 
 
     useEffect(() => {
-        let _capital = userCapitals.find(item => item.token === coin)
+        let _capital = l1Capital.find(item => item.token === coin)
         if (_capital === undefined) {
             _capital = {
                 free: 0,
