@@ -101,6 +101,7 @@ function getAllTokenStatus(token) {
             .then(
                 res => {
                     dispatch(success(res.data));
+                    // let iconMaps
                 },
                 error => {
                     if (error === 'This username has been used by another account.') {
