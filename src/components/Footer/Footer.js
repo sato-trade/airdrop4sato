@@ -8,7 +8,7 @@ import { Paper, Typography } from '@material-ui/core';
 function Footer({t}){
     const useStyles = makeStyles({
         footer: {
-            position: 'absolute',
+            // position: 'absolute',
             bottom: 0,
             width: '100%',
             alignItems: 'center',
