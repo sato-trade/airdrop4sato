@@ -11,7 +11,7 @@ export const walletActions = {
     getUserCapital,
     withdraw,
     getAllTokenStatus,
-    // deposit
+    deposit
     /**
      * raw transaction deposit into contract
      * maker transaction towards contract address through metamask transaction
@@ -70,25 +70,28 @@ function withdraw(payload) {
 }
 
 function deposit(payload) {
-    // return dispatch => {
-    //     dispatch(request());
-    //     walletService.removeLiquidity(payload)
-    //         .then(
-    //             res => {
-    //                 if (res) {
-    //                     dispatch(success('remove succeed'));
-    //                 }
-    //             },
-    //             error => {
-    //                 dispatch(failure(error.toString()));
-    //                 dispatch(alertActions.error(error.toString()));
-    //             }
-    //         );
-    // };
-    //
-    // function request() { return { type: REMOVE_LIQUIDITY } }
-    // function success(msg) { return { type: REMOVE_SUCCEED, msg } }
-    // function failure(error) { return { type: REMOVE_FAILED, error } }
+    console.log('payload is here: ', payload)
+    return dispatch => {
+        dispatch(request());
+        walletService.deposit(payload)
+            .then(
+                res => {
+                    console.log('here deposit result: ', res)
+                    if (res) {
+                        dispatch(success('remove succeed'));
+                    }
+                },
+                error => {
+                    console.log('here deposit result: ', error)
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    };
+
+    function request(payload) { return { type: DEPOSIT, payload } }
+    function success(msg) { return { type: DEPOSIT_SUCCEED, msg } }
+    function failure(error) { return { type: DEPOSIT_FAILED, error } }
 }
 
 function getAllTokenStatus(token) {
@@ -98,6 +101,7 @@ function getAllTokenStatus(token) {
             .then(
                 res => {
                     dispatch(success(res.data));
+                    // let iconMaps
                 },
                 error => {
                     if (error === 'This username has been used by another account.') {

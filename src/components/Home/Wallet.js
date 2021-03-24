@@ -73,13 +73,15 @@ function Wallet({t, navBarHeight}) {
     const classes = useStyles();
 
     const { token, loggedIn } = useSelector(state => state.auth)
-    const { userCapitals } = useSelector(state => state.wallet)
+    const { userCapitals, tokenList } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
 
+    console.log('userCapital: ', userCapitals)
 
     useEffect(() => {
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
+            dispatch(walletActions.getAllTokenStatus(token))
         }
         return() => {
             console.log('clear initialization')
@@ -128,7 +130,7 @@ function Wallet({t, navBarHeight}) {
                                             userCapitals.map(item => (
                                                 <ListItem key={item.id} button>
                                                     <ListItemAvatar>
-                                                        <Avatar alt="Travis Howard" src={getIcons(item.token, '', true)} />
+                                                        <Avatar alt="Travis Howard" src={getIcons(item.token, tokenList, true)} />
                                                     </ListItemAvatar>
                                                     <ListItemText primary={item.token} />
                                                     <ListItemSecondaryAction>

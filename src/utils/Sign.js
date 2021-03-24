@@ -32,7 +32,7 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
             networkId: Number(network)
         }
 
-        if (registered !== undefined) {
+        if (registered !== undefined ) {
             if (registered) {
                 dispatch(authActions.logIn(payload))
             } else {

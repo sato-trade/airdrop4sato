@@ -117,6 +117,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
     const [capital, setCapital] = React.useState({free: 0})
     const [warning, setWarning] = React.useState('')
     const [canDeposit, setCanDeposit] = React.useState(false)
+    const [coins, setCoins] = React.useState([])
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
@@ -124,17 +125,6 @@ function Deposit({t, navBarHeight, address, chainId, network,
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
-
-    const coins = [
-        {
-            label: 'SAP',
-            value: 'SAP'
-        },
-        {
-            label: 'USDT',
-            value: 'USDT'
-        }
-    ]
 
     const allIn = () => {
         handleAmountChange(roundingDown(capital.free, 4))
@@ -166,8 +156,19 @@ function Deposit({t, navBarHeight, address, chainId, network,
         setCoin(event.target.value);
     };
 
-    const confirmDeposit = () => {
-        console.log('deposit!')
+    const confirmDeposit = async () => {
+        let payload = {
+            l1Address: address,
+            l2Address: address,
+            amount: depositAmount,
+            coin: coin,
+        }
+        try {
+            dispatch(walletActions.deposit(payload))
+
+        } catch(err) {
+            console.log('deposit failed: ', err)
+        }
     }
 
     useEffect(() => {
@@ -179,6 +180,25 @@ function Deposit({t, navBarHeight, address, chainId, network,
             console.log('clear initialization')
         }
     }, [])
+
+    useEffect(() => {
+        let _coins = []
+        for (let i = 0; i < tokenList.length; i ++) {
+            if (tokenList[i].depositIsOn) {
+                _coins.push({
+                    label: tokenList[i].token,
+                    value: tokenList[i].token
+                })
+            }
+        }
+
+        setCoins(_coins)
+        return() => {
+            console.log('clear set coins')
+        }
+
+    }, [tokenList])
+
 
     useEffect(() => {
         let _capital = userCapitals.find(item => item.token === coin)
@@ -275,7 +295,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, '', true)} />
+                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
                                             </Grid>
                                             <Grid item xs={6} >
                                                 {option.label}
@@ -296,7 +316,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={canDeposit}>
+                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={false}>
                                         {t('deposit')}
                                     </Button> :
                                     <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
