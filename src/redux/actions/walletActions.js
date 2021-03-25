@@ -4,10 +4,13 @@ import {
     WITHDRAW, WITHDRAW_FAILED, WITHDRAW_SUCCEED,
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
-    DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED
+    DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
+import Web3 from 'web3'
+import * as Contract from "../../config/Contract.json";
+let web3 = new Web3(window.ethereum)
 
 export const walletActions = {
     getUserCapital,
@@ -73,28 +76,59 @@ function withdraw(payload) {
 }
 
 function deposit(payload) {
-    console.log('payload is here: ', payload)
     return dispatch => {
         dispatch(request());
-        walletService.deposit(payload)
-            .then(
-                res => {
-                    console.log('here deposit result: ', res)
-                    if (res) {
-                        dispatch(success('remove succeed'));
-                    }
-                },
-                error => {
-                    console.log('here deposit result: ', error)
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+        const transactionParameters = {
+            // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
+            // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
+            // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
+            to: Contract.ropsten.dacb.address, // Required except during contract publications.
+            from: payload.l2Address, // must match user's active address.
+            value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
+            // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+        };
+
+        web3.eth.sendTransaction(transactionParameters)
+            .on('transactionHash', function(hash){
+                console.log('hash')
+                dispatch(onHash(hash))
+            })
+            .on('receipt', function(receipt){
+                dispatch(onReceipt(receipt))
+            })
+            .on('confirmation', function(confirmationNumber, receipt){
+                if (confirmationNumber = 5) {
+                    dispatch(success(confirmationNumber))
                 }
-            );
+            })
+            .on('error', function(error) {
+                dispatch(failure(error))
+            });
+
     };
 
     function request(payload) { return { type: DEPOSIT, payload } }
-    function success(msg) { return { type: DEPOSIT_SUCCEED, msg } }
+    function onHash(hash) { return { type: DEPOSIT_HASH, hash } }
+    function onReceipt(receipt) { return { type: DEPOSIT_RECEIPT, receipt } }
+    function success(confirmationNumber) { return { type: DEPOSIT_SUCCEED, confirmationNumber } }
     function failure(error) { return { type: DEPOSIT_FAILED, error } }
+
+
+
+    // walletService.deposit(payload)
+    //     .then(
+    //         res => {
+    //             console.log('here deposit result: ', res)
+    //             if (res) {
+    //                 dispatch(success('remove succeed'));
+    //             }
+    //         },
+    //         error => {
+    //             console.log('here deposit result: ', error)
+    //             dispatch(failure(error.toString()));
+    //             dispatch(alertActions.error(error.toString()));
+    //         }
+    //     );
 }
 
 function getAllTokenStatus(token) {

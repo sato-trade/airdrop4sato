@@ -23,5 +23,14 @@
   "depositAmount": "Deposit Amount",
   "all": "All",
   "availableCapital": "Available Amount：",
-  "confirm": "Confirm Deposit"
+  "confirm": "Confirm Deposit",
+  "confirmed": "Confirming \n Please check in wallet",
+  "confirming": "Details",
+  "time": "Time",
+  "action": "Action",
+  "status": "Status",
+  "checkEtherscan": "去Etherscan查看",
+  "depositSucceed": "成功",
+  "confirmedBlock": "确认块高",
+  "depositAction": "充值"
 }

@@ -23,5 +23,13 @@
   "depositAmount": "充值金额",
   "all": "全部",
   "availableCapital": "钱包余额：",
-  "confirm": "确认"
+  "confirm": "确认",
+  "confirming": "等待确认中 \n 请在钱包中确认",
+  "time": "时间",
+  "action": "操作",
+  "status": "状态",
+  "checkEtherscan": "去Etherscan查看",
+  "depositSucceed": "成功",
+  "confirmedBlock": "确认块高",
+  "depositAction": "充值"
 }

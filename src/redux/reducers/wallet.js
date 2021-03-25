@@ -8,6 +8,8 @@ import {
     DEPOSIT,
     DEPOSIT_FAILED,
     DEPOSIT_SUCCEED,
+    DEPOSIT_HASH,
+    DEPOSIT_RECEIPT,
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
 } from '../constants';
@@ -16,7 +18,11 @@ export function wallet (state = {
     userCapitals: [],
     tokenList: [],
     tokenIcons: {},
-    l1Capital: []
+    l1Capital: [],
+    depositFinished: false,
+    hash: '',
+    receipt: {},
+    confirmationNumber: 0
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
@@ -68,6 +74,30 @@ export function wallet (state = {
             return {
                 ...state,
                 message: action.message,
+            }
+        case DEPOSIT_HASH:
+            return {
+                ...state,
+                hash: action.hash
+            }
+        case DEPOSIT_RECEIPT:
+            return {
+                ...state,
+                receipt: action.receipt
+            }
+        case DEPOSIT_SUCCEED:
+            return {
+                ...state,
+                depositFinished: true,
+                depositSucceed: true,
+                confirmationNumber: action.confirmationNumber
+            }
+        case DEPOSIT_FAILED:
+            return {
+                ...state,
+                depositFinished: true,
+                depositSucceed: false,
+                message: action.error
             }
         default:
             return state;

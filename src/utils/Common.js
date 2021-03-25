@@ -38,3 +38,17 @@ export function getIcons(coinName, map, isSmall) {
 export function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+export const convertTimeString = ( timeString ) => {
+    let availableTime = new Date((Date.parse(timeString)));
+    let minute = availableTime.getUTCMinutes() >= 10 ? availableTime.getUTCMinutes() : '0' + availableTime.getUTCMinutes().toString()
+    return availableTime.getUTCFullYear() + '-' + (availableTime.getUTCMonth() + 1) + '-' + availableTime.getUTCDate() + ' ' +
+        ('0' + availableTime.getUTCHours()).slice(-2) + ':' + minute;
+}
+
+export const formDateString = (timeStamp) => {
+    let date = new Date(timeStamp);
+    let dateString = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate() + ' ' +
+        ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
+    return dateString
+}
