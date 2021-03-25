@@ -4,12 +4,13 @@ import {
     WITHDRAW, WITHDRAW_FAILED, WITHDRAW_SUCCEED,
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
-    DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT
+    DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT, GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
 import Web3 from 'web3'
 import * as Contract from "../../config/Contract.json";
+import {Container} from "@material-ui/core";
 let web3 = new Web3(window.ethereum)
 
 export const walletActions = {
@@ -17,7 +18,8 @@ export const walletActions = {
     withdraw,
     getAllTokenStatus,
     deposit,
-    getL1Capital
+    getL1Capital,
+    getTransactionRecords
     /**
      * raw transaction deposit into contract
      * maker transaction towards contract address through metamask transaction
@@ -78,15 +80,40 @@ function withdraw(payload) {
 function deposit(payload) {
     return dispatch => {
         dispatch(request());
-        const transactionParameters = {
-            // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
-            // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
-            // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
-            to: Contract.ropsten.dacb.address, // Required except during contract publications.
-            from: payload.l2Address, // must match user's active address.
-            value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
-            // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
-        };
+        let transactionParameters = {}
+        if (payload.coin === 'ETH') {
+            transactionParameters = {
+                // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
+                // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
+                // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
+                to: Contract.ropsten.dacb.address, // Required except during contract publications.
+                from: payload.l2Address, // must match user's active address.
+                value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
+                // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+            };
+
+
+        } else {
+            let contractInstance = new web3.eth.Contract(Contract.ropsten.transferErc20.abi, Contract.ropsten.coins[payload.coin].address);
+            let contractData = contractInstance.methods.transfer(Contract.ropsten.dacb.address, web3.utils.toBN(payload.amount * Math.pow(10, Contract.ropsten.coins[payload.coin].decimals))).encodeABI()
+            // // calculate ERC20 token amount
+            // // call transfer function
+            // contract.transfer(Contract.ropsten.dacb.address, value, (error, txHash) => {
+            //     // it returns tx hash because sending tx
+            //     console.log(txHash);
+            // });
+
+            transactionParameters = {
+                // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
+                // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
+                // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
+                to: Contract.ropsten.coins[payload.coin].address, // Required except during contract publications.
+                from: payload.l2Address, // must match user's active address.
+                data: contractData,
+                // value: web3.utils.toWei(0, 'ether'), // Only required to send ether to the recipient from the initiating external account.
+                // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+            };
+        }
 
         web3.eth.sendTransaction(transactionParameters)
             .on('transactionHash', function(hash){
@@ -104,6 +131,10 @@ function deposit(payload) {
             .on('error', function(error) {
                 dispatch(failure(error))
             });
+
+
+
+
 
     };
 
@@ -183,4 +214,24 @@ function getL1Capital(address) {
 
     function success(data) { return { type: GET_L1_CAPITAL_SUCCEED, data } }
     function failure(message) { return { type: GET_L1_CAPITAL_FAILED, message } }
+}
+
+function getTransactionRecords(token) {
+    return dispatch => {
+        walletService.getTransactionRecords(token)
+            .then(
+                res => {
+                    console.log('get transaction records succeed: ', res)
+                    dispatch(success(res.data));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    }
+
+
+    function success(data) { return { type: GET_TRANSACTION_RECORDS_SUCCEED, data } }
+    function failure(error) { return { type: GET_TRANSACTION_RECORDS_FAILED, error } }
 }

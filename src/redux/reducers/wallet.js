@@ -11,7 +11,7 @@ import {
     DEPOSIT_HASH,
     DEPOSIT_RECEIPT,
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED,
-    GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
+    GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED, GET_TRANSACTION_RECORDS_FAILED, GET_TRANSACTION_RECORDS_SUCCEED,
 } from '../constants';
 
 export function wallet (state = {
@@ -19,7 +19,8 @@ export function wallet (state = {
     tokenList: [],
     tokenIcons: {},
     l1Capital: [],
-    depositFinished: false,
+    depositFinished: true,
+    depositSucceed: false,
     hash: '',
     receipt: {},
     confirmationNumber: 0
@@ -75,6 +76,11 @@ export function wallet (state = {
                 ...state,
                 message: action.message,
             }
+        case DEPOSIT:
+            return {
+                ...state,
+                depositFinished: false
+            }
         case DEPOSIT_HASH:
             return {
                 ...state,
@@ -97,6 +103,16 @@ export function wallet (state = {
                 ...state,
                 depositFinished: true,
                 depositSucceed: false,
+                message: action.error
+            }
+        case GET_TRANSACTION_RECORDS_SUCCEED:
+            return {
+                ...state,
+                transactionRecords: action.data.length > 0 ? action.data.reverse() : action.data
+            }
+        case GET_TRANSACTION_RECORDS_FAILED:
+            return {
+                ...state,
                 message: action.error
             }
         default:

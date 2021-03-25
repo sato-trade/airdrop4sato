@@ -631,10 +631,12 @@
                         "name": "Approval",
                         "type": "event"
                     }
-                ]
+                ],
+                "decimals": 18
             },
             "GPB": {
-                "address": "0x4163c85558C2add63372A62E15485226Af6C4ECe"
+                "address": "0x4163c85558C2add63372A62E15485226Af6C4ECe",
+                "decimals": 18
             }
         },
         "balanceChecker": {
@@ -692,6 +694,31 @@
                         "type": "function"
                     }
                 ]
+        },
+        "transferErc20": {
+            "abi": [
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "transfer",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
+                    "type": "function"
+                }
+            ]
         }
     },
     "mainnet": {
@@ -1326,10 +1353,12 @@
                         "name": "Approval",
                         "type": "event"
                     }
-                ]
+                ],
+                "decimals": 18
             },
             "GPB": {
-                "address": "0xCCE8e2c43dD21ac700fDdffc2Dd551fA2819f66e"
+                "address": "0xCCE8e2c43dD21ac700fDdffc2Dd551fA2819f66e",
+                "decimals": 18
             }
         },
         "balanceChecker": {
@@ -1384,6 +1413,31 @@
                     ],
                     "payable": false,
                     "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+        },
+        "transferErc20": {
+            "abi": [
+                {
+                    "constant": false,
+                    "inputs": [
+                        {
+                            "name": "_to",
+                            "type": "address"
+                        },
+                        {
+                            "name": "_value",
+                            "type": "uint256"
+                        }
+                    ],
+                    "name": "transfer",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "bool"
+                        }
+                    ],
                     "type": "function"
                 }
             ]

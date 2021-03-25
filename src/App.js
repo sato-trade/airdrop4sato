@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Navbar from './components/Navbar/Navbar'
+import Navbar from './components/Navbar/Navbar';
 import {BrowserRouter as Router, Switch, Route, Link, Redirect, useLocation} from "react-router-dom";
 import Home from './components/Home/Home';
 import CollectReward from './components/CollectReward/CollectReward';
 
 import Wallet from './components/Home/Wallet';
-import Pool from './components/Pool/Pool'
-import Swap from './components/Swap/Swap'
-import Withdraw from './components/Withdraw/Withdraw'
-import Deposit from './components/Deposit/Deposit'
+import Pool from './components/Pool/Pool';
+import Swap from './components/Swap/Swap';
+import Withdraw from './components/Withdraw/Withdraw';
+import Deposit from './components/Deposit/Deposit';
+import Records from './components/Records/Records';
 import Footer from './components/Footer/Footer';
 import {useDispatch, useSelector} from "react-redux";
 import {withTranslation} from "react-i18next";
@@ -158,6 +159,11 @@ function App({t}){
                             <Deposit  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
                                    sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
                                      address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                        </Route>
+                        <Route path={`${url}/records`} >
+                            <Records  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                      sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                      address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                         </Route>
                     </>
                 )} />

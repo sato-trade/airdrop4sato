@@ -52,3 +52,4 @@ export const formDateString = (timeStamp) => {
         ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
     return dateString
 }
+

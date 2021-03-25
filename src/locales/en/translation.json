@@ -32,5 +32,13 @@
   "checkEtherscan": "去Etherscan查看",
   "depositSucceed": "成功",
   "confirmedBlock": "确认块高",
-  "depositAction": "充值"
+  "depositAction": "充值",
+  "withdrawAction": "提币",
+  "records": "资金记录",
+  "submitted": "已提交",
+  "processing": "校验中",
+  "succeed": "成功",
+  "failed": "失败",
+  "manual": "处理中",
+  "closed": "已关闭"
 }

@@ -10,7 +10,8 @@ export const walletService = {
     withdraw,
     getAllTokenStatus,
     deposit,
-    getL1Capital
+    getL1Capital,
+    getTransactionRecords
 };
 
 async function getUserCapital(token) {
@@ -84,7 +85,14 @@ async function getL1Capital(address) {
     }
 
     return await loopingCapital()
+}
 
+async function getTransactionRecords(token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(token),
+    };
+    return fetch(Url.GET_TRANSACTION_RECORDS, requestOptions).then(handleResponse);
 }
 
 

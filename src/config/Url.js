@@ -7,3 +7,5 @@ export const REMOVE_LIQUIDITY = BASE_API_URL + '/financial/liquidity-pool/liquid
 export const GET_USER_CAPITAL = BASE_API_URL + '/user/capital';
 export const WITHDRAW = BASE_API_URL + '/financial/withdraw';
 export const GET_ALL_TOKENS_STATUS = BASE_API_URL + '/financial/tokens'
+export const GET_TRANSACTION_RECORDS = BASE_API_URL + '/transaction/find?'
+

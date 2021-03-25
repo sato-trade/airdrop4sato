@@ -268,18 +268,14 @@ function Deposit({t, navBarHeight, address, chainId, network,
     },[coin, address, l1Capital])
 
     useEffect(() => {
-        if (hash.length > 0) {
+        if (hash.length > 0 && !depositFinished) {
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
                 console.log('clear pop modal')
             }
         }
-    },[hash])
-
-    // useEffect(() => {
-    //     console.log('deposit callback: ', hash, receipt, confirmationNumber)
-    // }, [hash, receipt, confirmationNumber])
+    },[hash, depositFinished])
 
 
     return (
@@ -408,7 +404,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
             >
                 <Fade in={openCallback}>
                     <div className={classes.paper}>
-                        <h2 id="server-modal-title">{t('confirming')}</h2>
+                        <h2 id="server-modal-title">{depositSucceed && depositFinished ? t('depositSucceed') : t('confirming')}</h2>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('depositAmount')}: ${depositAmount}`}</p>
