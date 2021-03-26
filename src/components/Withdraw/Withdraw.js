@@ -231,6 +231,10 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
     }
 
+    const clear = () => {
+        setWithdrawTo('')
+    }
+
     useEffect(() => {
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
@@ -296,6 +300,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
     },[hash, withdrawFinished])
 
+
 console.log('userCapitals: ', userCapitals)
 
     return (
@@ -342,7 +347,7 @@ console.log('userCapitals: ', userCapitals)
                                     },
                                     endAdornment: <InputAdornment position="end">
                                         <IconButton className={classes.fillAddress} onClick={fillAddress} position="end">{t('l1Wallet')}</IconButton>
-                                        <CancelIcon />
+                                        <CancelIcon onClick={clear} />
                                     </InputAdornment>
                                 }}
                                 onChange={(e) => handleAddressChange(e.target.value)}
