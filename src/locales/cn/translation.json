@@ -9,7 +9,7 @@
   "connect": "连接钱包",
   "walletTitle": "SwapAll 侧链钱包",
   "deposit": "充值到侧链",
-  "withdraw": "提现到Metamask",
+  "withdraw": "提币到钱包",
   "capitalTitle": "资产详情",
   "loading": "处理中",
   "loggingIn": "登陆中",
@@ -48,5 +48,10 @@
   "expectedRewardPerPerson": "预计每人发放",
   "claimed": "登记成功",
   "registerRewardFailed": "抱歉，登记失败",
-  "registerRewardFailedContent": "您当前连接的钱包不满足【2021年3月28日0:01 快照去中心化钱包 AMPL 持有数量超过 100】的奖励领取条件。\n\n"
+  "registerRewardFailedContent": "您当前连接的钱包不满足【2021年3月28日0:01 快照去中心化钱包 AMPL 持有数量超过 100】的奖励领取条件。\n\n",
+  "withdrawContent": "您可以随时将 SwapAll 侧链中的资产提现到去中心化钱包，提现地址默认为您绑定的钱包地址，您也可提现到其他人的去中心化钱包地址，请务必确认地址正确，一旦提交将无法撤回。\n\n",
+  "withdrawAddress": "提币地址",
+  "withdrawAmount": "提币金额",
+  "l2Amount": "侧链余额",
+  "l1Wallet": "我的钱包"
 }
