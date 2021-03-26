@@ -29,6 +29,7 @@ import {wallet} from "../../redux/reducers/wallet";
 import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
 import {isValidAddress} from "ethereumjs-util";
 import CancelIcon from '@material-ui/icons/Cancel';
+import {authActions} from "../../redux/actions";
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
 
@@ -218,16 +219,28 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     };
 
     const confirmWithdraw = async () => {
-        let payload = {
-            l1Address: address,
-            l2Address: address,
-            amount: withdrawAmount,
-            coin: coin,
-        }
         try {
-            dispatch(walletActions.deposit(payload))
-        } catch(err) {
-            console.log('deposit failed: ', err)
+            let msg = 'Withdraw Request'
+            const from = address
+            const _msg = Web3.utils.soliditySha3(msg);
+
+            const sign = await window.ethereum.request({
+                method: 'personal_sign',
+                params: [_msg, from],
+            })
+            let payload = {
+                data: msg,
+                sig: sign,
+                pubKeyAddress: address,
+                chainId: Web3.utils.hexToNumber(chainId),
+                networkId: Number(network),
+                coin: coin,
+                amount: withdrawAmount,
+                toAddress: withdrawTo
+            }
+            alert('withdrawing!: '+ JSON.stringify(payload))
+        } catch (err) {
+            console.error(err)
         }
     }
 
