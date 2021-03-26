@@ -1,10 +1,15 @@
 import ethIcon from '../images/smallIcons/ethIcon.png'
 import usdtIcon from '../images/smallIcons/usdtIcon.png'
 import sapIcon from '../images/smallIcons/sapIcon.png';
-
 import unknowCoinIcon from '../images/unknowCoinIcon.png';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
-
+export const FormatNumber = (number) => {
+    if (!isNaN(number)) {
+        return Intl.NumberFormat().format(number)
+    }
+}
 
 export function getIcons(coinName, map, isSmall) {
     if (Object.keys(map).length !== 0 && map[coinName] !== undefined ) {

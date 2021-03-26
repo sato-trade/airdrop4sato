@@ -33,8 +33,7 @@ function checkUser(address) {
                     dispatch(success(!res.success));
                 },
                 error => {
-                    console.log('error: ', error === 'This username has been used by another account.')
-                    if (error === 'This username has been used by another account.') {
+                    if (error.message === 'This username has been used by another account.') {
                         dispatch(success(true));
                     } else {
                         dispatch(failure(error.toString()));

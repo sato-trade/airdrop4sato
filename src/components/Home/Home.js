@@ -75,7 +75,7 @@ function Home({t, navBarHeight, address, network, chainId,
             height: 45,
             fontWeight: 600,
             opacity: 0.2
-        }
+        },
     }));
     const classes = useStyles();
     const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)

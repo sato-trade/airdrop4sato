@@ -2,9 +2,13 @@ import { walletService } from '../services/walletService';
 import {
     GET_USER_CAPITAL, GET_USER_CAPITAL_FAILED, GET_USER_CAPITAL_SUCCEED,
     WITHDRAW, WITHDRAW_FAILED, WITHDRAW_SUCCEED,
-    GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_ICONS_SUCCEED,
+    GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_STATUS_SUCCEED,
+    GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED,
-    DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT, GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED
+    DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT,
+    GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED,
+    GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
+    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
@@ -19,7 +23,9 @@ export const walletActions = {
     getAllTokenStatus,
     deposit,
     getL1Capital,
-    getTransactionRecords
+    getTransactionRecords,
+    getAmplRewards,
+    registerAmplRewards
     /**
      * raw transaction deposit into contract
      * maker transaction towards contract address through metamask transaction
@@ -132,10 +138,6 @@ function deposit(payload) {
                 dispatch(failure(error))
             });
 
-
-
-
-
     };
 
     function request(payload) { return { type: DEPOSIT, payload } }
@@ -143,23 +145,6 @@ function deposit(payload) {
     function onReceipt(receipt) { return { type: DEPOSIT_RECEIPT, receipt } }
     function success(confirmationNumber) { return { type: DEPOSIT_SUCCEED, confirmationNumber } }
     function failure(error) { return { type: DEPOSIT_FAILED, error } }
-
-
-
-    // walletService.deposit(payload)
-    //     .then(
-    //         res => {
-    //             console.log('here deposit result: ', res)
-    //             if (res) {
-    //                 dispatch(success('remove succeed'));
-    //             }
-    //         },
-    //         error => {
-    //             console.log('here deposit result: ', error)
-    //             dispatch(failure(error.toString()));
-    //             dispatch(alertActions.error(error.toString()));
-    //         }
-    //     );
 }
 
 function getAllTokenStatus(token) {
@@ -234,4 +219,51 @@ function getTransactionRecords(token) {
 
     function success(data) { return { type: GET_TRANSACTION_RECORDS_SUCCEED, data } }
     function failure(error) { return { type: GET_TRANSACTION_RECORDS_FAILED, error } }
+}
+
+function getAmplRewards(token) {
+    return dispatch => {
+        walletService.getAmplRewards(token)
+            .then(
+                res => {
+                    console.log('get ampl info succeed: ', res)
+                    dispatch(success(res.data));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    }
+
+
+    function success(data) { return { type: GET_AMPL_REWARDS_SUCCEED, data } }
+    function failure(error) { return { type: GET_AMPL_REWARDS_FAILED, error } }
+}
+
+function registerAmplRewards(token) {
+    return dispatch => {
+        dispatch(request());
+        walletService.registerAmplRewards(token)
+            .then(
+                res => {
+                    console.log('register ampl rewards succeed: ', res)
+                    dispatch(success(res.data));
+                },
+                error => {
+                    if (error.data === 'NotEligibleError') {
+                        dispatch(alreadyRegistered(error.data));
+                    }
+                    if (error.data === 'AlreadyRegisterError') {
+                        dispatch(notQualified(error.data));
+                    }
+                }
+            );
+    }
+
+    function request() { return { type: REGISTER_AMPL_REWARDS } }
+    function success(data) { return { type: REGISTER_AMPL_REWARDS_SUCCEED, data } }
+    function alreadyRegistered(message) { return { type: ALREADY_REGISTERED, message } }
+    function notQualified(message) { return { type: NOT_QUALIFIED, message } }
+
 }

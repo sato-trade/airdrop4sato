@@ -167,14 +167,16 @@ function App({t}){
                         </Route>
                     </>
                 )} />
-                <Route isLoggedIn={loggedIn} path='/pool' >
+                <Route path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
                 </Route>
-                <Route isLoggedIn={loggedIn} path='/swap' component = {Swap} >
+                <Route path='/swap' component = {Swap} >
                     <Swap navBarHeight={navBarHeight} />
                 </Route>
-                <Route isLoggedIn={!loggedIn} path='/collectReward' component={CollectReward} >
-                    <CollectReward navBarHeight={navBarHeight} />
+                <Route path='/collectReward' component={CollectReward} >
+                    <CollectReward sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                       sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                       address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
             </Switch>
             <Footer />

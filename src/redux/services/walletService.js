@@ -11,7 +11,9 @@ export const walletService = {
     getAllTokenStatus,
     deposit,
     getL1Capital,
-    getTransactionRecords
+    getTransactionRecords,
+    getAmplRewards,
+    registerAmplRewards
 };
 
 async function getUserCapital(token) {
@@ -93,6 +95,22 @@ async function getTransactionRecords(token) {
         headers: authHeader(token),
     };
     return fetch(Url.GET_TRANSACTION_RECORDS, requestOptions).then(handleResponse);
+}
+
+async function getAmplRewards(token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(token)
+    };
+    return fetch(token && token.length > 0 ? Url.GET_AMPL_REWARDS : Url.GET_AMPL_REWARDS + '/public', requestOptions).then(handleResponse);
+}
+
+async function registerAmplRewards(token) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(token),
+    };
+    return fetch(Url.REGISTER_AMPL_REWARDS, requestOptions).then(handleResponse);
 }
 
 

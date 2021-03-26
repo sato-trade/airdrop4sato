@@ -391,8 +391,11 @@ function Deposit({t, navBarHeight, address, chainId, network,
                 </CardContent>
             </Card>
             <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
                 className={classes.modal}
                 open={openCallback}
                 onClose={handleCloseCallback}

@@ -12,6 +12,8 @@ import {
     DEPOSIT_RECEIPT,
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED, GET_TRANSACTION_RECORDS_FAILED, GET_TRANSACTION_RECORDS_SUCCEED,
+    GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
+    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED
 } from '../constants';
 
 export function wallet (state = {
@@ -23,7 +25,14 @@ export function wallet (state = {
     depositSucceed: false,
     hash: '',
     receipt: {},
-    confirmationNumber: 0
+    confirmationNumber: 0,
+    amplRewardsInfo: {
+        totalRewards: 0,
+        registeredUsers: 0,
+        rewardsPerUser: 0,
+        hasClaimed: null
+    },
+    message: ''
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
@@ -114,6 +123,39 @@ export function wallet (state = {
             return {
                 ...state,
                 message: action.error
+            }
+
+        case GET_AMPL_REWARDS_SUCCEED:
+            return {
+                ...state,
+                message: '',
+                amplRewardsInfo: action.data
+            }
+        case GET_AMPL_REWARDS_FAILED:
+            return {
+                ...state,
+                amplRewardsInfo: action.data
+            }
+        case REGISTER_AMPL_REWARDS:
+            return {
+                ...state,
+                message: '',
+                loading: true
+            }
+        case REGISTER_AMPL_REWARDS_SUCCEED:
+            return {
+                ...state,
+                loading: false
+            }
+        case NOT_QUALIFIED:
+            return {
+                ...state,
+                message: action.message
+            }
+        case ALREADY_REGISTERED:
+            return {
+                ...state,
+                message: action.message
             }
         default:
             return state;
