@@ -142,10 +142,12 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
     const [withdrawTo, setWithdrawTo] = useState('')
     const [withdrawAmount, setWithdrawAmount] = useState('')
+    const [addrWarning, setAddrWarning] = React.useState('')
     const [coin, setCoin] = React.useState('SAP');
     const [capital, setCapital] = React.useState({free: 0})
     const [warning, setWarning] = React.useState('')
-    const [cantWithdraw, setCantWithdraw] = React.useState(true)
+    const [validAddress, setValidAddress] = React.useState(true)
+    const [validAmount, setValidAmount] = React.useState(true)
     const [coins, setCoins] = React.useState([])
 
 
@@ -163,7 +165,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     }
 
     const fillAddress = () => {
-        handleAmountChange(roundingDown(capital.free, 4))
+        handleAddressChange(address)
     }
 
     const handleOpenCallback = () => {
@@ -174,16 +176,31 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         setOpenCallback(false);
     };
 
+    const handleAddressChange = (addr) => {
+        setWithdrawTo( addr );
+        if (isValidAddress(addr)) {
+            setAddrWarning('')
+            setValidAddress(true)
+        } else {
+            if (addr === '') {
+                setAddrWarning('')
+            } else {
+                setAddrWarning('Invalid Address')
+            }
+            setValidAddress(false)
+        }
+    };
+
     const handleAmountChange = (amount) => {
         console.log('amount: ', amount)
         setWithdrawAmount( amount );
         if (isNumeric(amount)) {
             if ( parseFloat(amount) <= capital.free) {
                 setWarning('')
-                setCantWithdraw(false)
+                setValidAmount(true)
             } else {
                 setWarning('not enough capitals')
-                setCantWithdraw(true)
+                setValidAmount(false)
             }
         } else {
             if (amount === '') {
@@ -191,7 +208,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             } else {
                 setWarning('invalid input')
             }
-            setCantWithdraw(true)
+            setValidAmount(false)
         }
 
     };
@@ -308,7 +325,7 @@ console.log('userCapitals: ', userCapitals)
                             <TextField
                                 inputRef={inputRef}
                                 label={t('withdrawAddress')}
-                                type="number"
+                                type="text"
                                 fullWidth
                                 InputLabelProps={{
                                     shrink: true,
@@ -328,15 +345,15 @@ console.log('userCapitals: ', userCapitals)
                                         <CancelIcon />
                                     </InputAdornment>
                                 }}
-                                onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => {setWarning('')}}
+                                onChange={(e) => handleAddressChange(e.target.value)}
+                                onBlur={() => {setAddrWarning('')}}
                                 variant="standard"
-                                value={withdrawAmount}
-                                helperText={warning}
+                                value={withdrawTo}
+                                helperText={addrWarning}
                                 FormHelperTextProps={{
                                     className: classes.helperText
                                 }}
-                                error={warning !== ''}
+                                error={addrWarning !== ''}
                             />
                         </Grid>
                         <Grid item xs={8} >
@@ -419,7 +436,7 @@ console.log('userCapitals: ', userCapitals)
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmWithdraw} disabled={cantWithdraw}>
+                                        <Button style={{ width: 180 }}  className={classes.btn} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </Button> :
                                         <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
