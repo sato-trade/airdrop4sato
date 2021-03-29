@@ -9,9 +9,8 @@ export function handleResponse(response) {
                 // eslint-disable-next-line no-restricted-globals
                 location.reload();
             }
-
             const error = (data && data.message) || response.statusText;
-            return Promise.reject(error);
+            return Promise.reject(data);
         }
         return data;
     });

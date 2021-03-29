@@ -1,10 +1,15 @@
 import ethIcon from '../images/smallIcons/ethIcon.png'
 import usdtIcon from '../images/smallIcons/usdtIcon.png'
 import sapIcon from '../images/smallIcons/sapIcon.png';
-
 import unknowCoinIcon from '../images/unknowCoinIcon.png';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
-
+export const FormatNumber = (number) => {
+    if (!isNaN(number)) {
+        return Intl.NumberFormat().format(number)
+    }
+}
 
 export function getIcons(coinName, map, isSmall) {
     if (Object.keys(map).length !== 0 && map[coinName] !== undefined ) {
@@ -14,7 +19,7 @@ export function getIcons(coinName, map, isSmall) {
         } else {
             url = map[coinName].bigLogoUrl === undefined || map[coinName].bigLogoUrl === null? '' : map[coinName].bigLogoUrl
         }
-        return url === '' ? unknowCoinIcon : { uri : url }
+        return url === '' ? unknowCoinIcon : url
     } else {
         return unknowCoinIcon
     }
@@ -38,3 +43,18 @@ export function getIcons(coinName, map, isSmall) {
 export function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+export const convertTimeString = ( timeString ) => {
+    let availableTime = new Date((Date.parse(timeString)));
+    let minute = availableTime.getUTCMinutes() >= 10 ? availableTime.getUTCMinutes() : '0' + availableTime.getUTCMinutes().toString()
+    return availableTime.getUTCFullYear() + '-' + (availableTime.getUTCMonth() + 1) + '-' + availableTime.getUTCDate() + ' ' +
+        ('0' + availableTime.getUTCHours()).slice(-2) + ':' + minute;
+}
+
+export const formDateString = (timeStamp) => {
+    let date = new Date(timeStamp);
+    let dateString = date.getUTCFullYear() + '-' + (date.getUTCMonth() + 1) + '-' + date.getUTCDate() + ' ' +
+        ('0' + date.getUTCHours()).slice(-2) + ':' + ('0' + date.getUTCMinutes()).slice(-2);
+    return dateString
+}
+

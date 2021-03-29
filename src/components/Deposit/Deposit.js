@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import {
-    Typography, Grid, Button, Card, CardContent, Avatar, TextField, InputAdornment, IconButton, MenuItem, FormHelperText
+    Typography,
+    Grid,
+    Button,
+    Card,
+    CardContent,
+    Avatar,
+    TextField,
+    InputAdornment,
+    IconButton,
+    MenuItem,
+    FormHelperText,
+    Backdrop, Fade, Modal
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
@@ -11,7 +22,7 @@ import CustomTextField from '../CommonElements/CustomTextField'
 import { walletActions } from '../../redux/actions/walletActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { roundingDown } from '../../utils/RoundingDown'
-import { getIcons } from "../../utils/Common";
+import { getIcons, formDateString } from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
 import { isNumeric } from "../../utils/Common";
@@ -21,6 +32,7 @@ import { isValidAddress } from "ethereumjs-util";
 import CustomDropBox from '../CommonElements/CustomDropBox';
 import CustomButton from '../CommonElements/CustomButton';
 const Web3 = require("web3");
+let web3 = new Web3(window.ethereum)
 
 function Deposit({ t, navBarHeight, address, chainId, network,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
@@ -111,38 +123,66 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         },
         helperText: {
             color: '#ff3434'
-        }
+        },
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // width: width * 0.5,
+            // height: height * 0.5
+        },
+        paper: {
+            backgroundColor: 'white',
+            border: 'transparent',
+            // boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+            borderRadius: 20,
+            textAlign: 'center'
+        },
     }));
     const classes = useStyles();
 
     const [depositAmount, setDepositAmount] = useState('')
     const [coin, setCoin] = React.useState('SAP');
-    const [capital, setCapital] = React.useState({ free: 0 })
-    const [warning, setWarning] = React.useState(' ')
-    const [canDeposit, setCanDeposit] = React.useState(false)
+    const [capital, setCapital] = React.useState({free: 0})
+    const [warning, setWarning] = React.useState('')
+    const [cantDeposit, setCantDeposit] = React.useState(true)
     const [coins, setCoins] = React.useState([])
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { userCapitals, tokenList } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, message, depositHash, depositReceipt } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
+
+    const [openCallback, setOpenCallback] = useState(false)
+    const [time, setTime] = useState('')
+
+
 
     const allIn = () => {
         handleAmountChange(roundingDown(capital.free, 4))
     }
 
+    const handleOpenCallback = () => {
+        setOpenCallback(true);
+    };
+
+    const handleCloseCallback = () => {
+        setOpenCallback(false);
+    };
+
     const handleAmountChange = (amount) => {
         console.log('amount: ', amount)
         setDepositAmount(amount);
         if (isNumeric(amount)) {
-            if (parseFloat(amount) <= capital) {
+            if ( parseFloat(amount) <= capital.free) {
                 setWarning('')
-                setCanDeposit(true)
+                setCantDeposit(false)
             } else {
                 setWarning('not enough capitals')
-                setCanDeposit(false)
+                setCantDeposit(true)
             }
         } else {
             if (amount === '') {
@@ -150,7 +190,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             } else {
                 setWarning('invalid input')
             }
-            setCanDeposit(false)
+            setCantDeposit(true)
         }
 
     };
@@ -168,21 +208,32 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         }
         try {
             dispatch(walletActions.deposit(payload))
-
-        } catch (err) {
+        } catch(err) {
             console.log('deposit failed: ', err)
         }
     }
 
     useEffect(() => {
         if (loggedIn) {
-            dispatch(walletActions.getUserCapital(token))
+            // dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
+            dispatch(walletActions.getL1Capital(address))
         }
-        return () => {
+        return() => {
             console.log('clear initialization')
         }
     }, [])
+
+    useEffect(() => {
+        if (loggedIn) {
+            // dispatch(walletActions.getUserCapital(token))
+            dispatch(walletActions.getAllTokenStatus(token))
+            dispatch(walletActions.getL1Capital(address))
+        }
+        return() => {
+            console.log('clear login')
+        }
+    }, [loggedIn, address])
 
     useEffect(() => {
         let _coins = []
@@ -204,7 +255,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
 
     useEffect(() => {
-        let _capital = userCapitals.find(item => item.token === coin)
+        let _capital = l1Capital.find(item => item.token === coin)
         if (_capital === undefined) {
             _capital = {
                 free: 0,
@@ -216,7 +267,18 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             console.log('clear capital check')
         }
 
-    }, [coin])
+    },[coin, address, l1Capital])
+
+    useEffect(() => {
+        if (depositHash.length > 0 && !depositFinished) {
+            setTime(formDateString(new Date().getTime()))
+            handleOpenCallback()
+            return () => {
+                console.log('clear pop modal')
+            }
+        }
+    },[depositHash, depositFinished])
+
 
     return (
         <div className={classes.root}>
@@ -344,7 +406,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         {/* <Grid item xs={6} >
                             <TextField
                                 select
-                                label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
+                                label={`${t('availableCapital')} ${loggedIn ? roundingDown(capital.free, 4) : '--'} ${capital.token}`}
                                 InputLabelProps={{
                                     shrink: true,
                                     style: {
@@ -367,8 +429,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
-                                            </Grid>
+                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />                            </Grid>
                                             <Grid item xs={6} >
                                                 {option.label}
                                             </Grid>
@@ -388,12 +449,12 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <Button style={{ width: 180 }} className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={false}>
-                                            {t('deposit')}
-                                        </Button> :
-                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
-                                            {t('unlock')}
-                                        </Button> : null
+                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
+                                        {t('deposit')}
+                                    </Button> :
+                                    <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                        {t('unlock')}
+                                    </Button> : null
                             }
                         </Grid>
 
@@ -402,9 +463,60 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {button1}
                         </CustomButton> */}
                     </Grid>
-                </div>
-            </div>
-        </div >
+                </CardContent>
+            </Card>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openCallback}
+                onClose={handleCloseCallback}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openCallback}>
+                    <div className={classes.paper}>
+                        <h2 id="server-modal-title">{depositSucceed && depositFinished ? t('depositSucceed') : t('confirming')}</h2>
+                        <Grid container spacing={2} >
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('depositAmount')}: ${depositAmount}`}</p>
+
+                            </Grid>
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('time')}: ${time}`}</p>
+                            </Grid>
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
+                            </Grid>
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('status')}: ${depositFinished && depositSucceed ?  t('depositSucceed') : t('loading')}`}</p>
+                            </Grid>
+                            {
+                                Object.keys(depositReceipt).length > 0 ?
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${depositReceipt.blockNumber}`}</p>
+                                    </Grid> : null
+
+                            }
+                            {
+                                depositHash.length > 1 ?
+                                    <Grid item xs={12} >
+                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }}  className={classes.btn} >
+                                            {t('checkEtherscan')}
+                                        </Button>
+                                    </Grid> : null
+                            }
+                        </Grid>
+                    </div>
+                </Fade>
+            </Modal>
+        </div>
     );
 }
 

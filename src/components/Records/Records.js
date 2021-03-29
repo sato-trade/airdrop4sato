@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import { Typography, Grid, Button, Card, CardContent,
-    List, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemSecondaryAction
+import { useLocation, Link, Redirect } from 'react-router-dom';
+import {
+    Typography,
+    Grid,
+    Button,
+    Card,
+    CardContent,
+    Modal,
+    List,
+    ListItem,
+    ListItemAvatar,
+    Avatar, ListItemText, ListItemSecondaryAction
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
-import useWindowDimensions from '../../utils/WindowDimensions'
-
+import MetaMaskOnboarding from '@metamask/onboarding'
+import { isValidAddress } from 'ethereumjs-util'
 import { walletActions } from '../../redux/actions/walletActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { roundingDown } from '../../utils/RoundingDown'
-import { getIcons } from "../../utils/Common";
+import useWindowDimensions from '../../utils/WindowDimensions'
+import { getIcons, convertTimeString } from "../../utils/Common";
+import {roundingDown} from "../../utils/RoundingDown";
 import {history} from "../../utils/History";
 import backArrow from "../../images/backArrow.png";
 
-function Wallet({t, navBarHeight}) {
+const Web3 = require("web3");
+const { isMetaMaskInstalled } = MetaMaskOnboarding
+
+function Records({t, navBarHeight}){
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -33,7 +46,8 @@ function Wallet({t, navBarHeight}) {
             display: 'inline-flex',
             marginTop: 100,
             paddingTop: 30,
-            paddingBottom: 30
+            paddingBottom: 30,
+
         },
         walletContent: {
             width: 300,
@@ -70,65 +84,80 @@ function Wallet({t, navBarHeight}) {
             width: '100%',
             maxWidth: 360,
             backgroundColor: 'transparent',
+            maxHeight: 400,
+            overflow: 'scroll',
         },
-        recordWrapper: {
-            backgroundColor: 'transparent',
-            color: 'white',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }
+        backBtn: {
+            float: 'left'
+        },
+        backArrow: {
+            width: 20,
+            height: 20
+        },
     }));
     const classes = useStyles();
+    const dispatch = useDispatch()
+    const location = useLocation();
 
-    const { token, loggedIn } = useSelector(state => state.auth)
-    const { userCapitals, tokenIcons } = useSelector(state => state.wallet)
-    const dispatch = useDispatch();
+    const { token, loggedIn, registered } = useSelector(state => state.auth)
+    const { tokenIcons, transactionRecords } = useSelector(state => state.wallet)
+
+    const transactionType = {
+        1: { name: t('stacks.deposit'), sign: '+' },
+        2: { name: t('stacks.withdraw'), sign: '-' },
+        3: { name: t('financials.add'), sign: '-' },
+        4: { name: t('financials.remove'), sign: '+' },
+        5: {
+            name: {
+                From: t('tabs.swap'),
+                To: t('swap.swapReward')
+            }, sign1: '+', sign2: '-'
+        },
+        6: { name: t('transactionHistory.collectReward'), sign: '+' }
+    }
+    const status = {
+        0: t('submitted'),
+        1: t('submitted'),
+        2: t('processing'),
+        3: t('succeed'),
+        4: t('failed')
+    }
+    const depositStatus = {
+        0: t('submitted'),
+        1: t('submitted'),
+        2: t('closed'),
+        3: t('succeed'),
+        4: t('failed')
+    }
+    const color = {
+        0: '#ffd700',
+        1: '#ffd700',
+        2: '#76a26f',
+        3: '#0f9d58',
+        4: '#ff0040',
+        5: '#3460B7',
+        6: '#0f9d58',
+    }
 
     useEffect(() => {
         if (loggedIn) {
-            dispatch(walletActions.getUserCapital(token))
-            dispatch(walletActions.getAllTokenStatus(token))
+            dispatch(walletActions.getTransactionRecords(token))
         }
+
         return() => {
             console.log('clear initialization')
         }
     }, [])
 
-    return (
+    return(
         <div className={classes.root}>
             <Card className={classes.walletBox}>
                 <CardContent className={classes.walletContent}>
-                    <Grid container spacing={2} >
-
-                        <Grid item xs={8} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('walletTitle')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4} >
-                            <Link to='/wallet/records' >
-                                <Button className={classes.recordWrapper} >
-                                    {t('records')}
-                                </Button>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Link to='/wallet/deposit'>
-                                <Button style={{ width: 100 }}  className={classes.btn} disabled={!loggedIn}>
-                                    {t('deposit')}
-                                </Button>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Link to='/wallet/withdraw'>
-                                <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn}>
-                                    {t('withdraw')}
-                                </Button>
-                            </Link>
-                        </Grid>
-                    </Grid>
-                    <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
+                    <Button className={classes.backBtn} onClick={() => {
+                        history.back()
+                    }} >
+                        <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
+                    </Button>
                     <Grid container spacing={2} >
                         <Grid item xs={12} >
                             <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
@@ -137,20 +166,19 @@ function Wallet({t, navBarHeight}) {
                         </Grid>
                         <Grid item xs={12} >
                             <div className={classes.wrapper}>
-                                {userCapitals === undefined || userCapitals.length <= 0 ?
+                                {transactionRecords === undefined || transactionRecords.length <= 0 ?
                                     <Typography style={{ fontSize: 13 }}>{t('noCapitals')}</Typography> :
                                     <List className={classes.capitalList}>
                                         {
-                                            userCapitals.map(item => (
+                                            transactionRecords.map(item => (
                                                 <ListItem key={item.id} button>
-                                                    <ListItemAvatar>
-                                                        <Avatar alt="Travis Howard" src={getIcons(item.token, tokenIcons, true)} />
-                                                    </ListItemAvatar>
-                                                    <ListItemText primary={item.token} />
+                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={item.type === 1 ? `${t('depositAction')} ${item.token}`
+                                                        : `t('withdrawAction') ${item.token} `} secondary={convertTimeString(item.createdAt)} />
+                                                    <ListItemText style={{ color: color[item.status] }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
+                                                    <ListItemText>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</ListItemText>
                                                     <ListItemSecondaryAction>
                                                         <Typography>{roundingDown(item.free, 4)}</Typography>
                                                     </ListItemSecondaryAction>
-
                                                 </ListItem>
                                             ))
                                         }
@@ -162,7 +190,7 @@ function Wallet({t, navBarHeight}) {
                 </CardContent>
             </Card>
         </div>
-    );
+    )
 }
 
-export default withTranslation()(Wallet);
+export default withTranslation()(Records);

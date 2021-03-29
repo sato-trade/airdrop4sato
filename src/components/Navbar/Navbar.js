@@ -162,7 +162,6 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     }
 
     useEffect(() => {
-        console.log('updating: ', addr, chainId, network)
         if (startWatch) {
             dispatch(authActions.logOut())
         }
