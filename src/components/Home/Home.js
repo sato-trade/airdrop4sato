@@ -18,9 +18,9 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'
     : undefined
 
-function Home({t, navBarHeight, address, network, chainId,
-                  sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-                  sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+function Home({ t, navBarHeight, address, network, chainId,
+    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
 }) {
 
 
@@ -35,7 +35,7 @@ function Home({t, navBarHeight, address, network, chainId,
             textAlign: 'center'
         },
         walletBox: {
-            width: 441,
+            maxWidth: 441,
             borderRadius: 24,
             backgroundColor: '#101B66',
             justifyContent: 'center',
@@ -52,6 +52,23 @@ function Home({t, navBarHeight, address, network, chainId,
             color: 'white',
             alignItems: 'flex-start',
             display: 'flex'
+        },
+        textLarge: {
+            color: 'white',
+            fontSize: 24,
+            fontWeight: '600'
+        },
+
+        textMid: {
+            color: 'white',
+            fontSize: 20,
+            fontWeight: '600'
+        },
+
+        textSmall: {
+            color: 'white',
+            fontSize: 16,
+            fontWeight: '600'
         },
         result: {
             fontSize: 10,
@@ -86,44 +103,53 @@ function Home({t, navBarHeight, address, network, chainId,
         <div className={classes.root}>
             {
                 loggedIn ? <Redirect to='/wallet' /> :
-                    <Card className={classes.walletBox}>
-                        <CardContent className={classes.walletContent}>
+                    <div className='cards__container'>
+                        <div className='cards__wrapper'>
+
+                            <div className='cards__title__wrapper'>
+                                <Typography className={classes.textLarge} gutterBottom>
+                                    {t('walletTitle')}
+
+                                </Typography>
+                                <Link to='/'>
+                                    <Button className={classes.textSmall} color="textSecondary" gutterBottom>
+                                        资金记录
+                                    </Button>
+                                </Link>
+                            </div>
+
+                            <div className='cards__buttons__wrapper'>
+                                <Link to='/wallet/deposit' style={{ textDecoration: 'none', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Button style={{ backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }}>
+                                        {t('deposit')}
+                                    </Button>
+                                </Link>
+                                <Link to='/wallet/withdraw' style={{ textDecoration: 'none', alignItems: 'center', justifyContent: 'center', marginLeft: 16 }}>
+                                    <Button style={{ backgroundColor: '#192786', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#8FB9E1' }}>
+                                        {t('withdraw')}
+                                    </Button>
+                                </Link>
+                            </div>
+
+                            <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
+                            <div className='cards__title__wrapper'>
+                                <Typography className={classes.textMid} color="textSecondary" gutterBottom>
+                                    {t('capitalTitle')}
+                                </Typography>
+                            </div>
                             <Grid container spacing={2} >
                                 <Grid item xs={12} >
-                                    <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                        {t('walletTitle')}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={4}>
-                                    <Link to='/wallet/deposit'>
-                                        <Button style={{ width: 100 }}  className={classes.btn}>
-                                            {t('deposit')}
-                                        </Button>
-                                    </Link>
-                                </Grid>
-                                <Grid item xs={8}>
-                                    <Link to='/wallet/withdraw'>
-                                        <Button style={{ width: 180 }}  className={classes.btn}>
-                                            {t('withdraw')}
-                                        </Button>
-                                    </Link>
-                                </Grid>
-                            </Grid>
-                            <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
-                            <Grid container spacing={2} >
-                                <Grid item xs={12} >
-                                    <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                        {t('capitalTitle')}
-                                    </Typography>
+
                                 </Grid>
                                 <Grid item xs={12} >
                                     <div className={classes.wrapper}>
                                         {
                                             address.length < 42 || !isValidAddress(address) ?
-                                                <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                                                >
+                                                <Button style={{ backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}>
                                                     {button1}
-                                                </Button> : null
+                                                </Button>
+                                                :
+                                                null
                                         }
                                         {
                                             address.length === 42 && isValidAddress(address) ?
@@ -134,8 +160,8 @@ function Home({t, navBarHeight, address, network, chainId,
                                     </div>
                                 </Grid>
                             </Grid>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
             }
         </div>
     );
