@@ -6,7 +6,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
 import useWindowDimensions from '../../utils/WindowDimensions'
-
+import './Deposit.css';
+import CustomTextField from '../CommonElements/CustomTextField'
 import { walletActions } from '../../redux/actions/walletActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { roundingDown } from '../../utils/RoundingDown'
@@ -14,15 +15,17 @@ import { getIcons } from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
 import { isNumeric } from "../../utils/Common";
-import {wallet} from "../../redux/reducers/wallet";
+import { wallet } from "../../redux/reducers/wallet";
 import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
-import {isValidAddress} from "ethereumjs-util";
+import { isValidAddress } from "ethereumjs-util";
+import CustomDropBox from '../CommonElements/CustomDropBox';
+import CustomButton from '../CommonElements/CustomButton';
 const Web3 = require("web3");
 
-function Deposit({t, navBarHeight, address, chainId, network,
-                     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-                     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
-                 }) {
+function Deposit({ t, navBarHeight, address, chainId, network,
+    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+}) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -65,10 +68,10 @@ function Deposit({t, navBarHeight, address, chainId, network,
             backgroundColor: '#83ACF4',
             color: '#010846',
             borderColor: 'transparent',
-            borderRadius: 25,
-            height: 45,
+            borderRadius: 36,
+            height: 72,
             fontWeight: 600,
-            minWidth: 100
+            minWidth: "100%"
         },
         btn_disabled: {
             backgroundColor: '#83ACF4',
@@ -89,7 +92,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
         },
         backArrow: {
             width: 20,
-            height: 20
+            height: 20,
         },
         contentWrapper: {
             fontSize: 15,
@@ -100,7 +103,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             width: '100%',
-            color: 'red'
+            // color: 'red'
         },
         allIn: {
             color: 'white',
@@ -114,8 +117,8 @@ function Deposit({t, navBarHeight, address, chainId, network,
 
     const [depositAmount, setDepositAmount] = useState('')
     const [coin, setCoin] = React.useState('SAP');
-    const [capital, setCapital] = React.useState({free: 0})
-    const [warning, setWarning] = React.useState('')
+    const [capital, setCapital] = React.useState({ free: 0 })
+    const [warning, setWarning] = React.useState(' ')
     const [canDeposit, setCanDeposit] = React.useState(false)
     const [coins, setCoins] = React.useState([])
 
@@ -132,9 +135,9 @@ function Deposit({t, navBarHeight, address, chainId, network,
 
     const handleAmountChange = (amount) => {
         console.log('amount: ', amount)
-        setDepositAmount( amount );
+        setDepositAmount(amount);
         if (isNumeric(amount)) {
-            if ( parseFloat(amount) <= capital) {
+            if (parseFloat(amount) <= capital) {
                 setWarning('')
                 setCanDeposit(true)
             } else {
@@ -166,7 +169,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
         try {
             dispatch(walletActions.deposit(payload))
 
-        } catch(err) {
+        } catch (err) {
             console.log('deposit failed: ', err)
         }
     }
@@ -176,14 +179,14 @@ function Deposit({t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
         }
-        return() => {
+        return () => {
             console.log('clear initialization')
         }
     }, [])
 
     useEffect(() => {
         let _coins = []
-        for (let i = 0; i < tokenList.length; i ++) {
+        for (let i = 0; i < tokenList.length; i++) {
             if (tokenList[i].depositIsOn) {
                 _coins.push({
                     label: tokenList[i].token,
@@ -193,7 +196,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
         }
 
         setCoins(_coins)
-        return() => {
+        return () => {
             console.log('clear set coins')
         }
 
@@ -209,36 +212,104 @@ function Deposit({t, navBarHeight, address, chainId, network,
             }
         }
         setCapital(_capital)
-        return() => {
+        return () => {
             console.log('clear capital check')
         }
 
-    },[coin])
+    }, [coin])
 
     return (
         <div className={classes.root}>
-            <Card className={classes.depositBox}>
-                <CardContent className={classes.depositContent}>
-                    <Button className={classes.backBtn} onClick={() => {
+            <div className="deposit__container">
+                <div className="deposit__wrapper">
+                    <Button style={{ left: -24 }} onClick={() => {
                         history.back()
                     }} >
                         <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
                     </Button>
-                    <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('deposit')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <Typography className={classes.contentWrapper} color="textSecondary" gutterBottom>
-                                {t('depositContent')}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
-                    <Grid container spacing={2} className={classes.fieldWrapper }>
-                        <Grid item xs={6} >
+                    <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                        {/* <Grid item xs={12} > */}
+                        <Typography style={{ fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
+                            {t('deposit')}
+                        </Typography>
+                        {/* </Grid> */}
+                        {/* <Grid item xs={12} > */}
+                        <Typography style={{ fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
+                            {t('depositContent')}
+                        </Typography>
+                        {/* </Grid> */}
+                    </div>
+                    <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
+
+                    {/* 
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                        <CustomTextField label="充值金额" helperText="ccc"
+                            style={{ width: '70%' }}
+                        >
+
+                        </CustomTextField>
+
+                        <TextField
+                            id="outlined-basic"
+                            variant="filled"
+                            select
+                            style={{ width: '25%', height: '70%', backgroundColor: '#1DF0A9', borderRadius: 24 }}
+                            label="选择币种"
+                            InputProps={{ disableUnderline: true }}
+                            root={{ backgroundColor: 'blue' }}
+                        >
+
+                        </TextField>
+
+
+
+                    </div> */}
+                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                        <CustomTextField
+                            label={t('depositAmount')}
+
+                            helperText="ccc"
+                            style={{ width: '70%' }}
+                            inputRef={inputRef}
+                            onChange={(e) => handleAmountChange(e.target.value)}
+                            value={depositAmount}
+                            helperText={warning}
+                            error={warning !== ''}
+
+                        >
+
+                        </CustomTextField>
+
+                        <CustomDropBox style={{ width: '25%' }}
+                            // label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
+                            label={'选择币种'}
+                            value={coin}
+                            onChange={handleCoinChange}
+
+                        >
+                            {coins.map((option) => (
+                                <MenuItem key={option.value} value={option.value}>
+                                    <Grid container >
+                                        <Grid item xs={6} >
+                                            <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
+                                        </Grid>
+                                        <Grid item xs={6} >
+                                            {option.label}
+                                        </Grid>
+                                    </Grid>
+                                </MenuItem>
+                            ))}
+
+                        </CustomDropBox>
+
+                    </div>
+
+
+
+                    <Grid container spacing={2} className={classes.fieldWrapper}>
+                        {/* <Grid item xs={6} >
                             <TextField
                                 inputRef={inputRef}
                                 label={t('depositAmount')}
@@ -259,7 +330,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                     endAdornment: <InputAdornment position="end"><IconButton className={classes.allIn} onClick={allIn} position="end">{t('all')}</IconButton></InputAdornment>
                                 }}
                                 onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => {setWarning('')}}
+                                onBlur={() => { setWarning('') }}
                                 variant="standard"
                                 value={depositAmount}
                                 helperText={warning}
@@ -268,8 +339,9 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                 }}
                                 error={warning !== ''}
                             />
-                        </Grid>
-                        <Grid item xs={6} >
+                        </Grid> */}
+
+                        {/* <Grid item xs={6} >
                             <TextField
                                 select
                                 label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
@@ -295,7 +367,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
+                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
                                             </Grid>
                                             <Grid item xs={6} >
                                                 {option.label}
@@ -304,30 +376,35 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                     </MenuItem>
                                 ))}
                             </TextField>
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={12}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                    <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                     >
                                         {button1}
-                                    </Button> : null
+                                    </CustomButton> : null
                             }
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={false}>
-                                        {t('deposit')}
-                                    </Button> :
-                                    <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
-                                        {t('unlock')}
-                                    </Button> : null
+                                        <Button style={{ width: 180 }} className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={false}>
+                                            {t('deposit')}
+                                        </Button> :
+                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                            {t('unlock')}
+                                        </Button> : null
                             }
                         </Grid>
+
+                        {/* <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                        >
+                            {button1}
+                        </CustomButton> */}
                     </Grid>
-                </CardContent>
-            </Card>
-        </div>
+                </div>
+            </div>
+        </div >
     );
 }
 
