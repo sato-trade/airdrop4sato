@@ -34,10 +34,13 @@ export function wallet (state = {
         hasClaimed: null
     },
     message: '',
-    withdrawHash: '',
-    withdrawReceipt: '',
-    withdrawConfirmationNumber: 0,
-    withdrawFee: 999
+    withdrawFinished: true,
+    withdrawSucceed: false,
+    withdrawMsg: '',
+    withdrawFeeObj: {
+        amount: 0,
+        base: ''
+    },
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
@@ -89,6 +92,25 @@ export function wallet (state = {
             return {
                 ...state,
                 message: action.message,
+            }
+        case WITHDRAW:
+            return {
+                ...state,
+                withdrawFinished: false
+            }
+        case WITHDRAW_SUCCEED:
+            return {
+                ...state,
+                withdrawFinished: true,
+                withdrawSucceed: true,
+                withdrawMsg: action.msg
+            }
+        case WITHDRAW_FAILED:
+            return {
+                ...state,
+                withdrawFinished: true,
+                withdrawSucceed: false,
+                withdrawMsg: action.error
             }
         case DEPOSIT:
             return {
@@ -162,12 +184,12 @@ export function wallet (state = {
                 ...state,
                 message: action.message
             }
-        case GET_WITHDRAW_FEE_FAILED:
+        case GET_WITHDRAW_FEE_SUCCESS:
             return {
                 ...state,
-                withdrawFee: action.data
+                withdrawFeeObj: action.data
             }
-        case GET_WITHDRAW_FEE_SUCCESS:
+        case GET_WITHDRAW_FEE_FAILED:
             return {
                 ...state,
                 message: action.message
