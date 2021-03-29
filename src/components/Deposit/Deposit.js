@@ -148,7 +148,7 @@ function Deposit({t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, message, hash, receipt, confirmationNumber } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, message, depositHash, depositReceipt } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
@@ -268,14 +268,14 @@ function Deposit({t, navBarHeight, address, chainId, network,
     },[coin, address, l1Capital])
 
     useEffect(() => {
-        if (hash.length > 0 && !depositFinished) {
+        if (depositHash.length > 0 && !depositFinished) {
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
                 console.log('clear pop modal')
             }
         }
-    },[hash, depositFinished])
+    },[depositHash, depositFinished])
 
 
     return (
@@ -423,16 +423,16 @@ function Deposit({t, navBarHeight, address, chainId, network,
                                 <p id="server-modal-description">{`${t('status')}: ${depositFinished && depositSucceed ?  t('depositSucceed') : t('loading')}`}</p>
                             </Grid>
                             {
-                                Object.keys(receipt).length > 0 ?
+                                Object.keys(depositReceipt).length > 0 ?
                                     <Grid item xs={12} >
-                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${receipt.blockNumber}`}</p>
+                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${depositReceipt.blockNumber}`}</p>
                                     </Grid> : null
 
                             }
                             {
-                                hash.length > 1 ?
+                                depositHash.length > 1 ?
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }}  className={classes.btn} >
+                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }}  className={classes.btn} >
                                             {t('checkEtherscan')}
                                         </Button>
                                     </Grid> : null

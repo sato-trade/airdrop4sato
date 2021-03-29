@@ -118,7 +118,8 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         },
         fillAddress: {
             color: 'white',
-            fontSize: 15
+            fontSize: 15,
+            backgroundColor: '#101B66'
         },
         helperText: {
             color: '#ff3434'
@@ -153,7 +154,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, message, hash, receipt, confirmationNumber } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, message, withdrawHash, withdrawReceipt, withdrawConfirmationNumber, withdrawFee } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
@@ -216,6 +217,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
     const handleCoinChange = (event) => {
         setCoin(event.target.value);
+        handleAmountChange('')
     };
 
     const confirmWithdraw = async () => {
@@ -248,6 +250,23 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         setWithdrawTo('')
     }
 
+    const handleFinish = (changedAmount) => {
+        let tokenInfo = tokenList.find(item => item.token === coin)
+        if (tokenInfo === undefined) {
+            tokenInfo = {
+                contractWithdrawIsOn: false,
+                contract_withdraw_fee_key: '',
+                token: coin
+            }
+        }
+        setAddrWarning('')
+        if (changedAmount) {
+            dispatch(walletActions.getFee({token, amount: withdrawAmount, action: tokenList.token + '_CONTRACT_WITHDRAW_FEE'}))
+        }
+        console.log('here: ', )
+
+    }
+
     useEffect(() => {
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
@@ -272,7 +291,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     useEffect(() => {
         let _coins = []
         for (let i = 0; i < tokenList.length; i ++) {
-            if (tokenList[i].withdrawIsOn) {
+            if (tokenList[i].contractWithdrawIsOn) {
                 _coins.push({
                     label: tokenList[i].token,
                     value: tokenList[i].token
@@ -304,17 +323,17 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     },[coin, address, userCapitals])
 
     useEffect(() => {
-        if (hash.length > 0 && !withdrawFinished) {
+        if (withdrawHash.length > 0 && !withdrawFinished) {
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
                 console.log('clear pop modal')
             }
         }
-    },[hash, withdrawFinished])
+    },[withdrawHash, withdrawFinished])
 
 
-console.log('userCapitals: ', userCapitals)
+console.log('tokenStatus: ', tokenList)
 
     return (
         <div className={classes.root}>
@@ -364,7 +383,7 @@ console.log('userCapitals: ', userCapitals)
                                     </InputAdornment>
                                 }}
                                 onChange={(e) => handleAddressChange(e.target.value)}
-                                onBlur={() => {setAddrWarning('')}}
+                                onBlur={() => handleFinish(false)}
                                 variant="standard"
                                 value={withdrawTo}
                                 helperText={addrWarning}
@@ -396,7 +415,7 @@ console.log('userCapitals: ', userCapitals)
                                     endAdornment: <InputAdornment position="end"><IconButton className={classes.fillAddress} onClick={allIn} position="end">{t('all')}</IconButton></InputAdornment>
                                 }}
                                 onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => {setWarning('')}}
+                                onBlur={() => handleFinish(true)}
                                 variant="standard"
                                 value={withdrawAmount}
                                 helperText={warning}
@@ -497,17 +516,23 @@ console.log('userCapitals: ', userCapitals)
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
                             </Grid>
+                            <Grid item xs={6} >
+                                <p id="server-modal-description">{`${t('fee')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
+                            </Grid>
+                            <Grid item xs={6} >
+                                <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
+                            </Grid>
                             {
-                                Object.keys(receipt).length > 0 ?
+                                Object.keys(withdrawReceipt).length > 0 ?
                                     <Grid item xs={12} >
-                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${receipt.blockNumber}`}</p>
+                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${withdrawReceipt.blockNumber}`}</p>
                                     </Grid> : null
 
                             }
                             {
-                                hash.length > 1 ?
+                                withdrawHash.length > 1 ?
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }}  className={classes.btn} >
+                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + withdrawHash} style={{ width: 180 }}  className={classes.btn} >
                                             {t('checkEtherscan')}
                                         </Button>
                                     </Grid> : null

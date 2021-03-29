@@ -13,7 +13,8 @@ export const walletService = {
     getL1Capital,
     getTransactionRecords,
     getAmplRewards,
-    registerAmplRewards
+    registerAmplRewards,
+    getFee
 };
 
 async function getUserCapital(token) {
@@ -113,4 +114,11 @@ async function registerAmplRewards(token) {
     return fetch(Url.REGISTER_AMPL_REWARDS, requestOptions).then(handleResponse);
 }
 
+async function getFee(payload) {
+    const requestOptions = {
+        method: 'GET',
+        headers: authHeader(payload.token),
+    };
+    return fetch(Url.GET_FEE + payload.action + '/' + payload.amount, requestOptions).then(handleResponse);
+}
 

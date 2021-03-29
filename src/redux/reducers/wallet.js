@@ -13,7 +13,8 @@ import {
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED, GET_TRANSACTION_RECORDS_FAILED, GET_TRANSACTION_RECORDS_SUCCEED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
-    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED
+    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED,
+    GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED
 } from '../constants';
 
 export function wallet (state = {
@@ -23,16 +24,20 @@ export function wallet (state = {
     l1Capital: [],
     depositFinished: true,
     depositSucceed: false,
-    hash: '',
-    receipt: {},
-    confirmationNumber: 0,
+    depositHash: '',
+    depositReceipt: {},
+    depositConfirmationNumber: 0,
     amplRewardsInfo: {
         totalRewards: 0,
         registeredUsers: 0,
         rewardsPerUser: 0,
         hasClaimed: null
     },
-    message: ''
+    message: '',
+    withdrawHash: '',
+    withdrawReceipt: '',
+    withdrawConfirmationNumber: 0,
+    withdrawFee: 999
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
@@ -93,19 +98,19 @@ export function wallet (state = {
         case DEPOSIT_HASH:
             return {
                 ...state,
-                hash: action.hash
+                depositHash: action.hash
             }
         case DEPOSIT_RECEIPT:
             return {
                 ...state,
-                receipt: action.receipt
+                depositReceipt: action.receipt
             }
         case DEPOSIT_SUCCEED:
             return {
                 ...state,
                 depositFinished: true,
                 depositSucceed: true,
-                confirmationNumber: action.confirmationNumber
+                depositConfirmationNumber: action.confirmationNumber
             }
         case DEPOSIT_FAILED:
             return {
@@ -153,6 +158,16 @@ export function wallet (state = {
                 message: action.message
             }
         case ALREADY_REGISTERED:
+            return {
+                ...state,
+                message: action.message
+            }
+        case GET_WITHDRAW_FEE_FAILED:
+            return {
+                ...state,
+                withdrawFee: action.data
+            }
+        case GET_WITHDRAW_FEE_SUCCESS:
             return {
                 ...state,
                 message: action.message

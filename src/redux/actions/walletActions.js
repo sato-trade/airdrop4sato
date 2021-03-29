@@ -8,7 +8,8 @@ import {
     DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT,
     GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
-    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED
+    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED,
+    GET_WITHDRAW_FEE, GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
@@ -25,14 +26,8 @@ export const walletActions = {
     getL1Capital,
     getTransactionRecords,
     getAmplRewards,
-    registerAmplRewards
-    /**
-     * raw transaction deposit into contract
-     * maker transaction towards contract address through metamask transaction
-     *
-     * dont show any deposit pending records, only approved records
-     *
-     */
+    registerAmplRewards,
+    getFee
 };
 
 function getUserCapital(token) {
@@ -265,5 +260,24 @@ function registerAmplRewards(token) {
     function success(data) { return { type: REGISTER_AMPL_REWARDS_SUCCEED, data } }
     function alreadyRegistered(message) { return { type: ALREADY_REGISTERED, message } }
     function notQualified(message) { return { type: NOT_QUALIFIED, message } }
+}
 
+function getFee(payload) {
+    return dispatch => {
+        dispatch(request());
+        walletService.getFee(payload)
+            .then(
+                res => {
+                    dispatch(success(res.data));
+                },
+                error => {
+                    dispatch(failure(error.toString()));
+                    dispatch(alertActions.error(error.toString()));
+                }
+            );
+    }
+
+    function request() { return { type: GET_WITHDRAW_FEE } }
+    function success(data) { return { type: GET_WITHDRAW_FEE_SUCCESS, data } }
+    function failure(message) { return { type: GET_WITHDRAW_FEE_FAILED, message } }
 }

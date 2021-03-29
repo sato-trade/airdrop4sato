@@ -53,5 +53,7 @@
   "withdrawAddress": "提币地址",
   "withdrawAmount": "提币金额",
   "l2Amount": "侧链余额",
-  "l1Wallet": "我的钱包"
+  "l1Wallet": "我的钱包地址",
+  "fee": "提币手续费",
+  "amountReceiving": "到账金额"
 }
