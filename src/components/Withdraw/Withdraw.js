@@ -216,6 +216,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     };
 
     const handleCoinChange = (event) => {
+        console.log('coin: ', event.target.value)
         setCoin(event.target.value);
         handleAmountChange('')
     };
