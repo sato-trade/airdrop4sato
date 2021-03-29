@@ -463,8 +463,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {button1}
                         </CustomButton> */}
                     </Grid>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
             <Modal
                 disablePortal
                 disableEnforceFocus
