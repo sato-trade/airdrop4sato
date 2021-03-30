@@ -76,7 +76,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     const [ addr, setAddr ] = useState('')
     const [ startWatch, setStartWatch ] = useState(false)
 
-    const { loggedIn } = useSelector(state => state.auth)
+    const { loggedIn, registered } = useSelector(state => state.auth)
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -240,7 +240,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                         <h2 id="transition-modal-title">{t('metamaskConnected')}</h2>
                         <p id="transition-modal-description">{addr}</p>
                         {
-                            window.ethereum ?
+                            window.ethereum && registered ?
                                 <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
                                     {t('switch')}
                                 </Button> : null
