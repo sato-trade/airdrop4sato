@@ -17,6 +17,7 @@ import {withTranslation} from "react-i18next";
 import {isMetaMaskConnected, isMetaMaskInstalled, onBoard} from "./utils/Sign";
 import {isValidAddress} from "ethereumjs-util";
 import {authActions} from "./redux/actions";
+import i18n from './i18n';
 
 function App({t}){
     const [navBarHeight, setNavBarHeight] = useState(0)
@@ -25,7 +26,7 @@ function App({t}){
     const [ network, setNetwork ] = useState('')
     const [ button1, setButton1 ] = useState('')
     const [ button1Disabled, setButton1Disabled ] = useState(true)
-    const [ button2, setButton2] = useState(t('unlock'))
+    const [ button2, setButton2] = useState('')
     const [ button2Disabled, setButton2Disabled] = useState(true)
 
     const sendBackButton1 = (msg) => {
@@ -82,7 +83,7 @@ function App({t}){
             setButton2Disabled(false)
         }
         if (!isMetaMaskInstalled()) {
-            setButton1('Click here to install MetaMask!')
+            setButton1(t('noWallet'))
             setButton1Disabled(false)
         } else if (isMetaMaskConnected()) {
             setButton1(t('connected'))
@@ -109,20 +110,19 @@ function App({t}){
     useEffect(() => {
         if (loggingIn) {
             setButton2(t('loggingIn'))
-        } else {
-            if (registered) {
-                if (loggedIn) {
-                    setButton2(t('loggedIn'))
-                    setButton2Disabled(true)
-                }
-            } else {
-                setButton2(t('unlock'))
-            }
+        } if (!registered)  {
+            console.log('should be here')
+            setButton2(t('registered'))
+        } if (registered && !loggedIn) {
+            setButton2(t('unlock'))
+        } if (registered && loggedIn) {
+            setButton2(t('loggedIn'))
+            setButton2Disabled(true)
         }
         return() => {
             console.log('clear registration')
         }
-    }, [registered, loggedIn, loggingIn, loading])
+    }, [i18n.language, registered, loggedIn, loggingIn, loading])
 
     useEffect(() => {
         updateButtons()

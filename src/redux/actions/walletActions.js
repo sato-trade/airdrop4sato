@@ -73,7 +73,7 @@ function withdraw(payload) {
             );
     };
 
-    function request(address) { return { type: WITHDRAW, address } }
+    function request() { return { type: WITHDRAW } }
     function success(msg) { return { type: WITHDRAW_SUCCEED, msg } }
     function failure(error) { return { type: WITHDRAW_FAILED, error } }
 }
@@ -268,6 +268,7 @@ function getFee(payload) {
         walletService.getFee(payload)
             .then(
                 res => {
+                    console.log('here: ', payload, res)
                     dispatch(success(res.data));
                 },
                 error => {

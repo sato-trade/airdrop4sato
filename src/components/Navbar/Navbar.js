@@ -89,9 +89,9 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     const navLinks = [
         { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
-        { title: t('swap'), path: `/swap` },
-
-        { title: t('pool'), path: `/pool` },
+        // { title: t('swap'), path: `/swap` },
+        //
+        // { title: t('pool'), path: `/pool` },
         { title: t('collectReward'), path: `/collectReward` },
     ]
 
@@ -201,11 +201,13 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                                 <NavLink to={path} key={title} className={classes.linkText}
                                          activeClassName={classes.selected}
                                          isActive={(match, location) => {
-                                             // console.log('match: ', path, location)
-                                             if (location.pathname !== path && (!location.pathname.includes(path))) {
-                                                 return false;
+                                             if ( location.pathname === path ) {
+                                                 return true
+                                             } else if (location.pathname.includes('wallet') && path === '/wallet') {
+                                                 return true
+                                             } else {
+                                                 return false
                                              }
-                                             return true
                                          }}
                                 >
                                     <ListItem button>
