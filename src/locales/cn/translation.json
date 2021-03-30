@@ -35,6 +35,7 @@
   "depositAction": "充值",
   "withdrawAction": "提币",
   "records": "资金记录",
+  "noRecords": "暂无记录",
   "submitted": "已提交",
   "processing": "校验中",
   "succeed": "成功",

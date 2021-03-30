@@ -111,9 +111,9 @@ function Home({ t, navBarHeight, address, network, chainId,
                                     {t('walletTitle')}
 
                                 </Typography>
-                                <Link to='/'>
+                                <Link to='/wallet/records'>
                                     <Button className={classes.textSmall} color="textSecondary" gutterBottom>
-                                        资金记录
+                                        {t('records')}
                                     </Button>
                                 </Link>
                             </div>

@@ -36,6 +36,7 @@
   "depositAction": "Deposit",
   "withdrawAction": "Withdraw",
   "records": "Transaction Records",
+  "noRecords": "No records available",
   "submitted": "Submitted",
   "processing": "Processing",
   "succeed": "Succeed",
