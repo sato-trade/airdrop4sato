@@ -64,7 +64,7 @@ export default function CustomDropBox(props) {
         id="outlined-basic"
         variant="filled"
         select
-        style={{ width: '25%', height: '70%', backgroundColor: '#1DF0A9', borderRadius: 16 }}
+        style={{ width: '100%', height: '70%', backgroundColor: '#1DF0A9', borderRadius: 16 }}
         InputProps={{ disableUnderline: true }}
         InputLabelProps={{ className: "dropBox__label" }}
 

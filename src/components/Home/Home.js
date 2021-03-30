@@ -56,7 +56,7 @@ function Home({ t, navBarHeight, address, network, chainId,
         textLarge: {
             color: 'white',
             fontSize: 24,
-            fontWeight: '600'
+            fontWeight: '600',
         },
 
         textMid: {
@@ -107,7 +107,7 @@ function Home({ t, navBarHeight, address, network, chainId,
                         <div className='cards__wrapper'>
 
                             <div className='cards__title__wrapper'>
-                                <Typography className={classes.textLarge} gutterBottom>
+                                <Typography className={classes.textLarge} style={{textTransform:'none'}} gutterBottom>
                                     {t('walletTitle')}
 
                                 </Typography>
@@ -120,12 +120,12 @@ function Home({ t, navBarHeight, address, network, chainId,
 
                             <div className='cards__buttons__wrapper'>
                                 <Link to='/wallet/deposit' style={{ textDecoration: 'none', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Button style={{ backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }}>
+                                    <Button style={{textTransform:'none', backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }}>
                                         {t('deposit')}
                                     </Button>
                                 </Link>
                                 <Link to='/wallet/withdraw' style={{ textDecoration: 'none', alignItems: 'center', justifyContent: 'center', marginLeft: 16 }}>
-                                    <Button style={{ backgroundColor: '#192786', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#8FB9E1' }}>
+                                    <Button style={{textTransform:'none', backgroundColor: '#192786', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#8FB9E1' }}>
                                         {t('withdraw')}
                                     </Button>
                                 </Link>
@@ -133,7 +133,7 @@ function Home({ t, navBarHeight, address, network, chainId,
 
                             <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
                             <div className='cards__title__wrapper'>
-                                <Typography className={classes.textMid} color="textSecondary" gutterBottom>
+                                <Typography className={classes.textMid} color="textSecondary" style={{textTransform:'none'}} gutterBottom>
                                     {t('capitalTitle')}
                                 </Typography>
                             </div>
@@ -145,7 +145,7 @@ function Home({ t, navBarHeight, address, network, chainId,
                                     <div className={classes.wrapper}>
                                         {
                                             address.length < 42 || !isValidAddress(address) ?
-                                                <Button style={{ backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}>
+                                                <Button style={{ textTransform:'none',backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}>
                                                     {button1}
                                                 </Button>
                                                 :
@@ -153,7 +153,7 @@ function Home({ t, navBarHeight, address, network, chainId,
                                         }
                                         {
                                             address.length === 42 && isValidAddress(address) ?
-                                                <Button style={{ width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
+                                                <Button style={{textTransform:'none', width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                                     {button2}
                                                 </Button> : null
                                         }
