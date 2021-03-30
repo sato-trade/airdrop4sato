@@ -11,8 +11,12 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { green } from '@material-ui/core/colors';
+
+import IconButton from '@material-ui/core/IconButton';
+
 import './CustomTextField.css';
 
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 const useStylesInput = makeStyles((theme) => ({
   root: {
@@ -43,7 +47,7 @@ const useStylesInput = makeStyles((theme) => ({
     fontSize: 36,
     // width: 'auto',
     padding: '10px 12px',
-    color:'#1DF0A9',
+    color: '#1DF0A9',
 
     fontFamily: [
       'Arial',
@@ -66,9 +70,28 @@ export default function CustomTextField(props) {
     id="filled-full-width"
     margin="normal"
     InputLabelProps={{ className: "textfield__label" }}
-    FormHelperTextProps={{className:"textfield__helperText"}}
+    FormHelperTextProps={{ className: "textfield__helperText" }}
     variant="filled"
-    InputProps={{ classes, disableUnderline: true, }}
+    InputProps={{
+      classes, disableUnderline: true,
+
+      endAdornment:
+
+        props.rightbuttonlabel === "" ?
+          null
+          :
+          <InputAdornment position="end">
+            <IconButton position="end"
+              style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}
+              onClick={props.onRightButtonClick}
+            >
+              {props.rightbuttonlabel}
+            </IconButton>
+          </InputAdornment>
+
+    }
+
+    }
     {...props}
     autoCapitalize="off"
     autoComplete="off"
