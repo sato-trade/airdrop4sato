@@ -526,10 +526,10 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                 {coins.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
-                                            <Grid item xs={6} >
+                                            <Grid item xs={3} >
                                                 <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
                                             </Grid>
-                                            <Grid item xs={6} >
+                                            <Grid item xs={9} >
                                                 {option.label}
                                             </Grid>
                                         </Grid>

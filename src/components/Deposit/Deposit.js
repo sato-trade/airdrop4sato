@@ -239,10 +239,21 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         let _coins = []
         for (let i = 0; i < tokenList.length; i++) {
             if (tokenList[i].depositIsOn) {
-                _coins.push({
-                    label: tokenList[i].token,
-                    value: tokenList[i].token
-                })
+                if (tokenList[i].token === 'USDT_ERC20') {
+                    if (_coins.find(item => item.label === 'USDT') === undefined) {
+                        _coins.push({
+                            label: 'USDT',
+                            value: 'USDT'
+                        })
+                    }
+                } else if (tokenList[i].token.includes('_ETH')) {
+                    let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
+                    _coins.push({
+                        label: token,
+                        value: token
+                    })
+                }
+
             }
         }
 
@@ -344,27 +355,34 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
                         </CustomTextField>
 
-                        <CustomDropBox style={{ width: '25%' }}
-                            // label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
-                            label={'选择币种'}
-                            value={coin}
-                            onChange={handleCoinChange}
+                        <div style={{ width: '25%', display: 'flex', flexDirection: 'column', alignItems: 'start', marginTop: -12 }}>
+                            <Typography style={{ textTransform:'none',color: 'white', fontSize: 12, fontWeight: 'bold', marginLeft: 12 }}>
 
-                        >
-                            {coins.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    <Grid container >
-                                        <Grid item xs={6} >
-                                            <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
-                                        </Grid>
-                                        <Grid item xs={6} >
-                                            {option.label}
-                                        </Grid>
-                                    </Grid>
-                                </MenuItem>
-                            ))}
+                                {t('availableCapital')} {loggedIn ? roundingDown(capital.free, 4) : '--'} {capital.token}
+                            </Typography>
+                            <CustomDropBox
+                                // label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
+                                label={t('selectCoin')}
+                                value={coin}
+                                onChange={handleCoinChange}
 
-                        </CustomDropBox>
+                            >
+                                {coins.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        <Grid container >
+                                            <Grid item xs={3} >
+                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
+                                            </Grid>
+                                            <Grid item xs={9} >
+                                                {option.label}
+                                            </Grid>
+                                        </Grid>
+                                    </MenuItem>
+                                ))}
+
+                            </CustomDropBox>
+                        </div>
+
 
                     </div>
 
