@@ -24,7 +24,7 @@ import { roundingDown } from '../../utils/RoundingDown'
 import { getIcons, formDateString } from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
-import { isNumeric } from "../../utils/Common";
+import { isNumeric, getChain } from "../../utils/Common";
 import {wallet} from "../../redux/reducers/wallet";
 import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
 import {isValidAddress} from "ethereumjs-util";
@@ -139,28 +139,42 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             borderRadius: 20,
             textAlign: 'center'
         },
+        feeContentLeft: {
+            color: 'white',
+            fontSize: 15,
+            textAlign: 'left'
+        },
+        feeContentRight: {
+            color: 'white',
+            fontSize: 15,
+            textAlign: 'right'
+        }
     }));
     const classes = useStyles();
 
     const [withdrawTo, setWithdrawTo] = useState('')
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
-    const [coin, setCoin] = React.useState('SAP');
+    const [coin, setCoin] = React.useState();
     const [capital, setCapital] = React.useState({free: 0})
     const [warning, setWarning] = React.useState('')
-    const [validAddress, setValidAddress] = React.useState(true)
-    const [validAmount, setValidAmount] = React.useState(true)
+    const [validAddress, setValidAddress] = React.useState(false)
+    const [validAmount, setValidAmount] = React.useState(false)
     const [coins, setCoins] = React.useState([])
 
 
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, message, withdrawHash, withdrawReceipt, withdrawConfirmationNumber, withdrawFee } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
 
     const [openCallback, setOpenCallback] = useState(false)
     const [time, setTime] = useState('')
+    const [receivingAmount, setReceivingAmount] = useState('--')
+    const [receivingBase, setReceivingBase] = useState('')
+    const [coinWithdrawInfo, setCoinWithdrawInfo] = useState({})
+    const [chain, setChain] = useState('')
 
     const allIn = () => {
         handleAmountChange(roundingDown(capital.free, 4))
@@ -194,31 +208,18 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     };
 
     const handleAmountChange = (amount) => {
-        console.log('amount: ', amount)
         setWithdrawAmount( amount );
-        if (isNumeric(amount)) {
-            if ( parseFloat(amount) <= capital.free) {
-                setWarning('')
-                setValidAmount(true)
-            } else {
-                setWarning('not enough capitals')
-                setValidAmount(false)
-            }
-        } else {
-            if (amount === '') {
-                setWarning('')
-            } else {
-                setWarning('invalid input')
-            }
-            setValidAmount(false)
-        }
-
     };
 
     const handleCoinChange = (event) => {
         console.log('coin: ', event.target.value)
         setCoin(event.target.value);
+        let coinInfo = coins.find(item => item.label === event.target.value)
+        let _coinWithdrawInfo = tokenList.find(item => item.token === event.target.value + '_' + getChain(network, chainId))
+        setCoinWithdrawInfo(_coinWithdrawInfo)
         handleAmountChange('')
+        dispatch(walletActions.getFee({token, amount: '1', action: coinInfo.contractWithdrawKey}))
+
     };
 
     const confirmWithdraw = async () => {
@@ -232,16 +233,20 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                 params: [_msg, from],
             })
             let payload = {
-                data: msg,
-                sig: sign,
-                pubKeyAddress: address,
-                chainId: Web3.utils.hexToNumber(chainId),
-                networkId: Number(network),
-                coin: coin,
+                personalSign: {
+                    data: msg,
+                    sig: sign,
+                    pubKeyAddress: address,
+                    chainId: Web3.utils.hexToNumber(chainId),
+                    networkId: Number(network),
+                },
+                currency: coin,
+                chain: chain,
                 amount: withdrawAmount,
-                toAddress: withdrawTo
+                address: withdrawTo,
+                token: token
             }
-            alert('withdrawing!: '+ JSON.stringify(payload))
+            dispatch(walletActions.withdraw(payload))
         } catch (err) {
             console.error(err)
         }
@@ -252,26 +257,20 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     }
 
     const handleFinish = (changedAmount) => {
-        let tokenInfo = tokenList.find(item => item.token === coin)
-        if (tokenInfo === undefined) {
-            tokenInfo = {
-                contractWithdrawIsOn: false,
-                contract_withdraw_fee_key: '',
-                token: coin
+        setAddrWarning('')
+        let coinInfo = coins.find(item => item.label === coin)
+        if (changedAmount) {
+            if (validAmount) {
+                dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
             }
         }
-        setAddrWarning('')
-        if (changedAmount) {
-            dispatch(walletActions.getFee({token, amount: withdrawAmount, action: tokenList.token + '_CONTRACT_WITHDRAW_FEE'}))
-        }
-        console.log('here: ', )
-
     }
 
     useEffect(() => {
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
+
         }
 
         return() => {
@@ -289,26 +288,9 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
     }, [loggedIn, address])
 
+
     useEffect(() => {
         let _coins = []
-        for (let i = 0; i < tokenList.length; i ++) {
-            if (tokenList[i].contractWithdrawIsOn) {
-                _coins.push({
-                    label: tokenList[i].token,
-                    value: tokenList[i].token
-                })
-            }
-        }
-
-        setCoins(_coins)
-        return() => {
-            console.log('clear set coins')
-        }
-
-    }, [tokenList])
-
-
-    useEffect(() => {
         let _capital = userCapitals.find(item => item.token === coin)
         if (_capital === undefined) {
             _capital = {
@@ -317,24 +299,115 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             }
         }
         setCapital(_capital)
+
+        for (let i = 0; i < userCapitals.length; i ++) {
+            let token = tokenList.find(item => item.token === userCapitals[i].token)
+            if (token === undefined) {
+                token = {
+                    token: userCapitals[i].token,
+                    contractWithdrawIsOn: false
+                }
+            }
+            if (token.contractWithdrawIsOn) {
+                let chain = getChain(Number(network), Web3.utils.toDecimal(chainId))
+                _coins.push({
+                    label: token.token,
+                    value: token.token,
+                    contractWithdrawKey: token.token + '_' + chain + '_CONTRACT_WITHDRAW_FEE'
+                })
+                setChain(chain)
+            }
+        }
+
+        setCoins(_coins)
+
         return() => {
             console.log('clear capital check')
         }
 
-    },[coin, address, userCapitals])
+    },[coin, address, userCapitals, tokenList, chainId, network])
 
     useEffect(() => {
-        if (withdrawHash.length > 0 && !withdrawFinished) {
+        if (!withdrawFinished) {
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
                 console.log('clear pop modal')
             }
         }
-    },[withdrawHash, withdrawFinished])
+    },[withdrawFinished])
+
+    useEffect(() => {
+        if (validAmount) {
+            console.log('kept calling')
+            setAddrWarning('')
+            let coinInfo = coins.find(item => item.label === coin)
+            if (coinInfo) {
+                dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+            }
+        } else {
+            setReceivingAmount('--')
+            setReceivingBase('')
+        }
+        return () => {
+            console.log('clear check fee')
+        }
+    }, [validAmount])
+
+    useEffect(() => {
+        if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
+            setReceivingAmount(roundingDown(parseFloat(withdrawAmount) - withdrawFeeObj.amount, 4))
+            setReceivingBase(withdrawFeeObj.base)
+            let feeCapital = userCapitals.find(item => item.token === withdrawFeeObj.base)
+            let coinInfo = coins.find(item => item.label === coin)
+
+            if (withdrawAmount === "") {
+                setValidAmount(false)
+                setWarning('')
+            }
+            else if (!Number(withdrawAmount)) {
+                setValidAmount(false)
+                setWarning('invalid input')
+            }
+            else if (withdrawAmount <= capital.free) {
+                if (receivingBase === coin) {
+                    if (withdrawAmount > withdrawFeeObj.amount) {
+                        dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+                        setValidAmount(true)
+                    } else {
+                        setValidAmount(false)
+                        setWarning('profits.withdraw.enterAmountHigherThanFee')
+                    }
+                } else {
+                    if (feeCapital.free > withdrawFeeObj.amount) {
+                        dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+                        setValidAmount(true)
+                    } else {
+                        setValidAmount(false)
+                        setWarning(('profits.withdraw.insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('profits.withdraw.insufficient_fund'))
+                    }
+                }
+            }
+            else if (withdrawAmount > capital.free) {
+                setValidAmount(false)
+                setWarning('profits.withdraw.insufficient_fund')
+            }
+        }
+
+        return () => {
+            console.log('clear amount change')
+        }
+    },[withdrawAmount])
+
+    useEffect(() => {
+        if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
+            setReceivingAmount(withdrawFeeObj.amount)
+            setReceivingBase(withdrawFeeObj.base)
+        }
+
+    },[withdrawFeeObj])
 
 
-console.log('tokenStatus: ', tokenList)
 
     return (
         <div className={classes.root}>
@@ -430,7 +503,7 @@ console.log('tokenStatus: ', tokenList)
                             <TextField
                                 select
                                 fullWidth
-                                label={`${t('l2Amount')} ${loggedIn ? roundingDown(capital.free, 4) : '--'} ${capital.token}`}
+                                label={`${t('l2Amount')} ${capital.token !== undefined ? roundingDown(capital.free, 4) : '--'} ${capital.token === undefined ? '' : capital.token}`}
                                 InputLabelProps={{
                                     shrink: true,
                                     style: {
@@ -439,7 +512,7 @@ console.log('tokenStatus: ', tokenList)
                                         width: 'max-content'
                                     },
                                 }}
-                                value={coin}
+                                value={coin ? coin : ''}
                                 onChange={handleCoinChange}
                                 InputProps={{
                                     style: {
@@ -448,6 +521,7 @@ console.log('tokenStatus: ', tokenList)
                                         borderBottom: 'transparent'
                                     },
                                 }}
+                                defaultValue={'--'}
                             >
                                 {coins.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
@@ -462,6 +536,18 @@ console.log('tokenStatus: ', tokenList)
                                     </MenuItem>
                                 ))}
                             </TextField>
+                        </Grid>
+                        <Grid className={classes.feeContentLeft} item xs={6} >
+                            <p>{t('fee')}</p>
+                        </Grid>
+                        <Grid className={classes.feeContentRight} item xs={6} >
+                            <p>{`${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || !validAmount ? '--' : roundingDown(withdrawFeeObj.amount, 4)} ${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || !validAmount ? '' : withdrawFeeObj.base}`}</p>
+                        </Grid>
+                        <Grid className={classes.feeContentLeft} item xs={6} >
+                            <p>{t('amountReceiving')}</p>
+                        </Grid>
+                        <Grid className={classes.feeContentRight} item xs={6} >
+                            <p>{`${receivingAmount} ${receivingBase}`}</p>
                         </Grid>
                         <Grid item xs={12}>
                             {
@@ -517,27 +603,19 @@ console.log('tokenStatus: ', tokenList)
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
                             </Grid>
-                            <Grid item xs={6} >
-                                <p id="server-modal-description">{`${t('fee')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
+                            <Grid item xs={12} >
+                                <Button style={{ width: 180 }}  className={classes.btn} >
+                                    {withdrawMsg}
+                                </Button>
                             </Grid>
-                            <Grid item xs={6} >
-                                <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
-                            </Grid>
-                            {
-                                Object.keys(withdrawReceipt).length > 0 ?
-                                    <Grid item xs={12} >
-                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${withdrawReceipt.blockNumber}`}</p>
-                                    </Grid> : null
+                            {/*{*/}
+                            {/*    Object.keys(withdrawReceipt).length > 0 ?*/}
+                            {/*        <Grid item xs={12} >*/}
+                            {/*            <p id="server-modal-description">{`${t('confirmedBlock')}: ${withdrawReceipt.blockNumber}`}</p>*/}
+                            {/*        </Grid> : null*/}
 
-                            }
-                            {
-                                withdrawHash.length > 1 ?
-                                    <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + withdrawHash} style={{ width: 180 }}  className={classes.btn} >
-                                            {t('checkEtherscan')}
-                                        </Button>
-                                    </Grid> : null
-                            }
+                            {/*}*/}
+                            {/*{*/}
                         </Grid>
                     </div>
                 </Fade>

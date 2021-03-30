@@ -58,3 +58,19 @@ export const formDateString = (timeStamp) => {
     return dateString
 }
 
+export const getChain = (networkId, chainId) => {
+    switch (networkId && chainId) {
+        case (1 & 1) :
+            return 'ETH'
+        case (128 & 128):
+            return 'HECO'
+        case (56 & 56):
+            return 'BSC'
+        case (3 & 3):
+            return 'ETH'
+        case (256 & 256):
+            return 'HECO'
+        case (97 & 97):
+            return 'BSC'
+    }
+}

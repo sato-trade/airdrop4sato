@@ -23,11 +23,15 @@ import { getIcons, convertTimeString } from "../../utils/Common";
 import {roundingDown} from "../../utils/RoundingDown";
 import {history} from "../../utils/History";
 import backArrow from "../../images/backArrow.png";
+import CustomButton from "../CommonElements/CustomButton";
+import {onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
 
 const Web3 = require("web3");
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 
-function Records({t, navBarHeight}){
+function Records({t, navBarHeight, address, chainId, network,
+                     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+                     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled}){
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -94,6 +98,11 @@ function Records({t, navBarHeight}){
             width: 20,
             height: 20
         },
+        textMid: {
+            color: 'white',
+            fontSize: 20,
+            fontWeight: '600'
+        },
     }));
     const classes = useStyles();
     const dispatch = useDispatch()
@@ -149,6 +158,16 @@ function Records({t, navBarHeight}){
         }
     }, [])
 
+    useEffect(() => {
+        if (loggedIn) {
+            dispatch(walletActions.getTransactionRecords(token))
+        }
+
+        return() => {
+            console.log('clear login')
+        }
+    }, [loggedIn])
+
     return(
         <div className={classes.root}>
             <Card className={classes.walletBox}>
@@ -160,14 +179,16 @@ function Records({t, navBarHeight}){
                     </Button>
                     <Grid container spacing={2} >
                         <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('capitalTitle')}
-                            </Typography>
+                            <div className='cards__title__wrapper'>
+                                <Typography className={classes.textMid} color="textSecondary" gutterBottom>
+                                    {t('capitalTitle')}
+                                </Typography>
+                            </div>
                         </Grid>
                         <Grid item xs={12} >
                             <div className={classes.wrapper}>
-                                {transactionRecords === undefined || transactionRecords.length <= 0 ?
-                                    <Typography style={{ fontSize: 13 }}>{t('noCapitals')}</Typography> :
+                                {!loggedIn ? null : transactionRecords === undefined || transactionRecords.length <= 0 ?
+                                    <Typography style={{ fontSize: 13 }}>{t('noRecords')}</Typography> :
                                     <List className={classes.capitalList}>
                                         {
                                             transactionRecords.map(item => (
@@ -185,6 +206,23 @@ function Records({t, navBarHeight}){
                                     </List>
                                 }
                             </div>
+                            <Grid item xs={12}>
+                                {
+                                    address.length < 42 || !isValidAddress(address) ?
+                                        <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                        >
+                                            {button1}
+                                        </CustomButton> : null
+                                }
+                                {
+                                    address.length === 42 && isValidAddress(address) ?
+                                        loggedIn ?
+                                            null :
+                                            <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                                {t('unlock')}
+                                            </Button> : null
+                                }
+                            </Grid>
                         </Grid>
                     </Grid>
                 </CardContent>
