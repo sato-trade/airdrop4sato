@@ -83,7 +83,7 @@ function App({t}){
             setButton2Disabled(false)
         }
         if (!isMetaMaskInstalled()) {
-            setButton1('Click here to install MetaMask!')
+            setButton1(t('noWallet'))
             setButton1Disabled(false)
         } else if (isMetaMaskConnected()) {
             setButton1(t('connected'))
@@ -108,7 +108,6 @@ function App({t}){
     }, [address, network, chainId])
 
     useEffect(() => {
-        console.log('here:', registered, loggedIn, loggingIn, loading)
         if (loggingIn) {
             setButton2(t('loggingIn'))
         } if (!registered)  {

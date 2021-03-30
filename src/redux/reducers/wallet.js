@@ -161,7 +161,7 @@ export function wallet (state = {
         case GET_AMPL_REWARDS_FAILED:
             return {
                 ...state,
-                amplRewardsInfo: action.data
+                message: action.data
             }
         case REGISTER_AMPL_REWARDS:
             return {
