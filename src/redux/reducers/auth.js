@@ -12,6 +12,8 @@ import {
     CHECK_EXIST,
     CHECK_SUCCEED,
     CHECK_FAILED,
+
+    AUTH_SIGNING
 } from '../constants';
 
 export function auth (state = {
@@ -21,6 +23,11 @@ export function auth (state = {
     registered: false
 }, action) {
     switch (action.type) {
+        case AUTH_SIGNING:
+            return {
+                ...state,
+                loading: true
+            }
         case SIGNUP:
             return {
                 ...state,

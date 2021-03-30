@@ -9,7 +9,7 @@ import {
     GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
     REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED,
-    GET_WITHDRAW_FEE, GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED
+    GET_WITHDRAW_FEE, GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
@@ -27,8 +27,24 @@ export const walletActions = {
     getTransactionRecords,
     getAmplRewards,
     registerAmplRewards,
-    getFee
+    getFee,
+    walletSigning,
+    walletSigningCancelled
 };
+
+function walletSigning() {
+    return dispatch => {
+        dispatch(walletSigning(true))
+    }
+    function walletSigning(loading) {return { type: WALLET_SIGNING, loading }}
+}
+
+function walletSigningCancelled() {
+    return dispatch => {
+        dispatch(walletSigningCancelled(false))
+    }
+    function walletSigningCancelled(loading) {return { type: WALLET_SIGNING_CANCELLED, loading }}
+}
 
 function getUserCapital(token) {
     return dispatch => {
@@ -268,7 +284,6 @@ function getFee(payload) {
         walletService.getFee(payload)
             .then(
                 res => {
-                    console.log('here: ', payload, res)
                     dispatch(success(res.data));
                 },
                 error => {

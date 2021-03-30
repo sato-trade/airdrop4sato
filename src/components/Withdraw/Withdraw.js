@@ -163,8 +163,8 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     const [coins, setCoins] = React.useState([])
 
 
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj } = useSelector(state => state.wallet)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
+    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
@@ -227,28 +227,33 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             let msg = 'Withdraw Request'
             const from = address
             const _msg = Web3.utils.soliditySha3(msg);
-
-            const sign = await window.ethereum.request({
-                method: 'personal_sign',
-                params: [_msg, from],
-            })
-            let payload = {
-                personalSign: {
-                    data: msg,
-                    sig: sign,
-                    pubKeyAddress: address,
-                    chainId: Web3.utils.hexToNumber(chainId),
-                    networkId: Number(network),
-                },
-                currency: coin,
-                chain: chain,
-                amount: withdrawAmount,
-                address: withdrawTo,
-                token: token
+            dispatch(walletActions.walletSigning())
+            if (!walletSigning) {
+                const sign = await window.ethereum.request({
+                    method: 'personal_sign',
+                    params: [_msg, from],
+                })
+                let payload = {
+                    personalSign: {
+                        data: msg,
+                        sig: sign,
+                        pubKeyAddress: address,
+                        chainId: Web3.utils.hexToNumber(chainId),
+                        networkId: Number(network),
+                    },
+                    currency: coin,
+                    chain: chain,
+                    amount: withdrawAmount,
+                    address: withdrawTo,
+                    token: token
+                }
+                dispatch(walletActions.withdraw(payload))
             }
-            dispatch(walletActions.withdraw(payload))
+
         } catch (err) {
-            console.error(err)
+            console.error('withdraw request failed: ', err)
+            dispatch(walletActions.walletSigningCancelled())
+
         }
     }
 
@@ -318,7 +323,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                 setChain(chain)
             }
         }
-
         setCoins(_coins)
 
         return() => {
@@ -360,6 +364,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             let feeCapital = userCapitals.find(item => item.token === withdrawFeeObj.base)
             let coinInfo = coins.find(item => item.label === coin)
 
+            console.log('info: ', feeCapital, capital, coinInfo)
             if (withdrawAmount === "") {
                 setValidAmount(false)
                 setWarning('')
@@ -378,6 +383,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                         setWarning(t('enterAmountHigherThanFee'))
                     }
                 } else {
+                    console.log('should be here!!!!!')
                     if (feeCapital.free > withdrawFeeObj.amount) {
                         dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
                         setValidAmount(true)
@@ -396,7 +402,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
 
         return () => {
-            console.log('clear amount change')
+            console.log('clear withdraw amount change')
         }
     },[withdrawAmount])
 
@@ -405,10 +411,12 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setReceivingAmount(withdrawFeeObj.amount)
             setReceivingBase(withdrawFeeObj.base)
         }
+        if (withdrawFeeObj === null){
+            setValidAmount(false)
+            setWarning(`${coin} ${t('withdrawNotAvailable')}`)
+        }
 
     },[withdrawFeeObj])
-
-
 
     return (
         <div className={classes.root}>
@@ -564,7 +572,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                         <Button style={{ width: 180 }}  className={classes.btn} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </Button> :
-                                        <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                        <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </Button> : null
                             }

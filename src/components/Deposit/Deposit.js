@@ -150,7 +150,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     const [coins, setCoins] = React.useState([])
 
 
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
     const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, message, depositHash, depositReceipt } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
@@ -208,9 +208,11 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             coin: coin,
         }
         try {
-            dispatch(walletActions.deposit(payload))
+            if (depositFinished) {
+                dispatch(walletActions.deposit(payload))
+            }
         } catch (err) {
-            console.log('deposit failed: ', err)
+            console.log('deposit request failed: ', err)
         }
     }
 
@@ -476,7 +478,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                         <Button style={{ width: 180 }} className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('deposit')}
                                         </Button> :
-                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </Button> : null
                             }

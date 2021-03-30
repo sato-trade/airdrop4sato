@@ -108,7 +108,6 @@ function App({t}){
     }, [address, network, chainId])
 
     useEffect(() => {
-        console.log('here: ', registered, loggedIn)
         if (loggingIn) {
             setButton2(t('loggingIn'))
         } if (!registered)  {

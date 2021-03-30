@@ -10,10 +10,11 @@ export const onBoard = new MetaMaskOnboarding({ forwarderOrigin })
 
 export const unlock = async (msg, address, chainId, network, Web3, registered, dispatch) => {
     try {
+
+        dispatch(authActions.authSigning())
         const from = address
         // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
         const _msg = Web3.utils.soliditySha3(msg);
-
         const sign = await window.ethereum.request({
             method: 'personal_sign',
             params: [_msg, from],
@@ -42,8 +43,10 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
         } else {
             console.log('not found!')
         }
+
     } catch (err) {
-        console.error(err)
+        console.error('sign error: ', err)
+        dispatch(authActions.logOut())
     }
 }
 
