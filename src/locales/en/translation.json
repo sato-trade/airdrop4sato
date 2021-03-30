@@ -44,7 +44,7 @@
   "failed": "Failed",
   "manual": "Processing",
   "closed": "Closed",
-  "rewardContent": "2021年3月28日0:01 快照去中心化钱包 AMPL 持有数量超过 100 的持有者，可在 2021年3月29日00:01 - 2021年4月5日 23:59 期间点击下方按钮登记领取 SATO 奖励（需连接 AMPL 数量超过 100 的同一个去中心化钱包）。登记期结束后，系统将会根据登记总人数计算每位持有者的 SATO 发放量，并于 2021年4月6日 发放 SATO 至你的 SwapAll 侧链钱包。\n\n",
+  "rewardContent": "Click the button below to register airdrop reward claim between April 5-25, 2021 (UTC) if you are satisfied with the claim requirements (please connect the same wallet address that was satisfied with the requirements to this site). The system will calculate your SATO reward amount based on total claimed addresses after the registration ends. Your SATO reward will be airdropped to your SwapAll Layer 2 wallet in a week.\n\n",
   "registerReward": "一键登记",
   "inviteReward": "Collect award",
   "registeredUser": "Registered",
