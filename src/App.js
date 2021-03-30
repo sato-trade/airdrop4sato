@@ -108,15 +108,17 @@ function App({t}){
     }, [address, network, chainId])
 
     useEffect(() => {
+        console.log('here:', registered, loggedIn, loggingIn, loading)
         if (loggingIn) {
             setButton2(t('loggingIn'))
-        } else if (!loggingIn && registered && !loggedIn) {
+        } if (!registered)  {
+            console.log('should be here')
+            setButton2(t('registered'))
+        } if (registered && !loggedIn) {
             setButton2(t('unlock'))
-        } else if (!loggingIn && registered && loggedIn) {
+        } if (registered && loggedIn) {
             setButton2(t('loggedIn'))
             setButton2Disabled(true)
-        } else {
-            setButton2(t('unlock'))
         }
         return() => {
             console.log('clear registration')
