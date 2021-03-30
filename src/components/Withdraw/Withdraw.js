@@ -339,7 +339,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
     useEffect(() => {
         if (validAmount) {
-            console.log('kept calling')
             setAddrWarning('')
             let coinInfo = coins.find(item => item.label === coin)
             if (coinInfo) {
@@ -367,7 +366,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             }
             else if (!Number(withdrawAmount)) {
                 setValidAmount(false)
-                setWarning('invalid input')
+                setWarning(t('invalidInput'))
             }
             else if (withdrawAmount <= capital.free) {
                 if (receivingBase === coin) {
@@ -376,7 +375,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                         setValidAmount(true)
                     } else {
                         setValidAmount(false)
-                        setWarning('profits.withdraw.enterAmountHigherThanFee')
+                        setWarning(t('enterAmountHigherThanFee'))
                     }
                 } else {
                     if (feeCapital.free > withdrawFeeObj.amount) {
@@ -384,13 +383,15 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                         setValidAmount(true)
                     } else {
                         setValidAmount(false)
-                        setWarning(('profits.withdraw.insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('profits.withdraw.insufficient_fund'))
+                        setWarning(t('insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('insufficient_fund'))
                     }
                 }
-            }
-            else if (withdrawAmount > capital.free) {
+            } else if (withdrawAmount > capital.free) {
                 setValidAmount(false)
-                setWarning('profits.withdraw.insufficient_fund')
+                setWarning(t('insufficient_fund'))
+            } else {
+                setValidAmount(false)
+                setWarning(t('insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('insufficient_fund'))
             }
         }
 
@@ -527,7 +528,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={3} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
+                                                <Avatar alt="Coin Icon" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
                                             </Grid>
                                             <Grid item xs={9} >
                                                 {option.label}

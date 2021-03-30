@@ -60,5 +60,12 @@
   "l2Amount": "侧链余额",
   "l1Wallet": "我的钱包",
   "fee": "提币手续费",
-  "amountReceiving": "到账金额"
+  "amountReceiving": "到账金额",
+  "enterAmountHigherThanFee": "Enter an amount higher than fee",
+  "insufficient_fee": "Fee amount",
+  "insufficient_fund": "Insufficient fund",
+  "invalidInput":"Please enter a valid amount",
+  "withdrawNotAvailable": "Withdraw is temporarily closed. Please try again later",
+  "transactionDetails": "Transaction Details",
+  "amount": "amount"
 }
