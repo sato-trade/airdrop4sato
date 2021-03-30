@@ -6,19 +6,19 @@ import logo from '../../images/rewardHeadImage.png'
 import { Link } from 'react-router-dom';
 
 import { withTranslation } from 'react-i18next';
-import {Typography, Grid, Button, Card, CardContent, Modal, CardHeader, Backdrop, Fade} from '@material-ui/core';
-import {useDispatch, useSelector} from "react-redux";
-import {walletActions} from "../../redux/actions/walletActions";
-import {isValidAddress} from "ethereumjs-util";
-import {isMetaMaskInstalled, onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
+import { Typography, Grid, Button, Card, CardContent, Modal, CardHeader, Backdrop, Fade } from '@material-ui/core';
+import { useDispatch, useSelector } from "react-redux";
+import { walletActions } from "../../redux/actions/walletActions";
+import { isValidAddress } from "ethereumjs-util";
+import { isMetaMaskInstalled, onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
 import { FormatNumber } from "../../utils/Common";
 
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
 
-function CollectReward({t, navBarHeight, address, network, chainId,
-                           sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-                           sendBackButton2, sendBackButton2Disabled, button2, button2Disabled}) {
+function CollectReward({ t, navBarHeight, address, network, chainId,
+    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled }) {
 
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -29,7 +29,7 @@ function CollectReward({t, navBarHeight, address, network, chainId,
             flexGrow: 1,
             height: '100%',
             textAlign: 'center',
-            justifyContent:'center',
+            justifyContent: 'center',
         },
         card: {
             width: 441,
@@ -112,14 +112,14 @@ function CollectReward({t, navBarHeight, address, network, chainId,
 
     useEffect(() => {
         dispatch(walletActions.getAmplRewards(token))
-        return() => {
+        return () => {
             console.log('clear initialization')
         }
     }, [])
 
     useEffect(() => {
         dispatch(walletActions.getAmplRewards(token))
-        return() => {
+        return () => {
             console.log('clear loggedIn')
         }
     }, [loggedIn])
@@ -129,7 +129,7 @@ function CollectReward({t, navBarHeight, address, network, chainId,
             handleOpenFailedModal()
         }
         prevMessageRef.current = message;
-        return() => {
+        return () => {
             console.log('clear message')
         }
     }, [message])
@@ -147,40 +147,40 @@ function CollectReward({t, navBarHeight, address, network, chainId,
 
 
                     <div className='cards__item__info'>
-                        <h1 className='cards__item__text'>{t('inviteReward')}</h1>
-                        <h1 className='cards__content__text'>
+                        <Typography className='cards__item__text' style={{fontSize:32,fontWeight:'bold'}}>{t('inviteReward')}</Typography>
+                        <Typography className='cards__content__text' style={{fontSize:12,fontWeight:'bold'}}>
                             {t('rewardContent')}
-                        </h1>
+                        </Typography>
 
                     </div>
 
                     <div className='cards__cell__wrapper'>
                         <div className='cards__small__cell'>
-                            <h5 className='cards__cell__title'>
+                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('registeredUser')}
-                                </h5>
-                            <h5 className='cards__cell__value'>
+                            </Typography>
+                            <Typography className='cards__cell__value'>
                                 {FormatNumber(amplRewardsInfo.registeredUsers)}
-                                </h5>
+                            </Typography>
 
                         </div>
-                        <div className='cards__large__cell'>
-                            <h5 className='cards__cell__title'>
+                        <div className='cards__small__cell'>
+                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('releasedReward')}
-                                </h5>
-                            <h5 className='cards__cell__value__large'>
+                            </Typography>
+                            <Typography className='cards__cell__value__large'>
                                 {FormatNumber(amplRewardsInfo.totalRewards)}
-                                </h5>
+                            </Typography>
 
                         </div>
 
                         <div className='cards__small__cell'>
-                            <h5 className='cards__cell__title'>
+                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('expectedRewardPerPerson')}
-                                </h5>
-                            <h5 className='cards__cell__value'>
+                            </Typography>
+                            <Typography className='cards__cell__value'>
                                 {`${FormatNumber(amplRewardsInfo.rewardsPerUser)} SATO`}
-                                </h5>
+                            </Typography>
                         </div>
                     </div>
                     <div>
@@ -196,15 +196,15 @@ function CollectReward({t, navBarHeight, address, network, chainId,
                                 loggedIn ?
                                     amplRewardsInfo.hasClaimed ?
 
-                                        <Button style={{ width: 180 }}  className={classes.btn} style={{ width: 500 }} disabled={amplRewardsInfo.hasClaimed}>
+                                        <Button style={{ width: 180 }} className={classes.btn} style={{ width: 500 }} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
                                         </Button> :
-                                            <Button style={{ width: 180 }}  className={classes.btn} style={{ width: 500 }} onClick={confirmRegister} >
-                                                {t('registerReward')}
-                                            </Button> :
-                                                <Button style={{ width: 180 }}  className={classes.btn} style={{ width: 500 }}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
-                                                    {t('unlock')}
-                                                </Button> : null
+                                        <Button style={{ width: 180 }} className={classes.btn} style={{ width: 500 }} onClick={confirmRegister} >
+                                            {t('registerReward')}
+                                        </Button> :
+                                    <Button style={{ width: 180 }} className={classes.btn} style={{ width: 500 }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        {t('unlock')}
+                                    </Button> : null
                         }
                     </div>
                 </div>

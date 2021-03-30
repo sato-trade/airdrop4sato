@@ -144,8 +144,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     const [depositAmount, setDepositAmount] = useState('')
     const [coin, setCoin] = React.useState('SAP');
-    const [capital, setCapital] = React.useState({free: 0})
-    const [warning, setWarning] = React.useState('')
+    const [capital, setCapital] = React.useState({ free: 0 })
+    const [warning, setWarning] = React.useState(' ')
     const [cantDeposit, setCantDeposit] = React.useState(true)
     const [coins, setCoins] = React.useState([])
 
@@ -177,8 +177,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         console.log('amount: ', amount)
         setDepositAmount(amount);
         if (isNumeric(amount)) {
-            if ( parseFloat(amount) <= capital.free) {
-                setWarning('')
+            if (parseFloat(amount) <= capital.free) {
+                setWarning(' ')
                 setCantDeposit(false)
             } else {
                 setWarning('not enough capitals')
@@ -186,7 +186,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             }
         } else {
             if (amount === '') {
-                setWarning('')
+                setWarning(' ')
             } else {
                 setWarning('invalid input')
             }
@@ -208,7 +208,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         }
         try {
             dispatch(walletActions.deposit(payload))
-        } catch(err) {
+        } catch (err) {
             console.log('deposit failed: ', err)
         }
     }
@@ -219,7 +219,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getAllTokenStatus(token))
             dispatch(walletActions.getL1Capital(address))
         }
-        return() => {
+        return () => {
             console.log('clear initialization')
         }
     }, [])
@@ -230,7 +230,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getAllTokenStatus(token))
             dispatch(walletActions.getL1Capital(address))
         }
-        return() => {
+        return () => {
             console.log('clear login')
         }
     }, [loggedIn, address])
@@ -267,7 +267,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             console.log('clear capital check')
         }
 
-    },[coin, address, l1Capital])
+    }, [coin, address, l1Capital])
 
     useEffect(() => {
         if (depositHash.length > 0 && !depositFinished) {
@@ -277,7 +277,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                 console.log('clear pop modal')
             }
         }
-    },[depositHash, depositFinished])
+    }, [depositHash, depositFinished])
 
 
     return (
@@ -291,12 +291,12 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                     </Button>
                     <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                         {/* <Grid item xs={12} > */}
-                        <Typography style={{ fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
+                        <Typography style={{ textTransform:'none',fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
                             {t('deposit')}
                         </Typography>
                         {/* </Grid> */}
                         {/* <Grid item xs={12} > */}
-                        <Typography style={{ fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
+                        <Typography style={{textTransform:'none', fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
                             {t('depositContent')}
                         </Typography>
                         {/* </Grid> */}
@@ -327,44 +327,52 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
 
                     </div> */}
+
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
                         <CustomTextField
                             label={t('depositAmount')}
 
                             helperText="ccc"
-                            style={{ width: '70%' }}
+                            style={{ width: '70%' ,textTransform:'none'}}
                             inputRef={inputRef}
                             onChange={(e) => handleAmountChange(e.target.value)}
                             value={depositAmount}
                             helperText={warning}
                             error={warning !== ''}
-
+                            rightButtonLabel={ capital.free > 0.0001 ?  t('all') : null}
+                            onRightButtonClick={allIn}
                         >
 
                         </CustomTextField>
 
-                        <CustomDropBox style={{ width: '25%' }}
-                            // label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
-                            label={'选择币种'}
-                            value={coin}
-                            onChange={handleCoinChange}
+                        <div style={{ width: '25%', display: 'flex', flexDirection: 'column', alignItems: 'start', marginTop: -12 }}>
+                            <Typography style={{ textTransform:'none',color: 'white', fontSize: 12, fontWeight: 'bold', marginLeft: 12 }}>
 
-                        >
-                            {coins.map((option) => (
-                                <MenuItem key={option.value} value={option.value}>
-                                    <Grid container >
-                                        <Grid item xs={6} >
-                                            <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
-                                        </Grid>
-                                        <Grid item xs={6} >
-                                            {option.label}
-                                        </Grid>
-                                    </Grid>
-                                </MenuItem>
-                            ))}
+                                {t('availableCapital')} {loggedIn ? roundingDown(capital.free, 4) : '--'} {capital.token}
+                            </Typography>
+                            <CustomDropBox
+                                // label={`${t('availableCapital')} ${roundingDown(capital.free, 4)} ${capital.token}`}
+                                label={t('selectCoin')}
+                                value={coin}
+                                onChange={handleCoinChange}
 
-                        </CustomDropBox>
+                            >
+                                {coins.map((option) => (
+                                    <MenuItem key={option.value} value={option.value}>
+                                        <Grid container >
+                                            <Grid item xs={6} >
+                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
+                                            </Grid>
+                                            <Grid item xs={6} >
+                                                {option.label}
+                                            </Grid>
+                                        </Grid>
+                                    </MenuItem>
+                                ))}
+
+                            </CustomDropBox>
+                        </div>
 
                     </div>
 
@@ -429,7 +437,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />                            </Grid>
+                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />                            </Grid>
                                             <Grid item xs={6} >
                                                 {option.label}
                                             </Grid>
@@ -438,10 +446,10 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                 ))}
                             </TextField>
                         </Grid> */}
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{ marginTop: 24 }}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                    <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                     >
                                         {button1}
                                     </CustomButton> : null
@@ -449,12 +457,12 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                    <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
-                                        {t('deposit')}
-                                    </Button> :
-                                    <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
-                                        {t('unlock')}
-                                    </Button> : null
+                                        <Button style={{ width: 180 }} className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
+                                            {t('deposit')}
+                                        </Button> :
+                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                            {t('unlock')}
+                                        </Button> : null
                             }
                         </Grid>
 
@@ -495,7 +503,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                 <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
                             </Grid>
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('status')}: ${depositFinished && depositSucceed ?  t('depositSucceed') : t('loading')}`}</p>
+                                <p id="server-modal-description">{`${t('status')}: ${depositFinished && depositSucceed ? t('depositSucceed') : t('loading')}`}</p>
                             </Grid>
                             {
                                 Object.keys(depositReceipt).length > 0 ?
@@ -507,7 +515,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 depositHash.length > 1 ?
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }}  className={classes.btn} >
+                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
                                             {t('checkEtherscan')}
                                         </Button>
                                     </Grid> : null
