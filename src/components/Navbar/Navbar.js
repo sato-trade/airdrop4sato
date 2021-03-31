@@ -245,11 +245,10 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                         <h2 id="transition-modal-title">{!isMetaMaskInstalled() ? t('metamaskNotDetected') : loggedIn ? t('metamaskConnected') : t('metamaskLogin')}</h2>
                         <p id="transition-modal-description">{addr}</p>
                         {
-                            window.ethereum ?
-                                registered ?
+                            window.ethereum && registered ?
                                 <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
                                     {t('switch')}
-                                </Button> : null :
+                                </Button> :
                                 <Button className={classes.addrBtn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                 >
                                     {button1}
