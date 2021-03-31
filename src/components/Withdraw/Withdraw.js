@@ -353,7 +353,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     }, [validAmount])
 
     useEffect(() => {
-        console.log('here: ', !parseFloat(withdrawAmount))
         if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
             setReceivingAmount(roundingDown(parseFloat(withdrawAmount) - withdrawFeeObj.amount, 4))
             setReceivingBase(withdrawFeeObj.base)
