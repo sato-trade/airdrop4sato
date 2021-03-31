@@ -20,18 +20,18 @@ import { walletActions } from '../../redux/actions/walletActions';
 import { useDispatch, useSelector } from 'react-redux';
 import useWindowDimensions from '../../utils/WindowDimensions'
 import { getIcons, convertTimeString } from "../../utils/Common";
-import {roundingDown} from "../../utils/RoundingDown";
-import {history} from "../../utils/History";
+import { roundingDown } from "../../utils/RoundingDown";
+import { history } from "../../utils/History";
 import backArrow from "../../images/backArrow.png";
 import CustomButton from "../CommonElements/CustomButton";
-import {onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
+import { onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
 
 const Web3 = require("web3");
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 
-function Records({t, navBarHeight, address, chainId, network,
-                     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-                     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled}){
+function Records({ t, navBarHeight, address, chainId, network,
+    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled }) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -191,7 +191,7 @@ function Records({t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getTransactionRecords(token))
         }
 
-        return() => {
+        return () => {
             console.log('clear initialization')
         }
     }, [])
@@ -201,28 +201,29 @@ function Records({t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getTransactionRecords(token))
         }
 
-        return() => {
+        return () => {
             console.log('clear login')
         }
     }, [loggedIn])
 
-    return(
+    return (
         <div className={classes.root}>
-            <Card className={classes.walletBox}>
-                <CardContent className={classes.walletContent}>
-                    <Button className={classes.backBtn} onClick={() => {
+            <div className='deposit__container'>
+                <div className='deposit__wrapper'>
+                    <Button style={{ left: -24 }} onClick={() => {
                         history.back()
                     }} >
                         <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
                     </Button>
                     <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <div className='cards__title__wrapper'>
-                                <Typography className={classes.textMid} color="textSecondary" gutterBottom>
-                                    {t('capitalTitle')}
-                                </Typography>
-                            </div>
-                        </Grid>
+
+                        <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                            <Typography style={{ textTransform: 'none', fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
+                                {t('records')}
+                            </Typography>
+                        </div>
+
+
                         <Grid item xs={12} >
                             <div className={classes.wrapper}>
                                 {!loggedIn ? null : transactionRecords === undefined || transactionRecords.length <= 0 ?
@@ -246,7 +247,7 @@ function Records({t, navBarHeight, address, chainId, network,
                             <Grid item xs={12}>
                                 {
                                     address.length < 42 || !isValidAddress(address) ?
-                                        <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                        <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                         >
                                             {button1}
                                         </CustomButton> : null
@@ -255,15 +256,15 @@ function Records({t, navBarHeight, address, chainId, network,
                                     address.length === 42 && isValidAddress(address) ?
                                         loggedIn ?
                                             null :
-                                            <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                            <CustomButton style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                                 {t('unlock')}
-                                            </Button> : null
+                                            </CustomButton> : null
                                 }
                             </Grid>
                         </Grid>
                     </Grid>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
             <Modal
                 disablePortal
                 disableEnforceFocus

@@ -1,5 +1,5 @@
 {
-  "home": "Home",
+  "home": "L2 Wallet",
   "wallet": "Wallet",
   "swap": "Swap",
   "pool": "Pool",
@@ -21,8 +21,8 @@
   "metamaskConnected": "Connected to Wallet",
   "switch": "Switch Account",
   "noCapitals": "No available capitals",
-  "collectReward": "Reward",
-  "depositContent": "SwapAll is a Layer 2 Dex. Transfering assets from your decentralized wallet (Layer 1) to SwapAll Layer 2 wallet to experience gas-free and real-time token transfer and swap. In SwapAll Layer 2, your assets are managed by a group of decentralized smart contracts. You and only you have total control over the assets through private keys. Your assets are safe, and you could be able to withdraw assets to your Layer 1 wallet any time.",
+  "collectReward": "Claim Reward",
+  "depositContent": "SwapAll is a Layer 2 Dex. Transfering assets from your decentralized wallet (Layer 1) to SwapAll Layer 2 wallet to experience gas-free and real-time token transfer and swap. In SwapAll Layer 2, your assets are managed by a group of decentralized smart contracts. You and only you have total control over the assets through private keys. Your assets are safe, and you could be able to withdraw assets to your Layer 1 wallet any time.\n\n",
   "depositAmount": "Deposit Amount",
   "all": "All",
   "availableCapital": "Balance：",
@@ -48,6 +48,8 @@
   "manual": "Processing",
   "closed": "Closed",
   "rewardContent": "Click the button below to register airdrop reward claim between April 5-25, 2021 (UTC) if you are satisfied with the claim requirements (please connect the same wallet address that was satisfied with the requirements to this site). The system will calculate your SATO reward amount based on total claimed addresses after the registration ends. Your SATO reward will be airdropped to your SwapAll Layer 2 wallet in a week.\n\n",
+
+  "balanceLow":"Not enough balance",
   "registerReward": "Claim Reward",
   "inviteReward": "Claim Airdrop Reward",
   "registeredUser": "Claimed Addrs.",

@@ -180,14 +180,14 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                 setWarning(' ')
                 setCantDeposit(false)
             } else {
-                setWarning('not enough capitals')
+                setWarning(t('balanceLow'))
                 setCantDeposit(true)
             }
         } else {
             if (amount === '') {
                 setWarning(' ')
             } else {
-                setWarning('invalid input')
+                setWarning(t('invalidInput'))
             }
             setCantDeposit(true)
         }
@@ -304,16 +304,14 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
                     </Button>
                     <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                        {/* <Grid item xs={12} > */}
                         <Typography style={{ textTransform:'none',fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
                             {t('deposit')}
                         </Typography>
-                        {/* </Grid> */}
-                        {/* <Grid item xs={12} > */}
-                        <Typography style={{textTransform:'none', fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
+                 
+                        <Typography style={{ textTransform: 'none', fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
                             {t('depositContent')}
                         </Typography>
-                        {/* </Grid> */}
+            
                     </div>
                     <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
 
@@ -346,9 +344,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
                         <CustomTextField
                             label={t('depositAmount')}
-
-                            helperText="ccc"
-                            style={{ width: '70%' ,textTransform:'none'}}
+                            disabled={!loggedIn}
+                            style={{ width: '70%', textTransform: 'none' }}
                             inputRef={inputRef}
                             onChange={(e) => handleAmountChange(e.target.value)}
                             value={depositAmount}
@@ -361,7 +358,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         </CustomTextField>
 
                         <div style={{ width: '25%', display: 'flex', flexDirection: 'column', alignItems: 'start', marginTop: -12 }}>
-                            <Typography style={{ textTransform:'none',color: 'white', fontSize: 12, fontWeight: 'bold', marginLeft: 12 }}>
+                            <Typography style={{ textTransform: 'none', color: 'white', fontSize: 12, fontWeight: 'bold', marginLeft: 12 }}>
 
                                 {t('availableCapital')} {loggedIn ? roundingDown(capital.free, 4) : '--'} {capital.token}
                             </Typography>
@@ -461,7 +458,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12} style={{ marginTop: 24 }}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                    <CustomButton style={{ width: '100%' }} buttonStyle="connectStyle" onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                     >
                                         {button1}
                                     </CustomButton> : null
@@ -469,12 +466,12 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <Button style={{ width: 180 }} className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
-                                            {t('deposit')}
-                                        </Button> :
-                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        <CustomButton style={{ width: '100%' }} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
+                                            {t('confirm')}
+                                        </CustomButton> :
+                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                             {t('unlock')}
-                                        </Button> : null
+                                        </CustomButton> : null
                             }
                         </Grid>
 

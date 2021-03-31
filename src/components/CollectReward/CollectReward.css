@@ -143,11 +143,12 @@
   .cards__small__cell {
     display: flex;
     background-color: #192786;
-    height: 90%;
+    height: 70%;
     width: 31%;
     border-radius: 32px;
     flex-flow: column;
     align-items: center;
+    justify-content: center;
     
 
   }
@@ -172,14 +173,14 @@
     text-transform: none;
     margin-left: 12;
     margin-right: 12;
-    padding-top: 12px;
+    /* padding-top: 12px; */
     max-width: 90%;
     /* background-color: blue; */
   }
   
   .cards__cell__value {
     color:#8FB9E1;
-    font-size: 24px;
+    font-size: px;
     line-height: 12px;
     font-weight: bold;
     margin-top: 0px;

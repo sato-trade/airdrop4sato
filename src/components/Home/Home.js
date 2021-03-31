@@ -31,7 +31,8 @@ function Home({ t, navBarHeight, address, network, chainId,
             backgroundColor: '#010846',
             padding: theme.spacing(1),
             flexGrow: 1,
-            textAlign: 'center'
+            textAlign: 'center',
+            height:1000
         },
         walletBox: {
             maxWidth: 441,
