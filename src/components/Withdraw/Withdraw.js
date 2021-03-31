@@ -355,7 +355,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     }, [validAmount])
 
     useEffect(() => {
-        console.log('here: ', !parseFloat(withdrawAmount))
         if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
             setReceivingAmount(roundingDown(parseFloat(withdrawAmount) - withdrawFeeObj.amount, 4))
             setReceivingBase(withdrawFeeObj.base)
@@ -405,14 +404,17 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
     useEffect(() => {
         if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
-            setReceivingAmount(withdrawFeeObj.amount)
+            if (withdrawAmount === '') {
+                setReceivingAmount('--')
+            } else {
+                setReceivingAmount(roundingDown(parseFloat(withdrawAmount) - withdrawFeeObj.amount, 4))
+            }
             setReceivingBase(withdrawFeeObj.base)
         }
         if (withdrawFeeObj === null){
             setValidAmount(false)
             setWarning(`${coin} ${t('withdrawNotAvailable')}`)
         }
-
     },[withdrawFeeObj])
 
     return (
@@ -621,11 +623,11 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ? t('withdrawSucceed') : t('loading')}`}</p>
                             </Grid>
-                            <Grid item xs={12} >
-                                <Button style={{ width: 180 }} className={classes.btn} >
-                                    {withdrawMsg}
-                                </Button>
-                            </Grid>
+                            {/*<Grid item xs={12} >*/}
+                            {/*    <Button style={{ width: 180 }}  className={classes.btn} >*/}
+                            {/*        {withdrawMsg}*/}
+                            {/*    </Button>*/}
+                            {/*</Grid>*/}
                             {/*{*/}
                             {/*    Object.keys(withdrawReceipt).length > 0 ?*/}
                             {/*        <Grid item xs={12} >*/}

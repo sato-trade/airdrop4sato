@@ -35,7 +35,7 @@
   "checkEtherscan": "去Etherscan查看",
   "depositSucceed": "充值成功",
   "confirmedBlock": "确认块高",
-  "depositAction": "充值",
+  "withdrawSucceed": "提币已提交",
   "withdrawAction": "提币",
   "records": "资金记录",
   "noRecords": "暂无记录",
