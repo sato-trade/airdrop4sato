@@ -184,15 +184,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             </Typography>
 
                         </div>
-                        <div className='cards__small__cell'>
-                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
-                                {t('registeredUser')}
-                            </Typography>
-                            <Typography className='cards__cell__value'>
-                                {FormatNumber(amplRewardsInfo.registeredUsers)}
-                            </Typography>
-
-                        </div>
+                   
                         <div className='cards__small__cell'>
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('expectedRewardPerPerson')}(SATO)
@@ -254,32 +246,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     </div>
                 </Fade>
             </Modal>
-            <Modal
-                disablePortal
-                disableEnforceFocus
-                disableAutoFocus
-                aria-labelledby="server-modal-title"
-                aria-describedby="server-modal-description"
-                className={classes.modal}
-                open={openSucceedModal}
-                onClose={handleCloseSucceedModal}
-                closeAfterTransition
-                BackdropComponent={Backdrop}
-                BackdropProps={{
-                    timeout: 500,
-                }}
-            >
-                <Fade in={openSucceedModal}>
-                    <div className={classes.paper}>
-                        <h2 id="server-modal-title">{t('registerRewardSucceed')}</h2>
-                        <Grid container spacing={2} >
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{''}</p>
-                            </Grid>
-                        </Grid>
-                    </div>
-                </Fade>
-            </Modal>
+          
         </div>
     )
 }
