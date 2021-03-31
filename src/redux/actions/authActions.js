@@ -1,5 +1,6 @@
 import { authService } from '../services/authServices';
 import {
+    AUTH_SIGNING,
     LOGIN,
     LOGIN_SUCCEED,
     LOGIN_FAILED,
@@ -21,7 +22,15 @@ export const authActions = {
     checkUser,
     signUp,
     logIn,
-    logOut
+    logOut,
+    authSigning
+}
+
+function authSigning() {
+    return dispatch => {
+       dispatch(authSigning(true))
+    }
+    function authSigning(loading) {return { type: AUTH_SIGNING, loading }}
 }
 
 function checkUser(address) {
@@ -56,6 +65,7 @@ function signUp(payload) {
                 res => {
                     if (res) {
                         dispatch(success(res.success));
+                        dispatch(logIn(payload))
                     }
                 },
                 error => {
@@ -80,6 +90,7 @@ function logIn(payload) {
                     dispatch(success(res));
                 },
                 error => {
+                    console.log('error: ', error)
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }

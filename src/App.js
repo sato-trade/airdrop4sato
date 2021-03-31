@@ -103,7 +103,6 @@ function App({t}){
             dispatch(authActions.checkUser(address))
         }
         return() => {
-            console.log('clear check')
         }
     }, [address, network, chainId])
 
@@ -111,7 +110,6 @@ function App({t}){
         if (loggingIn) {
             setButton2(t('loggingIn'))
         } if (!registered)  {
-            console.log('should be here')
             setButton2(t('registered'))
         } if (registered && !loggedIn) {
             setButton2(t('unlock'))
@@ -120,14 +118,12 @@ function App({t}){
             setButton2Disabled(true)
         }
         return() => {
-            console.log('clear registration')
         }
     }, [i18n.language, registered, loggedIn, loggingIn, loading])
 
     useEffect(() => {
         updateButtons()
         return() => {
-            console.log('clear button')
         }
     }, [button1Disabled, button2Disabled, button1, address ])
 
@@ -136,7 +132,8 @@ function App({t}){
 
     return (
         <Router>
-            <Navbar sendBackAddr={sendBackAddr} sendBackChainId={sendBackChainId} sendBackNetworkId={sendBackNetworkId} sendBackHeight={sendBackHeight} />
+            <Navbar button1={button1} sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled}
+                    sendBackAddr={sendBackAddr} sendBackChainId={sendBackChainId} sendBackNetworkId={sendBackNetworkId} sendBackHeight={sendBackHeight} />
             <Switch>
                 <Route exact path='/' >
                     <Home sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
@@ -179,7 +176,7 @@ function App({t}){
                        address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
             </Switch>
-            {/* <Footer /> */}
+            {/*<Footer />*/}
         </Router>
     )
 }

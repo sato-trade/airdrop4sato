@@ -46,7 +46,6 @@ async function deposit(payload) {
 }
 
 async function withdraw(payload) {
-    console.log('payload: ', payload)
     const requestOptions = {
         method: 'POST',
         headers: authHeader(payload.token),
@@ -100,17 +99,23 @@ async function getTransactionRecords(token) {
 }
 
 async function getAmplRewards(token) {
+
     const requestOptions = {
         method: 'GET',
         headers: authHeader(token)
     };
-    return fetch(token && token.length > 0 ? Url.GET_AMPL_REWARDS : Url.GET_AMPL_REWARDS + '/public', requestOptions).then(handleResponse);
+    if (token && token.length > 0) {
+        return fetch( Url.GET_AMPL_REWARDS, requestOptions).then(handleResponse);
+    } else {
+        return fetch( Url.GET_AMPL_REWARDS + '/public', requestOptions).then(handleResponse);
+    }
 }
 
 async function registerAmplRewards(token) {
     const requestOptions = {
-        method: 'GET',
+        method: 'POST',
         headers: authHeader(token),
+        body: null
     };
     return fetch(Url.REGISTER_AMPL_REWARDS, requestOptions).then(handleResponse);
 }

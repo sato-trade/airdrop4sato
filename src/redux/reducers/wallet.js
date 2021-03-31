@@ -14,7 +14,7 @@ import {
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED, GET_TRANSACTION_RECORDS_FAILED, GET_TRANSACTION_RECORDS_SUCCEED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
     REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED,
-    GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED
+    GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED
 } from '../constants';
 
 export function wallet (state = {
@@ -34,6 +34,7 @@ export function wallet (state = {
         hasClaimed: null
     },
     message: '',
+    rewardMessage: '',
     withdrawFinished: true,
     withdrawSucceed: false,
     withdrawMsg: '',
@@ -41,9 +42,20 @@ export function wallet (state = {
         amount: 0,
         base: ''
     },
+    walletSigning: false
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
+        case WALLET_SIGNING:
+            return {
+                ...state,
+                walletSigning: action.loading
+            }
+        case WALLET_SIGNING_CANCELLED:
+            return {
+                ...state,
+                walletSigning: action.loading
+            }
         case GET_USER_CAPITAL:
             return {
                 ...state,
@@ -115,7 +127,8 @@ export function wallet (state = {
         case DEPOSIT:
             return {
                 ...state,
-                depositFinished: false
+                depositFinished: false,
+                walletSigning: true
             }
         case DEPOSIT_HASH:
             return {
@@ -155,34 +168,35 @@ export function wallet (state = {
         case GET_AMPL_REWARDS_SUCCEED:
             return {
                 ...state,
-                message: '',
+                rewardMessage: '',
                 amplRewardsInfo: action.data
             }
         case GET_AMPL_REWARDS_FAILED:
             return {
                 ...state,
-                message: action.data
+                rewardMessage: action.data
             }
         case REGISTER_AMPL_REWARDS:
             return {
                 ...state,
-                message: '',
+                rewardMessage: '',
                 loading: true
             }
         case REGISTER_AMPL_REWARDS_SUCCEED:
             return {
                 ...state,
-                loading: false
+                loading: false,
+                rewardMessage: action.message
             }
         case NOT_QUALIFIED:
             return {
                 ...state,
-                message: action.message
+                rewardMessage: action.message
             }
         case ALREADY_REGISTERED:
             return {
                 ...state,
-                message: action.message
+                rewardMessage: action.message
             }
         case GET_WITHDRAW_FEE_SUCCESS:
             return {

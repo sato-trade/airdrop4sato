@@ -4,13 +4,7 @@
     <list default="true" id="4fdc4728-bd15-48ee-b63f-cfc3d01ab5da" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/Deposit/Deposit.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Deposit/Deposit.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/locales/cn/translation.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/cn/translation.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/locales/en/translation.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/locales/en/translation.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/actions/walletActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/actions/walletActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/constants.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/constants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/redux/reducers/wallet.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/redux/reducers/wallet.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/Common.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/Common.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Withdraw/Withdraw.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Withdraw/Withdraw.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

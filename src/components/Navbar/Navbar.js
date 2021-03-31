@@ -9,11 +9,13 @@ import i18n from '../../i18n';
 import {useDispatch, useSelector} from "react-redux";
 import {authActions} from "../../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
+import {onClickConnect, onClickInstall} from "../../utils/Sign";
+import CustomButton from "../CommonElements/CustomButton";
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 
 let tempHeight = null;
 
-function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId}){
+function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId, button1, sendBackButton1, sendBackButton1Disabled}){
     const useStyles = makeStyles((theme) => ({
         bar: {
             background: '#010846'
@@ -76,7 +78,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     const [ addr, setAddr ] = useState('')
     const [ startWatch, setStartWatch ] = useState(false)
 
-    const { loggedIn } = useSelector(state => state.auth)
+    const { loggedIn, registered } = useSelector(state => state.auth)
     const history = useHistory();
     const dispatch = useDispatch();
 
@@ -224,8 +226,11 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                 </Toolbar>
             </AppBar>
             <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
                 className={classes.modal}
                 open={open}
                 onClose={handleClose}
@@ -237,13 +242,17 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        <h2 id="transition-modal-title">{t('metamaskConnected')}</h2>
+                        <h2 id="transition-modal-title">{!isMetaMaskInstalled() ? t('metamaskNotDetected') : loggedIn ? t('metamaskConnected') : t('metamaskLogin')}</h2>
                         <p id="transition-modal-description">{addr}</p>
                         {
-                            window.ethereum ?
+                            window.ethereum && registered ?
                                 <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
                                     {t('switch')}
-                                </Button> : null
+                                </Button> :
+                                <Button className={classes.addrBtn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                >
+                                    {button1}
+                                </Button>
                         }
 
                     </div>

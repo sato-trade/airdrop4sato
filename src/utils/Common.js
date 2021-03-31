@@ -11,13 +11,13 @@ export const FormatNumber = (number) => {
     }
 }
 
-export function getIcons(coinName, map, isSmall) {
-    if (Object.keys(map).length !== 0 && map[coinName] !== undefined ) {
+export function getIcons(name, map, isSmall) {
+    if (Object.keys(map).length !== 0 && map[name] !== undefined ) {
         let url = ''
         if (isSmall) {
-            url = map[coinName].smallLogoUrl === undefined || map[coinName].smallLogoUrl === null ? '' : map[coinName].smallLogoUrl
+            url = map[name].smallLogoUrl === undefined || map[name].smallLogoUrl === null ? '' : map[name].smallLogoUrl
         } else {
-            url = map[coinName].bigLogoUrl === undefined || map[coinName].bigLogoUrl === null? '' : map[coinName].bigLogoUrl
+            url = map[name].bigLogoUrl === undefined || map[name].bigLogoUrl === null? '' : map[name].bigLogoUrl
         }
         return url === '' ? unknowCoinIcon : url
     } else {

@@ -77,7 +77,7 @@ export default function CustomTextField(props) {
 
       endAdornment:
 
-        props.rightButtonLabel === "" ?
+        props.rightbuttonlabel === "" ?
           null
           :
           <InputAdornment position="end">
@@ -85,7 +85,7 @@ export default function CustomTextField(props) {
               style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}
               onClick={props.onRightButtonClick}
             >
-              {props.rightButtonLabel}
+              {props.rightbuttonlabel}
             </IconButton>
           </InputAdornment>
 

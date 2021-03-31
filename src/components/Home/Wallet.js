@@ -22,7 +22,7 @@ function Wallet({t, navBarHeight}) {
             backgroundColor: '#010846',
             padding: theme.spacing(1),
             flexGrow: 1,
-            height: height - navBarHeight,
+            minHeight: height - navBarHeight,
             textAlign: 'center'
         },
         walletBox: {
@@ -91,7 +91,6 @@ function Wallet({t, navBarHeight}) {
             dispatch(walletActions.getAllTokenStatus(token))
         }
         return() => {
-            console.log('clear initialization')
         }
     }, [])
 
