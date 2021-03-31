@@ -31,7 +31,6 @@ function Home({ t, navBarHeight, address, network, chainId,
             backgroundColor: '#010846',
             padding: theme.spacing(1),
             flexGrow: 1,
-            height: height - navBarHeight,
             textAlign: 'center'
         },
         walletBox: {
@@ -107,12 +106,12 @@ function Home({ t, navBarHeight, address, network, chainId,
                         <div className='cards__wrapper'>
 
                             <div className='cards__title__wrapper'>
-                                <Typography className={classes.textLarge} style={{textTransform:'none'}} gutterBottom>
+                                <Typography className={classes.textLarge} style={{textTransform:'none'}}>
                                     {t('walletTitle')}
 
                                 </Typography>
                                 <Link to='/wallet/records'>
-                                    <Button className={classes.textSmall} color="textSecondary" gutterBottom>
+                                    <Button className={classes.textSmall} color="textSecondary">
                                         {t('records')}
                                     </Button>
                                 </Link>
@@ -153,7 +152,7 @@ function Home({ t, navBarHeight, address, network, chainId,
                                         }
                                         {
                                             address.length === 42 && isValidAddress(address) ?
-                                                <Button style={{textTransform:'none', width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={!registered || !loggedIn ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
+                                                <Button style={{textTransform:'none', width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                                     {button2}
                                                 </Button> : null
                                         }

@@ -44,7 +44,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             backgroundColor: '#010846',
             padding: theme.spacing(1),
             flexGrow: 1,
-            height: height - navBarHeight,
             textAlign: 'center'
         },
         depositBox: {
@@ -152,7 +151,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     }));
     const classes = useStyles();
 
-    const [withdrawTo, setWithdrawTo] = useState('')
+    const [withdrawTo, setWithdrawTo] = useState(address)
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
     const [coin, setCoin] = React.useState();
@@ -163,8 +162,8 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     const [coins, setCoins] = React.useState([])
 
 
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj } = useSelector(state => state.wallet)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
+    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
@@ -227,28 +226,33 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             let msg = 'Withdraw Request'
             const from = address
             const _msg = Web3.utils.soliditySha3(msg);
-
-            const sign = await window.ethereum.request({
-                method: 'personal_sign',
-                params: [_msg, from],
-            })
-            let payload = {
-                personalSign: {
-                    data: msg,
-                    sig: sign,
-                    pubKeyAddress: address,
-                    chainId: Web3.utils.hexToNumber(chainId),
-                    networkId: Number(network),
-                },
-                currency: coin,
-                chain: chain,
-                amount: withdrawAmount,
-                address: withdrawTo,
-                token: token
+            dispatch(walletActions.walletSigning())
+            if (!walletSigning) {
+                const sign = await window.ethereum.request({
+                    method: 'personal_sign',
+                    params: [_msg, from],
+                })
+                let payload = {
+                    personalSign: {
+                        data: msg,
+                        sig: sign,
+                        pubKeyAddress: address,
+                        chainId: Web3.utils.hexToNumber(chainId),
+                        networkId: Number(network),
+                    },
+                    currency: coin,
+                    chain: chain,
+                    amount: withdrawAmount,
+                    address: withdrawTo,
+                    token: token
+                }
+                dispatch(walletActions.withdraw(payload))
             }
-            dispatch(walletActions.withdraw(payload))
+
         } catch (err) {
-            console.error(err)
+            console.error('withdraw request failed: ', err)
+            dispatch(walletActions.walletSigningCancelled())
+
         }
     }
 
@@ -274,7 +278,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
 
         return() => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -282,9 +285,9 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
+            setWithdrawTo(address)
         }
         return() => {
-            console.log('clear login')
         }
     }, [loggedIn, address])
 
@@ -318,11 +321,9 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                 setChain(chain)
             }
         }
-
         setCoins(_coins)
 
         return() => {
-            console.log('clear capital check')
         }
 
     },[coin, address, userCapitals, tokenList, chainId, network])
@@ -332,14 +333,12 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
-                console.log('clear pop modal')
             }
         }
     },[withdrawFinished])
 
     useEffect(() => {
         if (validAmount) {
-            console.log('kept calling')
             setAddrWarning('')
             let coinInfo = coins.find(item => item.label === coin)
             if (coinInfo) {
@@ -350,7 +349,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setReceivingBase('')
         }
         return () => {
-            console.log('clear check fee')
         }
     }, [validAmount])
 
@@ -367,7 +365,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             }
             else if (!Number(withdrawAmount)) {
                 setValidAmount(false)
-                setWarning('invalid input')
+                setWarning(t('invalidInput'))
             }
             else if (withdrawAmount <= capital.free) {
                 if (receivingBase === coin) {
@@ -376,7 +374,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                         setValidAmount(true)
                     } else {
                         setValidAmount(false)
-                        setWarning('profits.withdraw.enterAmountHigherThanFee')
+                        setWarning(t('enterAmountHigherThanFee'))
                     }
                 } else {
                     if (feeCapital.free > withdrawFeeObj.amount) {
@@ -384,18 +382,19 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                         setValidAmount(true)
                     } else {
                         setValidAmount(false)
-                        setWarning(('profits.withdraw.insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('profits.withdraw.insufficient_fund'))
+                        setWarning(t('insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('insufficient_fund'))
                     }
                 }
-            }
-            else if (withdrawAmount > capital.free) {
+            } else if (withdrawAmount > capital.free) {
                 setValidAmount(false)
-                setWarning('profits.withdraw.insufficient_fund')
+                setWarning(t('insufficient_fund'))
+            } else {
+                setValidAmount(false)
+                setWarning(t('insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('insufficient_fund'))
             }
         }
 
         return () => {
-            console.log('clear amount change')
         }
     },[withdrawAmount])
 
@@ -404,10 +403,12 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setReceivingAmount(withdrawFeeObj.amount)
             setReceivingBase(withdrawFeeObj.base)
         }
+        if (withdrawFeeObj === null){
+            setValidAmount(false)
+            setWarning(`${coin} ${t('withdrawNotAvailable')}`)
+        }
 
     },[withdrawFeeObj])
-
-
 
     return (
         <div className={classes.root}>
@@ -522,14 +523,15 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                     },
                                 }}
                                 defaultValue={'--'}
+                                disabled={!loggedIn}
                             >
                                 {coins.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
-                                            <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
+                                            <Grid item xs={3} >
+                                                <Avatar alt="Coin Icon" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
                                             </Grid>
-                                            <Grid item xs={6} >
+                                            <Grid item xs={9} >
                                                 {option.label}
                                             </Grid>
                                         </Grid>
@@ -563,7 +565,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                         <Button style={{ width: 180 }}  className={classes.btn} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </Button> :
-                                        <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                        <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </Button> : null
                             }
@@ -595,10 +597,10 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
                             </Grid>
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('time')}: ${time}`}</p>
+                                <p id="server-modal-description">{`${t('withdrawAddress')}: ${withdrawTo}`}</p>
                             </Grid>
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
+                                <p id="server-modal-description">{`${t('action')}: ${t('withdrawAction')}`}</p>
                             </Grid>
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>

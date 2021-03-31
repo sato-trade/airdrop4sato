@@ -25,7 +25,7 @@ import { roundingDown } from '../../utils/RoundingDown'
 import { getIcons, formDateString } from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
-import { isNumeric } from "../../utils/Common";
+import { isNumeric, getChain } from "../../utils/Common";
 import { wallet } from "../../redux/reducers/wallet";
 import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
 import { isValidAddress } from "ethereumjs-util";
@@ -150,7 +150,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     const [coins, setCoins] = React.useState([])
 
 
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
     const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, message, depositHash, depositReceipt } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
@@ -174,7 +174,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     };
 
     const handleAmountChange = (amount) => {
-        console.log('amount: ', amount)
         setDepositAmount(amount);
         if (isNumeric(amount)) {
             if (parseFloat(amount) <= capital.free) {
@@ -197,6 +196,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     const handleCoinChange = (event) => {
         setCoin(event.target.value);
+        handleAmountChange('')
     };
 
     const confirmDeposit = async () => {
@@ -207,9 +207,11 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             coin: coin,
         }
         try {
-            dispatch(walletActions.deposit(payload))
+            if (depositFinished) {
+                dispatch(walletActions.deposit(payload))
+            }
         } catch (err) {
-            console.log('deposit failed: ', err)
+            console.log('deposit request failed: ', err)
         }
     }
 
@@ -220,7 +222,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getL1Capital(address))
         }
         return () => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -231,27 +232,43 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getL1Capital(address))
         }
         return () => {
-            console.log('clear login')
         }
     }, [loggedIn, address])
 
     useEffect(() => {
         let _coins = []
         for (let i = 0; i < tokenList.length; i++) {
-            if (tokenList[i].depositIsOn) {
-                _coins.push({
-                    label: tokenList[i].token,
-                    value: tokenList[i].token
-                })
+            if (tokenList[i].contractDepositIsOn) {
+                if (tokenList[i].token === 'USDT_ERC20') {
+                    if (_coins.find(item => item.label === 'USDT') === undefined) {
+                        _coins.push({
+                            label: 'USDT',
+                            value: 'USDT'
+                        })
+                    }
+                } else if (tokenList[i].token.includes('_' + getChain(network, chainId))) {
+                    let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
+                    if (_coins.find(item => item.label === token) === undefined) {
+                        _coins.push({
+                            label: token,
+                            value: token
+                        })
+                    }
+                } else if (!tokenList[i].token.includes('_ETH')) {
+                    _coins.push({
+                        label: tokenList[i].token,
+                        value: tokenList[i].token
+                    })
+                }
+
             }
         }
 
         setCoins(_coins)
         return () => {
-            console.log('clear set coins')
         }
 
-    }, [tokenList])
+    }, [tokenList, address, loggedIn, network, chainId])
 
 
     useEffect(() => {
@@ -264,7 +281,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         }
         setCapital(_capital)
         return () => {
-            console.log('clear capital check')
         }
 
     }, [coin, address, l1Capital])
@@ -274,11 +290,9 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
-                console.log('clear pop modal')
             }
         }
     }, [depositHash, depositFinished])
-
 
     return (
         <div className={classes.root}>
@@ -340,7 +354,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             value={depositAmount}
                             helperText={warning}
                             error={warning !== ''}
-                            rightButtonLabel={ capital.free > 0.0001 ?  t('all') : null}
+                            rightbuttonlabel={ capital.free > 0.0001 ?  t('all') : null}
                             onRightButtonClick={allIn}
                         >
 
@@ -356,24 +370,22 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                 label={t('selectCoin')}
                                 value={coin}
                                 onChange={handleCoinChange}
-
+                                disabled={!loggedIn}
                             >
                                 {coins.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
-                                            <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenList, true)} />
+                                            <Grid item xs={3} >
+                                                <Avatar alt="Coin Icon" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
                                             </Grid>
-                                            <Grid item xs={6} >
+                                            <Grid item xs={9} >
                                                 {option.label}
                                             </Grid>
                                         </Grid>
                                     </MenuItem>
                                 ))}
-
                             </CustomDropBox>
                         </div>
-
                     </div>
 
 
@@ -460,7 +472,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                         <Button style={{ width: 180 }} className={classes.btn} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('deposit')}
                                         </Button> :
-                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </Button> : null
                             }

@@ -10,7 +10,7 @@ import {
     List,
     ListItem,
     ListItemAvatar,
-    Avatar, ListItemText, ListItemSecondaryAction
+    Avatar, ListItemText, ListItemSecondaryAction, Backdrop, Fade
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { withTranslation } from 'react-i18next';
@@ -103,6 +103,21 @@ function Records({t, navBarHeight, address, chainId, network,
             fontSize: 20,
             fontWeight: '600'
         },
+        modal: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            // width: width * 0.5,
+            // height: height * 0.5
+        },
+        paper: {
+            backgroundColor: 'white',
+            border: 'transparent',
+            // boxShadow: theme.shadows[5],
+            padding: theme.spacing(2, 4, 3),
+            borderRadius: 20,
+            textAlign: 'center'
+        },
     }));
     const classes = useStyles();
     const dispatch = useDispatch()
@@ -111,18 +126,41 @@ function Records({t, navBarHeight, address, chainId, network,
     const { token, loggedIn, registered } = useSelector(state => state.auth)
     const { tokenIcons, transactionRecords } = useSelector(state => state.wallet)
 
+    const [time, setTime] = useState('')
+    const [amount, setAmount] = useState(0)
+    const [type, setType] = useState(0)
+    const [state, setState] = useState('')
+    const [hash, setHash] = useState('')
+    const [openRecordDetail, setOpenRecordDetail] = useState(false)
+    const [coin, setCoin] = useState('')
+
+    const handleOpenRecordDetail= (item) => {
+        setOpenRecordDetail(true);
+        setTime(convertTimeString(item.createdAt))
+        setAmount(item.amount)
+        setType(item.type)
+        setState(item.status)
+        setHash(item.txId)
+        setCoin(item.token)
+    };
+
+    const handleCloseRecordDetail= () => {
+        setOpenRecordDetail(false);
+    };
+
     const transactionType = {
-        1: { name: t('stacks.deposit'), sign: '+' },
-        2: { name: t('stacks.withdraw'), sign: '-' },
-        3: { name: t('financials.add'), sign: '-' },
-        4: { name: t('financials.remove'), sign: '+' },
+        1: { name: t('depositAction'), sign: '+' },
+        2: { name: t('withdrawAction'), sign: '-' },
+        3: { name: 'add', sign: '-' },
+        4: { name: 'remove', sign: '+' },
         5: {
             name: {
                 From: t('tabs.swap'),
                 To: t('swap.swapReward')
             }, sign1: '+', sign2: '-'
         },
-        6: { name: t('transactionHistory.collectReward'), sign: '+' }
+        6: { name: t('transactionHistory.collectReward'), sign: '+' },
+        0: { name: '', sign: '' }
     }
     const status = {
         0: t('submitted'),
@@ -192,9 +230,8 @@ function Records({t, navBarHeight, address, chainId, network,
                                     <List className={classes.capitalList}>
                                         {
                                             transactionRecords.map(item => (
-                                                <ListItem key={item.id} button>
-                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={item.type === 1 ? `${t('depositAction')} ${item.token}`
-                                                        : `t('withdrawAction') ${item.token} `} secondary={convertTimeString(item.createdAt)} />
+                                                <ListItem key={item.id} button onClick={() => handleOpenRecordDetail(item)}>
+                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
                                                     <ListItemText style={{ color: color[item.status] }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
                                                     <ListItemText>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</ListItemText>
                                                     <ListItemSecondaryAction>
@@ -227,6 +264,46 @@ function Records({t, navBarHeight, address, chainId, network,
                     </Grid>
                 </CardContent>
             </Card>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openRecordDetail}
+                onClose={handleCloseRecordDetail}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openRecordDetail}>
+                    <div className={classes.paper}>
+                        <h2 id="server-modal-title">{t('transactionDetails')}</h2>
+                        <Grid container spacing={2} >
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('time')}: ${time}`}</p>
+                            </Grid>
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('action')}: ${t(transactionType[type].name)} ${amount} ${coin}`}</p>
+                            </Grid>
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{`${t('status')}: ${type === 1 ? t(depositStatus[state]) : t(status[state])}`}</p>
+                            </Grid>
+                            {
+                                hash > 1 ?
+                                    <Grid item xs={12} >
+                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >
+                                            {t('checkEtherscan')}
+                                        </Button>
+                                    </Grid> : null
+                            }
+                        </Grid>
+                    </div>
+                </Fade>
+            </Modal>
         </div>
     )
 }
