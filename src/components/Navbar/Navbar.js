@@ -218,7 +218,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                                 </NavLink>
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
-                            <Button className={classes.addrBtn} onClick={handleOpen} variant="contained">
+                            <Button className={classes.addrBtn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : window.ethereum && registered ? handleOpen : onClickConnect} variant="contained">
                                 {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
                             </Button>
                         </List>
@@ -242,19 +242,11 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             >
                 <Fade in={open}>
                     <div className={classes.paper}>
-                        <h2 id="transition-modal-title">{!isMetaMaskInstalled() ? t('metamaskNotDetected') : loggedIn ? t('metamaskConnected') : t('metamaskLogin')}</h2>
+                        <h2 id="transition-modal-title">{loggedIn ? t('metamaskConnected') : t('metamaskLogin')}</h2>
                         <p id="transition-modal-description">{addr}</p>
-                        {
-                            window.ethereum && registered ?
-                                <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
-                                    {t('switch')}
-                                </Button> :
-                                <Button className={classes.addrBtn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                                >
-                                    {button1}
-                                </Button>
-                        }
-
+                        <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
+                            {t('switch')}
+                        </Button>
                     </div>
                 </Fade>
             </Modal>
