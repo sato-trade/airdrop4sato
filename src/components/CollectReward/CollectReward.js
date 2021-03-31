@@ -12,6 +12,7 @@ import { walletActions } from "../../redux/actions/walletActions";
 import { isValidAddress } from "ethereumjs-util";
 import { isMetaMaskInstalled, onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
 import { FormatNumber } from "../../utils/Common";
+import CustomButton from '../CommonElements/CustomButton';
 
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
@@ -147,8 +148,8 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
 
                     <div className='cards__item__info'>
-                        <Typography className='cards__item__text' style={{fontSize:32,fontWeight:'bold'}}>{t('inviteReward')}</Typography>
-                        <Typography className='cards__content__text' style={{fontSize:12,fontWeight:'bold'}}>
+                        <Typography className='cards__item__text' style={{ fontSize: 32, fontWeight: 'bold' }}>{t('inviteReward')}</Typography>
+                        <Typography className='cards__content__text' style={{ fontSize: 12, fontWeight: 'bold' }}>
                             {t('rewardContent')}
                         </Typography>
 
@@ -159,7 +160,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('registeredUser')}
                             </Typography>
-                            <Typography className='cards__cell__value'>
+                            <Typography className='cards__cell__value' style={{ fontSize: 24, fontWeight: 'bold',marginTop:12 }}>
                                 {FormatNumber(amplRewardsInfo.registeredUsers)}
                             </Typography>
 
@@ -168,7 +169,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('releasedReward')}
                             </Typography>
-                            <Typography className='cards__cell__value__large'>
+                            <Typography className='cards__cell__value__large' style={{ fontSize: 24, fontWeight: 'bold',marginTop:12 }}>
                                 {FormatNumber(amplRewardsInfo.totalRewards)}
                             </Typography>
 
@@ -176,35 +177,35 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
                         <div className='cards__small__cell'>
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
-                                {t('expectedRewardPerPerson')}
+                                {t('expectedRewardPerPerson')}(SATO)
                             </Typography>
-                            <Typography className='cards__cell__value'>
-                                {`${FormatNumber(amplRewardsInfo.rewardsPerUser)} SATO`}
+                            <Typography className='cards__cell__value' style={{ fontSize: 24, fontWeight: 'bold',marginTop:12 }}>
+                                {`${FormatNumber(amplRewardsInfo.rewardsPerUser)} `}
                             </Typography>
                         </div>
                     </div>
-                    <div>
+                    <div style={{marginTop:24}}>
                         {
                             address.length < 42 || !isValidAddress(address) ?
-                                <Button className={classes.btn} style={{ width: 500 }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                 >
                                     {button1}
-                                </Button> : null
+                                </CustomButton> : null
                         }
                         {
                             address.length === 42 && isValidAddress(address) ?
                                 loggedIn ?
                                     amplRewardsInfo.hasClaimed ?
 
-                                        <Button style={{ width: 180 }} className={classes.btn} style={{ width: 500 }} disabled={amplRewardsInfo.hasClaimed}>
+                                        <CustomButton style={{ width: '100%' }}  style={{ width: 500 }} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
-                                        </Button> :
-                                        <Button style={{ width: 180 }} className={classes.btn} style={{ width: 500 }} onClick={confirmRegister} >
+                                        </CustomButton> :
+                                        <CustomButton style={{ width: '100%' }}  style={{ width: 500 }} onClick={confirmRegister} >
                                             {t('registerReward')}
-                                        </Button> :
-                                    <Button style={{ width: 180 }} className={classes.btn} style={{ width: 500 }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        </CustomButton> :
+                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: 500 }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                         {t('unlock')}
-                                    </Button> : null
+                                    </CustomButton> : null
                         }
                     </div>
                 </div>

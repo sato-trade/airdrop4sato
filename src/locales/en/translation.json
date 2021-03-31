@@ -1,5 +1,5 @@
 {
-  "home": "Home",
+  "home": "L2 Wallet",
   "wallet": "Wallet",
   "swap": "Swap",
   "pool": "Pool",
@@ -19,8 +19,8 @@
   "metamaskConnected": "Connected to Wallet",
   "switch": "Switch",
   "noCapitals": "No available capitals",
-  "collectReward": "Reward",
-  "depositContent": "SwapAll 是建立在侧链（Layer 2）上的去中心化交易所，您需要先将去中心化钱包里的资产充值到 SwapAll 侧链钱包中，才能进行零费用和瞬间到账的兑换和流动性操作，侧链中的资产由去中心化智能合约托管，您通过私钥自主掌控，安全可靠，可以随时提现到去中心化钱包。\n\n",
+  "collectReward": "Claim Reward",
+  "depositContent": "SwapAll is a Layer 2 Dex. Transfering assets from your decentralized wallet (Layer 1) to SwapAll Layer 2 wallet to experience gas-free and real-time token transfer and swap. In SwapAll Layer 2, your assets are managed by a group of decentralized smart contracts. You and only you have total control over the assets through private keys. Your assets are safe, and you could be able to withdraw assets to your Layer 1 wallet any time.\n\n",
   "depositAmount": "Deposit Amount",
   "all": "All",
   "availableCapital": "Balance：",
@@ -46,11 +46,11 @@
   "closed": "Closed",
   "rewardContent": "Click the button below to register airdrop reward claim between April 5-25, 2021 (UTC) if you are satisfied with the claim requirements (please connect the same wallet address that was satisfied with the requirements to this site). The system will calculate your SATO reward amount based on total claimed addresses after the registration ends. Your SATO reward will be airdropped to your SwapAll Layer 2 wallet in a week.\n\n",
   "registerReward": "一键登记",
-  "inviteReward": "Collect award",
+  "inviteReward": "Claim Airdrop Reward",
   "registeredUser": "Registered",
   "releasedReward": "SATO Total rewards",
   "expectedRewardPerPerson": "Expected rewards per person",
-  "claimed": "登记成功",
+  "claimed": "claimed",
   "registerRewardFailed": "抱歉，登记失败",
   "registerRewardFailedContent": "您当前连接的钱包不满足【2021年3月28日0:01 快照去中心化钱包 AMPL 持有数量超过 100】的奖励领取条件。\n\n",
   "NotEligibleError": "该账号已登记",
@@ -60,5 +60,7 @@
   "l2Amount": "侧链余额",
   "l1Wallet": "我的钱包",
   "fee": "提币手续费",
-  "amountReceiving": "到账金额"
+  "amountReceiving": "到账金额",
+  "invalidInput":"Please enter a valid amount",
+  "balanceLow":"Not enough balance"
 }

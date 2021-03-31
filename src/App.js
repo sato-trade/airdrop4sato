@@ -179,7 +179,7 @@ function App({t}){
                        address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
             </Switch>
-            <Footer />
+            {/* <Footer /> */}
         </Router>
     )
 }

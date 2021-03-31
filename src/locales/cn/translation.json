@@ -1,10 +1,10 @@
 {
-  "home": "首页",
+  "home": "侧链钱包",
   "wallet": "侧链钱包",
   "swap": "侧链兑换",
   "pool": "侧链流动池",
   "lang": "EN",
-  "noWallet": "点击下载MetaMask",
+  "noWallet": "安装MetaMask",
   "unlock": "解锁钱包",
   "connected": "连接钱包",
   "connect": "连接钱包",
@@ -45,7 +45,7 @@
   "closed": "已关闭",
   "rewardContent": "如您符合 SATO 空投奖励的申领条件，可于 2021年4月5日-4月25日（UTC时间）期间点击下方按钮登记领取 SATO 奖励（需使用符合申领条件的同一个钱包地址连接本站）。登记期结束后，系统将会根据登记总人数计算每位申领者的 SATO 空投奖励数量，并于一周内发放 SATO 至你的 SwapAll 侧链钱包。\n\n",
   "registerReward": "一键登记",
-  "inviteReward": "邀请奖励",
+  "inviteReward": "领取空投奖励",
   "registeredUser": "已登记人数",
   "releasedReward": "SATO奖励发放总数",
   "expectedRewardPerPerson": "预计每人发放",
@@ -58,5 +58,7 @@
   "l2Amount": "侧链余额",
   "l1Wallet": "我的钱包地址",
   "fee": "提币手续费",
-  "amountReceiving": "到账金额"
+  "amountReceiving": "到账金额",
+  "invalidInput":"请输入有效金额",
+  "balanceLow":"余额不足"
 }

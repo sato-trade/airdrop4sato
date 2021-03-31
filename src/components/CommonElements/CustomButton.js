@@ -2,39 +2,63 @@ import { Button, colors } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
 
-const useStylesInput = makeStyles((theme) => ({
+const unlockStyle = makeStyles((theme) => ({
     root: {
-
-        // 'label + &': {
-        //     marginTop: theme.spacing(3),
-        // },
-
-        // 'label.Mui-focused': {
-        //   color: 'green',
-        // },
         '&:hover': {
-            backgroundColor: '#6DFFCE',
+            backgroundColor: '#A2E6F5',
         },
-        // '&$focused': {
-        //     backgroundColor: '#1F32B4',
-        // },
-        // backgroundColor: '#111C6F',
-        // borderRadius: 16,
-        // alignItems: 'center',
-        // backgroundColor: 'red',
-        // overflow: 'hidden',
-        // outerHeight:72,
-        // innerHeight:72
-        // background: 'linear-gradient(45deg, #3FF9D4 30%, #1DF0A9 90%)',
-        background:"#1DF0A9",
+       
+        background:"#75E2F9",
+
         borderRadius: 36,
         border: 0,
         color: 'white',
         height: 48,
-  
-        // boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
         height:72
+    },
+    label: {
+        fontWeight: 'bold',
+        color:'#111C6F',
+        fontSize: 20,
 
+    }
+}));
+
+const connectStyle = makeStyles((theme) => ({
+    root: {
+        '&:hover': {
+            backgroundColor: '#7095F0',
+        },
+       
+        background:"#4477F1",
+
+        borderRadius: 36,
+        border: 0,
+        color: 'white',
+        height: 48,
+        height:72
+    },
+    label: {
+        fontWeight: 'bold',
+        color:'white',
+        fontSize: 20,
+
+    }
+}));
+
+const confirmStyle = makeStyles((theme) => ({
+    root: {
+        '&:hover': {
+            backgroundColor: '#6BF5C6',
+        },
+       
+        background:"#4477F1",
+
+        borderRadius: 36,
+        border: 0,
+        color: 'white',
+        height: 48,
+        height:72
     },
     label: {
         fontWeight: 'bold',
@@ -45,7 +69,16 @@ const useStylesInput = makeStyles((theme) => ({
 }));
 
 export default function CustomButton(props) {
-    const classes = useStylesInput();
+    var classes
+    if (props.buttonStyle=="connectStyle"){
+        classes = connectStyle()
+
+    } else if (props.buttonStyle == "unlockStyle"){
+        classes = unlockStyle()
+
+    } else {
+        classes = confirmStyle()
+    }
 
     // return <TextField placeholder="666" InputProps={{ classes, disableUnderline: true, }} {...props} />;
     return <Button

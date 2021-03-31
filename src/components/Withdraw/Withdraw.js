@@ -25,18 +25,18 @@ import { getIcons, formDateString } from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
 import { isNumeric, getChain } from "../../utils/Common";
-import {wallet} from "../../redux/reducers/wallet";
+import { wallet } from "../../redux/reducers/wallet";
 import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
-import {isValidAddress} from "ethereumjs-util";
+import { isValidAddress } from "ethereumjs-util";
 import CancelIcon from '@material-ui/icons/Cancel';
-import {authActions} from "../../redux/actions";
+import { authActions } from "../../redux/actions";
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
 
-function Withdraw({t, navBarHeight, address, chainId, network,
-                     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-                     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
-                 }) {
+function Withdraw({ t, navBarHeight, address, chainId, network,
+    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
+    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+}) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -156,7 +156,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
     const [coin, setCoin] = React.useState();
-    const [capital, setCapital] = React.useState({free: 0})
+    const [capital, setCapital] = React.useState({ free: 0 })
     const [warning, setWarning] = React.useState('')
     const [validAddress, setValidAddress] = React.useState(false)
     const [validAmount, setValidAmount] = React.useState(false)
@@ -193,7 +193,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     };
 
     const handleAddressChange = (addr) => {
-        setWithdrawTo( addr );
+        setWithdrawTo(addr);
         if (isValidAddress(addr)) {
             setAddrWarning('')
             setValidAddress(true)
@@ -208,7 +208,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     };
 
     const handleAmountChange = (amount) => {
-        setWithdrawAmount( amount );
+        setWithdrawAmount(amount);
     };
 
     const handleCoinChange = (event) => {
@@ -218,7 +218,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         let _coinWithdrawInfo = tokenList.find(item => item.token === event.target.value + '_' + getChain(network, chainId))
         setCoinWithdrawInfo(_coinWithdrawInfo)
         handleAmountChange('')
-        dispatch(walletActions.getFee({token, amount: '1', action: coinInfo.contractWithdrawKey}))
+        dispatch(walletActions.getFee({ token, amount: '1', action: coinInfo.contractWithdrawKey }))
 
     };
 
@@ -261,7 +261,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         let coinInfo = coins.find(item => item.label === coin)
         if (changedAmount) {
             if (validAmount) {
-                dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+                dispatch(walletActions.getFee({ token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey }))
             }
         }
     }
@@ -273,7 +273,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
         }
 
-        return() => {
+        return () => {
             console.log('clear initialization')
         }
     }, [])
@@ -283,7 +283,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
         }
-        return() => {
+        return () => {
             console.log('clear login')
         }
     }, [loggedIn, address])
@@ -300,7 +300,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
         setCapital(_capital)
 
-        for (let i = 0; i < userCapitals.length; i ++) {
+        for (let i = 0; i < userCapitals.length; i++) {
             let token = tokenList.find(item => item.token === userCapitals[i].token)
             if (token === undefined) {
                 token = {
@@ -321,11 +321,11 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
         setCoins(_coins)
 
-        return() => {
+        return () => {
             console.log('clear capital check')
         }
 
-    },[coin, address, userCapitals, tokenList, chainId, network])
+    }, [coin, address, userCapitals, tokenList, chainId, network])
 
     useEffect(() => {
         if (!withdrawFinished) {
@@ -335,7 +335,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                 console.log('clear pop modal')
             }
         }
-    },[withdrawFinished])
+    }, [withdrawFinished])
 
     useEffect(() => {
         if (validAmount) {
@@ -343,7 +343,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setAddrWarning('')
             let coinInfo = coins.find(item => item.label === coin)
             if (coinInfo) {
-                dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+                dispatch(walletActions.getFee({ token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey }))
             }
         } else {
             setReceivingAmount('--')
@@ -372,7 +372,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             else if (withdrawAmount <= capital.free) {
                 if (receivingBase === coin) {
                     if (withdrawAmount > withdrawFeeObj.amount) {
-                        dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+                        dispatch(walletActions.getFee({ token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey }))
                         setValidAmount(true)
                     } else {
                         setValidAmount(false)
@@ -380,7 +380,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                     }
                 } else {
                     if (feeCapital.free > withdrawFeeObj.amount) {
-                        dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
+                        dispatch(walletActions.getFee({ token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey }))
                         setValidAmount(true)
                     } else {
                         setValidAmount(false)
@@ -397,7 +397,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         return () => {
             console.log('clear amount change')
         }
-    },[withdrawAmount])
+    }, [withdrawAmount])
 
     useEffect(() => {
         if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
@@ -405,20 +405,20 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setReceivingBase(withdrawFeeObj.base)
         }
 
-    },[withdrawFeeObj])
+    }, [withdrawFeeObj])
 
 
 
     return (
         <div className={classes.root}>
-            <Card className={classes.depositBox}>
-                <CardContent className={classes.depositContent}>
-                    <Button className={classes.backBtn} onClick={() => {
+            <div className="deposit__container">
+                <div className="deposit__wrapper">
+                    <Button style={{ left: -24, alignSelf: 'flex-start' }} onClick={() => {
                         history.back()
                     }} >
                         <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
                     </Button>
-                    <Grid container spacing={2} >
+                    {/* <Grid container spacing={2} >
                         <Grid item xs={12} >
                             <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
                                 {t('withdraw')}
@@ -429,9 +429,20 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                 {t('withdrawContent')}
                             </Typography>
                         </Grid>
-                    </Grid>
+                    </Grid> */}
+
+                    <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                        <Typography style={{ textTransform: 'none', fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
+                            {t('withdraw')}
+                        </Typography>
+
+                        <Typography style={{ textTransform: 'none', fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
+                            {t('withdrawContent')}
+                        </Typography>
+
+                    </div>
                     <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
-                    <Grid container spacing={2} className={classes.fieldWrapper }>
+                    <Grid container spacing={2} className={classes.fieldWrapper}>
                         <Grid item xs={12} >
                             <TextField
                                 inputRef={inputRef}
@@ -527,7 +538,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                     <MenuItem key={option.value} value={option.value}>
                                         <Grid container >
                                             <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width:20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
+                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
                                             </Grid>
                                             <Grid item xs={6} >
                                                 {option.label}
@@ -560,17 +571,17 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <Button style={{ width: 180 }}  className={classes.btn} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
+                                        <Button style={{ width: 180 }} className={classes.btn} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </Button> :
-                                        <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                        <Button style={{ width: 180 }} className={classes.btn} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </Button> : null
                             }
                         </Grid>
                     </Grid>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
             <Modal
                 disablePortal
                 disableEnforceFocus
@@ -601,10 +612,10 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                 <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
                             </Grid>
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
+                                <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ? t('withdrawSucceed') : t('loading')}`}</p>
                             </Grid>
                             <Grid item xs={12} >
-                                <Button style={{ width: 180 }}  className={classes.btn} >
+                                <Button style={{ width: 180 }} className={classes.btn} >
                                     {withdrawMsg}
                                 </Button>
                             </Grid>
