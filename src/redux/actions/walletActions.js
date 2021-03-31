@@ -255,10 +255,9 @@ function registerAmplRewards(token) {
         walletService.registerAmplRewards(token)
             .then(
                 res => {
-                    dispatch(success(res.data));
+                    dispatch(success('RegisterSuccess'));
                 },
                 error => {
-                    console.log('res: ', error)
                     if (error.data === 'NotEligibleError') {
                         dispatch(alreadyRegistered(error.data));
                     }
@@ -270,7 +269,7 @@ function registerAmplRewards(token) {
     }
 
     function request() { return { type: REGISTER_AMPL_REWARDS } }
-    function success(data) { return { type: REGISTER_AMPL_REWARDS_SUCCEED, data } }
+    function success(message) { return { type: REGISTER_AMPL_REWARDS_SUCCEED, message } }
     function alreadyRegistered(message) { return { type: ALREADY_REGISTERED, message } }
     function notQualified(message) { return { type: NOT_QUALIFIED, message } }
 }

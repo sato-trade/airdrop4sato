@@ -34,6 +34,7 @@ export function wallet (state = {
         hasClaimed: null
     },
     message: '',
+    rewardMessage: '',
     withdrawFinished: true,
     withdrawSucceed: false,
     withdrawMsg: '',
@@ -167,34 +168,35 @@ export function wallet (state = {
         case GET_AMPL_REWARDS_SUCCEED:
             return {
                 ...state,
-                message: '',
+                rewardMessage: '',
                 amplRewardsInfo: action.data
             }
         case GET_AMPL_REWARDS_FAILED:
             return {
                 ...state,
-                message: action.data
+                rewardMessage: action.data
             }
         case REGISTER_AMPL_REWARDS:
             return {
                 ...state,
-                message: '',
+                rewardMessage: '',
                 loading: true
             }
         case REGISTER_AMPL_REWARDS_SUCCEED:
             return {
                 ...state,
-                loading: false
+                loading: false,
+                rewardMessage: action.message
             }
         case NOT_QUALIFIED:
             return {
                 ...state,
-                message: action.message
+                rewardMessage: action.message
             }
         case ALREADY_REGISTERED:
             return {
                 ...state,
-                message: action.message
+                rewardMessage: action.message
             }
         case GET_WITHDRAW_FEE_SUCCESS:
             return {

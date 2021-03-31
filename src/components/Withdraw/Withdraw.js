@@ -322,7 +322,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             }
         }
         setCoins(_coins)
-
         return() => {
         }
 
