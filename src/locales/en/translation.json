@@ -16,6 +16,8 @@
   "loggingIn": "Logging In",
   "loggedIn": "LoggedIn",
   "registered": "Login",
+  "metamaskNotDetected": "Wallet not found",
+  "metamaskLogin": "Login to Wallet",
   "metamaskConnected": "Connected to Wallet",
   "switch": "Switch Account",
   "noCapitals": "No available capitals",
