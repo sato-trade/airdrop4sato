@@ -30,6 +30,8 @@ import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, i
 import { isValidAddress } from "ethereumjs-util";
 import CancelIcon from '@material-ui/icons/Cancel';
 import { authActions } from "../../redux/actions";
+import CustomButton from '../CommonElements/CustomButton';
+
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
 
@@ -568,20 +570,20 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <Button className={classes.btn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                     >
                                         {button1}
-                                    </Button> : null
+                                    </CustomButton> : null
                             }
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <Button style={{ width: 180 }} className={classes.btn} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
+                                        <CustomButton style={{ width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
-                                        </Button> :
-                                        <Button style={{ width: 180 }}  className={classes.btn}  onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
+                                        </CustomButton> :
+                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch )} disabled={button2Disabled}>
                                             {t('unlock')}
-                                        </Button> : null
+                                        </CustomButton> : null
                             }
                         </Grid>
                     </Grid>
