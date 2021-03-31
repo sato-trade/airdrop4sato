@@ -135,7 +135,6 @@ function Records({t, navBarHeight, address, chainId, network,
     const [coin, setCoin] = useState('')
 
     const handleOpenRecordDetail= (item) => {
-        console.log('item: ', item)
         setOpenRecordDetail(true);
         setTime(convertTimeString(item.createdAt))
         setAmount(item.amount)

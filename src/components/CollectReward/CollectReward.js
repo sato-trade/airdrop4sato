@@ -131,8 +131,6 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         }
     }, [message])
 
-    console.log('info: ', amplRewardsInfo)
-
     return (
         <div className={classes.root}>
             <div className='cards__container'>

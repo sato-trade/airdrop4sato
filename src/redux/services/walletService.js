@@ -46,7 +46,6 @@ async function deposit(payload) {
 }
 
 async function withdraw(payload) {
-    console.log('payload: ', payload)
     const requestOptions = {
         method: 'POST',
         headers: authHeader(payload.token),
