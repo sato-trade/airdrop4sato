@@ -100,11 +100,18 @@ async function getTransactionRecords(token) {
 }
 
 async function getAmplRewards(token) {
+
     const requestOptions = {
         method: 'GET',
         headers: authHeader(token)
     };
-    return fetch(token && token.length > 0 ? Url.GET_AMPL_REWARDS : Url.GET_AMPL_REWARDS + '/public', requestOptions).then(handleResponse);
+    if (token && token.length > 0) {
+        console.log('here instead')
+        return fetch( Url.GET_AMPL_REWARDS, requestOptions).then(handleResponse);
+
+    } else {
+        return fetch( Url.GET_AMPL_REWARDS + '/public', requestOptions).then(handleResponse);
+    }
 }
 
 async function registerAmplRewards(token) {

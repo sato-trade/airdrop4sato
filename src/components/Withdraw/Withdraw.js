@@ -44,7 +44,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             backgroundColor: '#010846',
             padding: theme.spacing(1),
             flexGrow: 1,
-            height: height - navBarHeight,
             textAlign: 'center'
         },
         depositBox: {

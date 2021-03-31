@@ -258,6 +258,7 @@ function registerAmplRewards(token) {
                     dispatch(success(res.data));
                 },
                 error => {
+                    console.log('res: ', error)
                     if (error.data === 'NotEligibleError') {
                         dispatch(alreadyRegistered(error.data));
                     }
