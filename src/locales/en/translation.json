@@ -35,6 +35,7 @@
   "status": "Status",
   "checkEtherscan": "Check On Etherscan",
   "depositSucceed": "Deposit Succeed",
+  "withdrawSucceed": "Withdraw Submitted",
   "confirmedBlock": "Confirmed Block",
   "depositAction": "Deposit",
   "withdrawAction": "Withdraw",

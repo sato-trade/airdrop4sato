@@ -610,11 +610,11 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>
                             </Grid>
-                            <Grid item xs={12} >
-                                <Button style={{ width: 180 }}  className={classes.btn} >
-                                    {withdrawMsg}
-                                </Button>
-                            </Grid>
+                            {/*<Grid item xs={12} >*/}
+                            {/*    <Button style={{ width: 180 }}  className={classes.btn} >*/}
+                            {/*        {withdrawMsg}*/}
+                            {/*    </Button>*/}
+                            {/*</Grid>*/}
                             {/*{*/}
                             {/*    Object.keys(withdrawReceipt).length > 0 ?*/}
                             {/*        <Grid item xs={12} >*/}
