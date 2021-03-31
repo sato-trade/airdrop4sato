@@ -58,7 +58,7 @@
   "claimed": "Claimed",
   "registerRewardFailed": "Reward Claim failed",
   "registerRewardSucceed": "Reward Claim succeed",
-  "registerRewardFailedContent": "Sorry, the wallet address you are using is not qualified for SATO airdrop reward. Thank you for your participation.",
+  "registerRewardFailedContent": "Reward Claim Failed\n\nSorry, the wallet address you are using is not qualified for SATO airdrop reward. Thank you for your participation.",
   "NotEligibleError": "Address already registered",
   "withdrawContent": "You can withdraw your assets from SwapAll Layer 2 to your decentralized wallet (Layer 1) any time. The default address is the address of your wallet that connected to this site. You can also withdraw to other Layer 1 addresses. Please make sure the address is correct. Once submitted, it cannot be canceled.",
   "withdrawAddress": "Withdraw To",
