@@ -152,7 +152,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     }));
     const classes = useStyles();
 
-    const [withdrawTo, setWithdrawTo] = useState('')
+    const [withdrawTo, setWithdrawTo] = useState(address)
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
     const [coin, setCoin] = React.useState();
@@ -279,7 +279,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
 
         return() => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -287,9 +286,9 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
+            setWithdrawTo(address)
         }
         return() => {
-            console.log('clear login')
         }
     }, [loggedIn, address])
 
@@ -326,7 +325,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         setCoins(_coins)
 
         return() => {
-            console.log('clear capital check')
         }
 
     },[coin, address, userCapitals, tokenList, chainId, network])
@@ -336,7 +334,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
-                console.log('clear pop modal')
             }
         }
     },[withdrawFinished])
@@ -353,7 +350,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             setReceivingBase('')
         }
         return () => {
-            console.log('clear check fee')
         }
     }, [validAmount])
 
@@ -364,7 +360,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             let feeCapital = userCapitals.find(item => item.token === withdrawFeeObj.base)
             let coinInfo = coins.find(item => item.label === coin)
 
-            console.log('info: ', feeCapital, capital, coinInfo)
             if (withdrawAmount === "") {
                 setValidAmount(false)
                 setWarning('')
@@ -383,7 +378,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                         setWarning(t('enterAmountHigherThanFee'))
                     }
                 } else {
-                    console.log('should be here!!!!!')
                     if (feeCapital.free > withdrawFeeObj.amount) {
                         dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
                         setValidAmount(true)
@@ -402,7 +396,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
         }
 
         return () => {
-            console.log('clear withdraw amount change')
         }
     },[withdrawAmount])
 
@@ -531,6 +524,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                                     },
                                 }}
                                 defaultValue={'--'}
+                                disabled={!loggedIn}
                             >
                                 {coins.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>
@@ -604,10 +598,10 @@ function Withdraw({t, navBarHeight, address, chainId, network,
 
                             </Grid>
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('time')}: ${time}`}</p>
+                                <p id="server-modal-description">{`${t('withdrawAddress')}: ${withdrawTo}`}</p>
                             </Grid>
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
+                                <p id="server-modal-description">{`${t('action')}: ${t('withdrawAction')}`}</p>
                             </Grid>
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ?  t('withdrawSucceed') : t('loading')}`}</p>

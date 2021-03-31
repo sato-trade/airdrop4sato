@@ -232,7 +232,7 @@ function Records({t, navBarHeight, address, chainId, network,
                                         {
                                             transactionRecords.map(item => (
                                                 <ListItem key={item.id} button onClick={() => handleOpenRecordDetail(item)}>
-                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={transactionType[item.type].name} secondary={convertTimeString(item.createdAt)} />
+                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
                                                     <ListItemText style={{ color: color[item.status] }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
                                                     <ListItemText>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</ListItemText>
                                                     <ListItemSecondaryAction>

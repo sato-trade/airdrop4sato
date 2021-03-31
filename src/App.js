@@ -103,7 +103,6 @@ function App({t}){
             dispatch(authActions.checkUser(address))
         }
         return() => {
-            console.log('clear check')
         }
     }, [address, network, chainId])
 
@@ -119,14 +118,12 @@ function App({t}){
             setButton2Disabled(true)
         }
         return() => {
-            console.log('clear registration')
         }
     }, [i18n.language, registered, loggedIn, loggingIn, loading])
 
     useEffect(() => {
         updateButtons()
         return() => {
-            console.log('clear button')
         }
     }, [button1Disabled, button2Disabled, button1, address ])
 
@@ -178,7 +175,7 @@ function App({t}){
                        address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
             </Switch>
-            <Footer />
+            {/*<Footer />*/}
         </Router>
     )
 }

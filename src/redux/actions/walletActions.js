@@ -197,7 +197,6 @@ function getL1Capital(address) {
         walletService.getL1Capital(address)
             .then(
                 res => {
-                    console.log('get l1Capital succeed: ', res)
                     dispatch(success(res));
                 },
                 error => {
@@ -217,7 +216,6 @@ function getTransactionRecords(token) {
         walletService.getTransactionRecords(token)
             .then(
                 res => {
-                    console.log('get transaction records succeed: ', res)
                     dispatch(success(res.data));
                 },
                 error => {
@@ -237,7 +235,6 @@ function getAmplRewards(token) {
         walletService.getAmplRewards(token)
             .then(
                 res => {
-                    console.log('get ampl info succeed: ', res)
                     dispatch(success(res.data));
                 },
                 error => {
@@ -258,7 +255,6 @@ function registerAmplRewards(token) {
         walletService.registerAmplRewards(token)
             .then(
                 res => {
-                    console.log('register ampl rewards succeed: ', res)
                     dispatch(success(res.data));
                 },
                 error => {

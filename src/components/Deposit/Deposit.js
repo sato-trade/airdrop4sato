@@ -174,7 +174,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     };
 
     const handleAmountChange = (amount) => {
-        console.log('amount: ', amount)
         setDepositAmount(amount);
         if (isNumeric(amount)) {
             if (parseFloat(amount) <= capital.free) {
@@ -223,7 +222,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getL1Capital(address))
         }
         return () => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -234,7 +232,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getL1Capital(address))
         }
         return () => {
-            console.log('clear login')
         }
     }, [loggedIn, address])
 
@@ -269,7 +266,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
         setCoins(_coins)
         return () => {
-            console.log('clear set coins')
         }
 
     }, [tokenList, address, loggedIn, network, chainId])
@@ -285,7 +281,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         }
         setCapital(_capital)
         return () => {
-            console.log('clear capital check')
         }
 
     }, [coin, address, l1Capital])
@@ -295,7 +290,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             setTime(formDateString(new Date().getTime()))
             handleOpenCallback()
             return () => {
-                console.log('clear pop modal')
             }
         }
     }, [depositHash, depositFinished])
@@ -376,7 +370,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                 label={t('selectCoin')}
                                 value={coin}
                                 onChange={handleCoinChange}
-
+                                disabled={!loggedIn}
                             >
                                 {coins.map((option) => (
                                     <MenuItem key={option.value} value={option.value}>

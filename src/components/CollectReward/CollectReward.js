@@ -113,14 +113,12 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     useEffect(() => {
         dispatch(walletActions.getAmplRewards(token))
         return () => {
-            console.log('clear initialization')
         }
     }, [])
 
     useEffect(() => {
         dispatch(walletActions.getAmplRewards(token))
         return () => {
-            console.log('clear loggedIn')
         }
     }, [loggedIn])
 
@@ -130,7 +128,6 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         }
         prevMessageRef.current = message;
         return () => {
-            console.log('clear message')
         }
     }, [message])
 
@@ -157,15 +154,6 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     <div className='cards__cell__wrapper'>
                         <div className='cards__small__cell'>
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
-                                {t('registeredUser')}
-                            </Typography>
-                            <Typography className='cards__cell__value'>
-                                {FormatNumber(amplRewardsInfo.registeredUsers)}
-                            </Typography>
-
-                        </div>
-                        <div className='cards__small__cell'>
-                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('releasedReward')}
                             </Typography>
                             <Typography className='cards__cell__value__large'>
@@ -173,7 +161,15 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             </Typography>
 
                         </div>
+                        <div className='cards__small__cell'>
+                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
+                                {t('registeredUser')}
+                            </Typography>
+                            <Typography className='cards__cell__value'>
+                                {FormatNumber(amplRewardsInfo.registeredUsers)}
+                            </Typography>
 
+                        </div>
                         <div className='cards__small__cell'>
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('expectedRewardPerPerson')}
