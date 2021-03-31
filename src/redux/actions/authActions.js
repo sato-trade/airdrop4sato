@@ -65,6 +65,7 @@ function signUp(payload) {
                 res => {
                     if (res) {
                         dispatch(success(res.success));
+                        dispatch(logIn(payload))
                     }
                 },
                 error => {
@@ -89,6 +90,7 @@ function logIn(payload) {
                     dispatch(success(res));
                 },
                 error => {
+                    console.log('error: ', error)
                     dispatch(failure(error.toString()));
                     dispatch(alertActions.error(error.toString()));
                 }

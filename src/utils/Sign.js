@@ -35,10 +35,11 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
 
         if (registered !== undefined ) {
             if (registered) {
+                console.log('only logging!')
                 dispatch(authActions.logIn(payload))
             } else {
+                console.log('register and login')
                 dispatch(authActions.signUp(payload))
-
             }
         } else {
             console.log('not found!')

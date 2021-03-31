@@ -87,7 +87,6 @@ export function auth (state = {
                 errors: action
             };
         case LOGOUT:
-            console.log('calling logout')
             return {
                 ...state,
                 loggedIn: false,

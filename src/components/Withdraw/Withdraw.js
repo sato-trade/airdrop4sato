@@ -286,6 +286,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
             setWithdrawTo(address)
+            setValidAddress(true)
         }
         return() => {
         }
@@ -322,7 +323,6 @@ function Withdraw({t, navBarHeight, address, chainId, network,
             }
         }
         setCoins(_coins)
-
         return() => {
         }
 
@@ -353,6 +353,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
     }, [validAmount])
 
     useEffect(() => {
+        console.log('here: ', !parseFloat(withdrawAmount))
         if (withdrawFeeObj !== null && Object.keys(withdrawFeeObj).length > 0 && withdrawFeeObj.base !== '') {
             setReceivingAmount(roundingDown(parseFloat(withdrawAmount) - withdrawFeeObj.amount, 4))
             setReceivingBase(withdrawFeeObj.base)
@@ -363,7 +364,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                 setValidAmount(false)
                 setWarning('')
             }
-            else if (!Number(withdrawAmount)) {
+            else if (!parseFloat(withdrawAmount)) {
                 setValidAmount(false)
                 setWarning(t('invalidInput'))
             }
@@ -372,6 +373,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                     if (withdrawAmount > withdrawFeeObj.amount) {
                         dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
                         setValidAmount(true)
+                        setWarning('')
                     } else {
                         setValidAmount(false)
                         setWarning(t('enterAmountHigherThanFee'))
@@ -380,6 +382,7 @@ function Withdraw({t, navBarHeight, address, chainId, network,
                     if (feeCapital.free > withdrawFeeObj.amount) {
                         dispatch(walletActions.getFee({token, amount: withdrawAmount, action: coinInfo.contractWithdrawKey}))
                         setValidAmount(true)
+                        setWarning('')
                     } else {
                         setValidAmount(false)
                         setWarning(t('insufficient_fee') + ' ' + withdrawFeeObj.base + ' ' + t('insufficient_fund'))

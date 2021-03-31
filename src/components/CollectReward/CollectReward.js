@@ -93,7 +93,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
     const dispatch = useDispatch();
     const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { amplRewardsInfo, message } = useSelector(state => state.wallet)
+    const { amplRewardsInfo, rewardMessage, loading } = useSelector(state => state.wallet)
 
     const [openFailedModal, setOpenFailedModal] = useState(false)
 
@@ -105,8 +105,19 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         setOpenFailedModal(false);
     };
 
+    const [openSucceedModal, setOpenSucceedModal] = useState(false)
+
+    const handleOpenSucceedModal = () => {
+        setOpenSucceedModal(true);
+    };
+
+    const handleCloseSucceedModal = () => {
+        setOpenSucceedModal(false);
+    };
+
     const confirmRegister = () => {
         dispatch(walletActions.registerAmplRewards(token))
+        dispatch(walletActions.getAmplRewards(token))
     }
 
 
@@ -123,13 +134,16 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     }, [loggedIn])
 
     useEffect(() => {
-        if (prevMessageRef.current === '' && message === 'NotEligibleError') {
+        if (prevMessageRef.current === '' && rewardMessage === 'NotEligibleError' ) {
             handleOpenFailedModal()
         }
-        prevMessageRef.current = message;
+        if ((loading === false && rewardMessage === 'RegisterSuccess')) {
+            handleOpenSucceedModal()
+        }
+        prevMessageRef.current = rewardMessage;
         return () => {
         }
-    }, [message])
+    }, [rewardMessage, loading])
 
     return (
         <div className={classes.root}>
@@ -225,6 +239,32 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{t('registerRewardFailedContent')}</p>
+                            </Grid>
+                        </Grid>
+                    </div>
+                </Fade>
+            </Modal>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openSucceedModal}
+                onClose={handleCloseSucceedModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openSucceedModal}>
+                    <div className={classes.paper}>
+                        <h2 id="server-modal-title">{t('registerRewardSucceed')}</h2>
+                        <Grid container spacing={2} >
+                            <Grid item xs={12} >
+                                <p id="server-modal-description">{''}</p>
                             </Grid>
                         </Grid>
                     </div>

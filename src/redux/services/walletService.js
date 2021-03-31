@@ -105,9 +105,7 @@ async function getAmplRewards(token) {
         headers: authHeader(token)
     };
     if (token && token.length > 0) {
-        console.log('here instead')
         return fetch( Url.GET_AMPL_REWARDS, requestOptions).then(handleResponse);
-
     } else {
         return fetch( Url.GET_AMPL_REWARDS + '/public', requestOptions).then(handleResponse);
     }
@@ -115,8 +113,9 @@ async function getAmplRewards(token) {
 
 async function registerAmplRewards(token) {
     const requestOptions = {
-        method: 'GET',
+        method: 'POST',
         headers: authHeader(token),
+        body: null
     };
     return fetch(Url.REGISTER_AMPL_REWARDS, requestOptions).then(handleResponse);
 }
