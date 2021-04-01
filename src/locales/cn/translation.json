@@ -37,6 +37,7 @@
   "confirmedBlock": "确认块高",
   "withdrawSucceed": "提币已提交",
   "withdrawAction": "提币",
+  "depositAction": "充值",
   "records": "资金记录",
   "noRecords": "暂无记录",
   "submitted": "已提交",

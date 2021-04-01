@@ -71,7 +71,6 @@ function Wallet({t, navBarHeight}) {
         },
         capitalList: {
             width: '100%',
-            maxWidth: '100%',
             backgroundColor: 'transparent',
         },
         recordWrapper: {
