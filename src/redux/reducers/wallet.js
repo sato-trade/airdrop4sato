@@ -13,7 +13,7 @@ import {
     GET_ALL_TOKEN_STATUS, GET_ALL_TOKEN_STATUS_SUCCEED, GET_ALL_TOKEN_STATUS_FAILED, GET_ALL_TOKEN_ICONS_SUCCEED,
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED, GET_TRANSACTION_RECORDS_FAILED, GET_TRANSACTION_RECORDS_SUCCEED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
-    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED,
+    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED, REGISTER_AMPL_REWARDS_FAILED,
     GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED
 } from '../constants';
 
@@ -194,6 +194,11 @@ export function wallet (state = {
                 rewardMessage: action.message
             }
         case ALREADY_REGISTERED:
+            return {
+                ...state,
+                rewardMessage: action.message
+            }
+        case REGISTER_AMPL_REWARDS_FAILED:
             return {
                 ...state,
                 rewardMessage: action.message

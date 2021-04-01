@@ -8,7 +8,7 @@ import {
     DEPOSIT, DEPOSIT_FAILED, DEPOSIT_SUCCEED, DEPOSIT_HASH, DEPOSIT_RECEIPT,
     GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
-    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED,
+    REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED, REGISTER_AMPL_REWARDS_FAILED,
     GET_WITHDRAW_FEE, GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED
 } from '../constants';
 import { history } from '../../utils/History';
@@ -263,7 +263,10 @@ function registerAmplRewards(token) {
                     }
                     if (error.data === 'AlreadyRegisterError') {
                         dispatch(notQualified(error.data));
+                    } else {
+                        dispatch(failure('NotAvailable'));
                     }
+
                 }
             );
     }
@@ -272,6 +275,7 @@ function registerAmplRewards(token) {
     function success(message) { return { type: REGISTER_AMPL_REWARDS_SUCCEED, message } }
     function alreadyRegistered(message) { return { type: ALREADY_REGISTERED, message } }
     function notQualified(message) { return { type: NOT_QUALIFIED, message } }
+    function failure(message) { return { type: REGISTER_AMPL_REWARDS_FAILED, message } }
 }
 
 function getFee(payload) {

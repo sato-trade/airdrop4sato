@@ -118,7 +118,6 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
     const confirmRegister = () => {
         dispatch(walletActions.registerAmplRewards(token))
-        dispatch(walletActions.getAmplRewards(token))
     }
 
 
@@ -135,11 +134,12 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     }, [loggedIn])
 
     useEffect(() => {
-        if (prevMessageRef.current === '' && rewardMessage === 'NotEligibleError' ) {
+        if (prevMessageRef.current === '' && (rewardMessage === 'NotEligibleError' || rewardMessage === 'NotAvailable') ) {
             handleOpenFailedModal()
         }
         if ((loading === false && rewardMessage === 'RegisterSuccess')) {
             handleOpenSucceedModal()
+            dispatch(walletActions.getAmplRewards(token))
         }
         prevMessageRef.current = rewardMessage;
         return () => {
@@ -184,7 +184,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             </Typography>
 
                         </div>
-                   
+
                         <div className='cards__small__cell'>
                             <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
                                 {t('expectedRewardPerPerson')}(SATO)
@@ -240,13 +240,13 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                         <h2 id="server-modal-title">{t('registerRewardFailed')}</h2>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{t('registerRewardFailedContent')}</p>
+                                <p id="server-modal-description">{rewardMessage === 'NotEligibleError' ? t('registerRewardFailedContent') : t(rewardMessage)}</p>
                             </Grid>
                         </Grid>
                     </div>
                 </Fade>
             </Modal>
-          
+
         </div>
     )
 }
