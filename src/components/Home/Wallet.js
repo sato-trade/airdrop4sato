@@ -4,6 +4,7 @@ import { Typography, Grid, Button, Card, CardContent,
     List, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemSecondaryAction
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import './Home.css';
 import { withTranslation } from 'react-i18next';
 import useWindowDimensions from '../../utils/WindowDimensions'
 
@@ -13,6 +14,8 @@ import { roundingDown } from '../../utils/RoundingDown'
 import { getIcons } from "../../utils/Common";
 import {history} from "../../utils/History";
 import backArrow from "../../images/backArrow.png";
+import {isValidAddress} from "ethereumjs-util";
+import {isMetaMaskInstalled, onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
 
 function Wallet({t, navBarHeight}) {
     const { height, width } = useWindowDimensions();
@@ -68,7 +71,6 @@ function Wallet({t, navBarHeight}) {
         },
         capitalList: {
             width: '100%',
-            maxWidth: 360,
             backgroundColor: 'transparent',
         },
         recordWrapper: {
@@ -77,7 +79,24 @@ function Wallet({t, navBarHeight}) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
-        }
+        },
+        textLarge: {
+            color: 'white',
+            fontSize: 24,
+            fontWeight: '600',
+        },
+
+        textMid: {
+            color: 'white',
+            fontSize: 20,
+            fontWeight: '600'
+        },
+
+        textSmall: {
+            color: 'white',
+            fontSize: 16,
+            fontWeight: '600'
+        },
     }));
     const classes = useStyles();
 
@@ -96,44 +115,41 @@ function Wallet({t, navBarHeight}) {
 
     return (
         <div className={classes.root}>
-            <Card className={classes.walletBox}>
-                <CardContent className={classes.walletContent}>
-                    <Grid container spacing={2} >
+            <div className='cards__container'>
+                <div className='cards__wrapper'>
 
-                        <Grid item xs={8} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('walletTitle')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4} >
-                            <Link to='/wallet/records' >
-                                <Button className={classes.recordWrapper} >
-                                    {t('records')}
-                                </Button>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={4}>
-                            <Link to='/wallet/deposit'>
-                                <Button style={{ width: 100 }}  className={classes.btn} disabled={!loggedIn}>
-                                    {t('deposit')}
-                                </Button>
-                            </Link>
-                        </Grid>
-                        <Grid item xs={8}>
-                            <Link to='/wallet/withdraw'>
-                                <Button style={{ width: 180 }}  className={classes.btn} disabled={!loggedIn}>
-                                    {t('withdraw')}
-                                </Button>
-                            </Link>
-                        </Grid>
-                    </Grid>
-                    <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
+                    <div className='cards__title__wrapper'>
+                        <Typography className={classes.textLarge} style={{textTransform:'none'}}>
+                            {t('walletTitle')}
+
+                        </Typography>
+                        <Link to='/wallet/records'>
+                            <Button className={classes.textSmall} color="textSecondary">
+                                {t('records')}
+                            </Button>
+                        </Link>
+                    </div>
+
+                    <div className='cards__buttons__wrapper'>
+                        <Link to='/wallet/deposit' style={{ textDecoration: 'none', alignItems: 'center', justifyContent: 'center' }}>
+                            <Button style={{textTransform:'none', backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }}>
+                                {t('deposit')}
+                            </Button>
+                        </Link>
+                        <Link to='/wallet/withdraw' style={{ textDecoration: 'none', alignItems: 'center', justifyContent: 'center', marginLeft: 16 }}>
+                            <Button style={{textTransform:'none', backgroundColor: '#192786', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#8FB9E1' }}>
+                                {t('withdraw')}
+                            </Button>
+                        </Link>
+                    </div>
+
+                    <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
+                    <div className='cards__title__wrapper'>
+                        <Typography className={classes.textMid} color="textSecondary" style={{textTransform:'none'}} gutterBottom>
+                            {t('capitalTitle')}
+                        </Typography>
+                    </div>
                     <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('capitalTitle')}
-                            </Typography>
-                        </Grid>
                         <Grid item xs={12} >
                             <div className={classes.wrapper}>
                                 {userCapitals === undefined || userCapitals.length <= 0 ?
@@ -158,8 +174,9 @@ function Wallet({t, navBarHeight}) {
                             </div>
                         </Grid>
                     </Grid>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
+
         </div>
     );
 }

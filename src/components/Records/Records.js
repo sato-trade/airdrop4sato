@@ -25,6 +25,8 @@ import { history } from "../../utils/History";
 import backArrow from "../../images/backArrow.png";
 import CustomButton from "../CommonElements/CustomButton";
 import { onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
+import './Record.css';
+
 
 const Web3 = require("web3");
 const { isMetaMaskInstalled } = MetaMaskOnboarding
@@ -57,11 +59,7 @@ function Records({ t, navBarHeight, address, chainId, network,
             width: 300,
             alignItems: 'flex-start',
         },
-        wrapper: {
-            color: 'white',
-            alignItems: 'flex-start',
-            display: 'flex'
-        },
+
         result: {
             fontSize: 10,
             color: '#000000',
@@ -84,12 +82,15 @@ function Records({ t, navBarHeight, address, chainId, network,
             fontWeight: 600,
             opacity: 0.2
         },
+        wrapper: {
+            color: 'white',
+            alignItems: 'flex-start',
+        },
         capitalList: {
             width: '100%',
-            maxWidth: 360,
             backgroundColor: 'transparent',
             maxHeight: 400,
-            overflow: 'scroll',
+            overflow: 'auto',
         },
         backBtn: {
             float: 'left'
@@ -242,6 +243,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                                             ))
                                         }
                                     </List>
+
                                 }
                             </div>
                             <Grid item xs={12}>
