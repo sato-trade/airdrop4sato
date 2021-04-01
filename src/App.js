@@ -117,6 +117,7 @@ function App({t}){
             setButton2(t('loggedIn'))
             setButton2Disabled(true)
         }
+        updateButtons()
         return() => {
         }
     }, [i18n.language, registered, loggedIn, loggingIn, loading])

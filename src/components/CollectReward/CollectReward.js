@@ -146,6 +146,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         }
     }, [rewardMessage, loading])
 
+
     return (
         <div className={classes.root}>
             <div className='cards__container'>
@@ -240,7 +241,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                         <h2 id="server-modal-title">{t('registerRewardFailed')}</h2>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{rewardMessage === 'NotEligibleError' ? t('registerRewardFailedContent') : t(rewardMessage)}</p>
+                                <p id="server-modal-description">{rewardMessage === "NotEligibleError" ? t('registerRewardFailedContent') : t(rewardMessage)}</p>
                             </Grid>
                         </Grid>
                     </div>
