@@ -208,13 +208,13 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                                 loggedIn ?
                                     amplRewardsInfo.hasClaimed ?
 
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: 500 }} disabled={amplRewardsInfo.hasClaimed}>
+                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
                                         </CustomButton> :
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: 500 }} onClick={confirmRegister} >
+                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: 500 }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }

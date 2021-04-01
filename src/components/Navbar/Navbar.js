@@ -11,11 +11,13 @@ import {authActions} from "../../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
 import {onClickConnect, onClickInstall} from "../../utils/Sign";
 import CustomButton from "../CommonElements/CustomButton";
+import useWindowDimensions from "../../utils/WindowDimensions";
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 
 let tempHeight = null;
 
 function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId, button1, sendBackButton1, sendBackButton1Disabled}){
+    const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         bar: {
             background: '#010846'
@@ -41,7 +43,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             alignSelf: 'center'
         },
         logo: {
-            height: 40
+            width: width > 1000 ? 200 : width * 0.2,
         },
         langBtn: {
             height: 30,
@@ -53,7 +55,8 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             height: 30,
             alignSelf: 'center',
             background: '#2435AC',
-            color: 'white'
+            color: 'white',
+            fontSize: width > 350 ? 15 : '0.5rem'
         },
         modal: {
             display: 'flex',
