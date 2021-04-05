@@ -33,7 +33,6 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
             chainId: Web3.utils.hexToNumber(chainId),
             networkId: Number(network)
         }
-        console.log('unlocking: ', payload, registered)
 
         if (registered !== undefined ) {
             if (registered) {
