@@ -458,7 +458,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12} style={{ marginTop: 24 }}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton style={{ width: '100%' }} buttonStyle="connectStyle" onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                    <CustomButton style={{ width: '100%' }} buttonStyle="connectStyle" onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                     >
                                         {button1}
                                     </CustomButton> : null

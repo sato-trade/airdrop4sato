@@ -249,7 +249,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12}>
                                 {
                                     address.length < 42 || !isValidAddress(address) ?
-                                        <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                        <CustomButton style={{ width: '100%' }} onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                         >
                                             {button1}
                                         </CustomButton> : null
