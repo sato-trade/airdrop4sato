@@ -1,12 +1,10 @@
 import {authActions} from "../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
-import Web3 from "web3";
 export const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'
     : undefined
-let web3 = new Web3(window.ethereum)
 
 export const onBoard = new MetaMaskOnboarding({ forwarderOrigin })
 
@@ -65,11 +63,14 @@ export const onClickConnect = async () => {
     console.log('at signing utils imtoken dapp browser: ', window.imToken, window.ethereum)
     if (!!window.imToken) {
         console.log('imtoken dapp browser!!!')
-        try {
-            await web3.eth.requestAccounts()
-        } catch (error) {
-            // User denied account access...
-        }
+        window.ethereum.request({
+         method: 'eth_requestAccounts',
+        }, (err, res) => {
+         if (err) {
+             console.log('error : ', err)
+         }
+         console.log('requested account: ', res)
+        })
     } else {
         try {
             await window.ethereum.request({
