@@ -134,7 +134,6 @@ function deposit(payload) {
 
         web3.eth.sendTransaction(transactionParameters)
             .on('transactionHash', function(hash){
-                console.log('hash')
                 dispatch(onHash(hash))
             })
             .on('receipt', function(receipt){
@@ -258,7 +257,6 @@ function registerAmplRewards(token) {
                     dispatch(success('RegisterSuccess'));
                 },
                 error => {
-                    console.log('error: ', error)
                     if (error.data === "NotEligibleError") {
                         dispatch(alreadyRegistered(error.data));
                     } else if (error.data === 'AlreadyRegisterError') {
