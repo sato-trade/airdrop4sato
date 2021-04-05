@@ -19,12 +19,6 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
             method: 'personal_sign',
             params: [_msg, from],
         })
-        /***
-         * need to send network id to java backend & symbol (? huobi eco chain) -- 210205
-         * @type {{sig: *, address: string, data: string}}
-         */
-
-
         let payload = {
             data: msg,
             sig: sign,
