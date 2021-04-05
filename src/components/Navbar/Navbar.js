@@ -104,7 +104,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
 
     const handleOpen = () => {
-        console.log('imtoken dapp browser: ', window.imToken, window.ethereum)
+        console.log('imtoken dapp browser: ', window.imToken, registered)
         setOpen(true);
     };
 
