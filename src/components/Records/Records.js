@@ -295,7 +295,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                             {
                                 hash > 1 ?
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >
+                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >
                                             {t('checkEtherscan')}
                                         </Button>
                                     </Grid> : null

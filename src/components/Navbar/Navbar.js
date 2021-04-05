@@ -93,11 +93,11 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
 
     const navLinks = [
-        // { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
-        // { title: t('swap'), path: `/swap` },
-        //
-        // { title: t('pool'), path: `/pool` },
-        // { title: t('collectReward'), path: `/collectReward` },
+        { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
+        { title: t('swap'), path: `/swap` },
+
+        { title: t('pool'), path: `/pool` },
+        { title: t('collectReward'), path: `/collectReward` },
     ]
 
     const barRef = React.useRef(null);
