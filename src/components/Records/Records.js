@@ -24,12 +24,9 @@ import { roundingDown } from "../../utils/RoundingDown";
 import { history } from "../../utils/History";
 import backArrow from "../../images/backArrow.png";
 import CustomButton from "../CommonElements/CustomButton";
-import { onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
+import { isMetaMaskInstalled, onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
 import './Record.css';
-
-
 const Web3 = require("web3");
-const { isMetaMaskInstalled } = MetaMaskOnboarding
 
 function Records({ t, navBarHeight, address, chainId, network,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
@@ -249,7 +246,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12}>
                                 {
                                     address.length < 42 || !isValidAddress(address) ?
-                                        <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                        <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled()  ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
                                         >
                                             {button1}
                                         </CustomButton> : null

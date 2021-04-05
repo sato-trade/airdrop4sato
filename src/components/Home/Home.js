@@ -145,7 +145,7 @@ function Home({ t, navBarHeight, address, network, chainId,
                                     <div className={classes.wrapper}>
                                         {
                                             address.length < 42 || !isValidAddress(address) ?
-                                                <Button style={{ textTransform:'none',backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}>
+                                                <Button style={{ textTransform:'none',backgroundColor: '#1DF0A9', fontSize: 16, fontWeight: 'bold', height: 42, borderRadius: 21, padding: 16, color: '#010746' }} onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}>
                                                     {button1}
                                                 </Button>
                                                 :
