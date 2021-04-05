@@ -60,6 +60,7 @@ export const onClickInstall = (setButton1, setButton1Disabled ) => {
 }
 
 export const onClickConnect = async () => {
+    console.log('imtoken dapp browser: ', window.imToken, window.ethereum)
     try {
         await window.ethereum.request({
             method: 'eth_requestAccounts',
