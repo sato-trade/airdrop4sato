@@ -17,8 +17,6 @@ import { Language } from '@material-ui/icons';
 import i18n from '../../i18n';
 
 const Web3 = require("web3");
-let web3 = new Web3(window.ethereum)
-
 function CollectReward({ t, navBarHeight, address, network, chainId,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled }) {
@@ -97,8 +95,8 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     const prevMessageRef = useRef();
 
     const dispatch = useDispatch();
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { amplRewardsInfo, rewardMessage, loading } = useSelector(state => state.wallet)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
+    const { amplRewardsInfo, rewardMessage } = useSelector(state => state.wallet)
 
     const [openFailedModal, setOpenFailedModal] = useState(false)
 
@@ -149,7 +147,6 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         return () => {
         }
     }, [rewardMessage, loading])
-
 
     return (
         <div className={classes.root}>
@@ -218,7 +215,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                                         <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }

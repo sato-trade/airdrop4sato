@@ -206,8 +206,6 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     }, window.imToken)
 
-    console.log('ethereum detected: ', addr, network, chainId)
-
     return(
         <div ref={barRef}>
             <AppBar className={classes.bar} position="static">

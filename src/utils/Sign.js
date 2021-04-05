@@ -10,6 +10,7 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
 export const onBoard = new MetaMaskOnboarding({ forwarderOrigin })
 
 export const unlock = async (msg, address, chainId, network, Web3, registered, dispatch) => {
+    console.log('checking: ', address, chainId, network, registered)
     try {
 
         dispatch(authActions.authSigning())
