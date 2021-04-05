@@ -215,10 +215,10 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                                         <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
                                         </CustomButton> :
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} onClick={confirmRegister} >
+                                        <CustomButton style={{ width: '100%'  ,marginBottom:28}} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%',marginBottom:28 }}onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }
@@ -239,7 +239,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
                             }}
                         >
-                            <typography style={{ fontSize: 16, color: 'white',padding:24 ,fontWeight:'bold'}}>
+                            <typography style={{ fontSize: 16, color: 'white',padding:50 ,fontWeight:'bold'}}>
                             {t('toOfficialWeb')}
                             </typography>
                         </Link>
