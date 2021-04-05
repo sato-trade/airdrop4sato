@@ -180,7 +180,6 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     useEffect(() => {
         initialize()
         return() => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -189,7 +188,26 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             tempHeight = barRef.current.getBoundingClientRect().height;
             sendBackHeight(tempHeight)
         }
+        return() => {
+        }
     }, [])
+
+    useEffect(() => {
+        /**
+         * imToken DApp browser
+         */
+        if (!!window.imToken) {
+            setAddr(window.ethereum.selectedAddress)
+            sendBackAddr(window.ethereum.selectedAddress)
+            setChainId(window.ethereum.chainId)
+            sendBackChainId(window.ethereum.chainId)
+            setNetwork(window.ethereum.networkVersion)
+            sendBackNetworkId(window.ethereum.networkVersion)
+        }
+        return() => {
+        }
+
+    }, window.imToken)
 
     return(
         <div ref={barRef}>
