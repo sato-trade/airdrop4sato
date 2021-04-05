@@ -71,5 +71,7 @@
   "invalidInput":"请输入大于0的数字",
   "withdrawNotAvailable": "提币暂时关闭，请稍后重试",
   "transactionDetails": "交易详情",
-  "amount": "金额"
+  "amount": "金额",
+  "toOfficialWeb":"前往SATO官网"
+
 }
