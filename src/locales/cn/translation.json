@@ -55,7 +55,7 @@
   "claimed": "登记成功",
   "registerRewardFailed": "抱歉，登记失败",
   "registerRewardFailedContent": "您当前连接的钱包不满足空投奖励申领条件。",
-  "NotAvailable": "空投奖励领取暂未开放",
+  "NotAvailable": "空投奖励领取暂未开放。请于北京时间 2021年4月5日 21:00 后回到本站领取。",
   "registerRewardSucceed": "登记成功",
   "withdrawContent": "您可以随时将 SwapAll 侧链中的资产提现到去中心化钱包，提现地址默认为您绑定的钱包地址，您也可提现到其他人的去中心化钱包地址，请务必确认地址正确，一旦提交将无法撤回。\n\n",
   "withdrawAddress": "提币地址",
