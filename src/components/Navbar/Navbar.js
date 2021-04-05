@@ -1,9 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './Navbar.css';
 import { withTranslation } from 'react-i18next';
 import { NavLink, useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import {IconButton, List, ListItem, ListItemText, AppBar, Button, Toolbar, Container, Modal, Fade, Backdrop} from '@material-ui/core';
+import {
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    AppBar,
+    Button,
+    Toolbar,
+    Container,
+    Modal,
+    Fade,
+    Backdrop,
+    Grid
+} from '@material-ui/core';
 import logo from '../../images/logo.png'
 import i18n from '../../i18n';
 import {useDispatch, useSelector} from "react-redux";
@@ -80,9 +93,21 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     const [ addr, setAddr ] = useState('')
     const [ startWatch, setStartWatch ] = useState(false)
 
-    const { loggedIn, registered } = useSelector(state => state.auth)
+    const { loggedIn, registered, message } = useSelector(state => state.auth)
+    const prevNavMessageRef = useRef();
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const [openMsgModal, setOpenMsgModal] = useState(false)
+
+    const handleOpenMsgModal = () => {
+        setOpenMsgModal(true);
+    };
+
+    const handleCloseMsgModal = () => {
+        setOpenMsgModal(false);
+        dispatch(authActions.checkUser(addr))
+    };
 
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
@@ -205,6 +230,17 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     }, window.imToken)
 
+    useEffect(() => {
+        if (prevNavMessageRef.current === '' && (message === 'Wrong network id.')) {
+            handleOpenMsgModal()
+        }
+
+        prevNavMessageRef.current = message;
+        return () => {
+        }
+
+    }, [message])
+
     return(
         <div ref={barRef}>
             <AppBar className={classes.bar} position="static">
@@ -266,6 +302,34 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                         <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
                             {t('switch')}
                         </Button>
+                    </div>
+                </Fade>
+            </Modal>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openMsgModal}
+                onClose={handleCloseMsgModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openMsgModal}>
+                    <div className={classes.paper}>
+                    <div className={classes.paper}>
+                        <h2 id="transition-modal-title">{t('wrongNetwork')}</h2>
+                        </div>
+                        <Grid container spacing={2} >
+                            <Grid item xs={12} >
+                                <p id="transition-modal-description">{t('wrongNetworkContent')}</p>
+                            </Grid>
+                        </Grid>
                     </div>
                 </Fade>
             </Modal>

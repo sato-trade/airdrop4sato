@@ -69,15 +69,16 @@ function signUp(payload) {
                     }
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    dispatch(failure(error.data));
+                    dispatch(alertActions.error(error.data));
                 }
             );
     };
 
     function request() { return { type: SIGNUP } }
     function success(registered) { return { type: SIGNUP_SUCCEED, registered } }
-    function failure(error) { return { type: SIGNUP_FAILED, error } }
+    function failure(message) { return { type: SIGNUP_FAILED, message } }
+
 }
 
 function logIn(payload) {

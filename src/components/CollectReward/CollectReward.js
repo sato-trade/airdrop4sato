@@ -96,7 +96,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
     const dispatch = useDispatch();
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { amplRewardsInfo, rewardMessage } = useSelector(state => state.wallet)
+    const { amplRewardsInfo, rewardMessage, walletLoading } = useSelector(state => state.wallet)
 
     const [openFailedModal, setOpenFailedModal] = useState(false)
 
@@ -139,14 +139,14 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         if (prevMessageRef.current === '' && (rewardMessage === 'NotEligibleError' || rewardMessage === 'NotAvailable')) {
             handleOpenFailedModal()
         }
-        if ((loading === false && rewardMessage === 'RegisterSuccess')) {
+        if ((walletLoading === false && rewardMessage === 'RegisterSuccess')) {
             handleOpenSucceedModal()
             dispatch(walletActions.getAmplRewards(token))
         }
         prevMessageRef.current = rewardMessage;
         return () => {
         }
-    }, [rewardMessage, loading])
+    }, [rewardMessage, walletLoading])
 
     return (
         <div className={classes.root}>
@@ -208,8 +208,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             address.length === 42 && isValidAddress(address) ?
                                 loggedIn ?
                                     amplRewardsInfo.hasClaimed ?
-
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} disabled={amplRewardsInfo.hasClaimed}>
+                                        <CustomButton style={{ width: '100%'  ,marginBottom:28}} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
                                         </CustomButton> :
                                         <CustomButton style={{ width: '100%'  ,marginBottom:28}} onClick={confirmRegister} >
@@ -245,6 +244,27 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     </div>
                 </div>
             </div>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openSucceedModal}
+                onClose={handleCloseSucceedModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openSucceedModal}>
+                    <div className={classes.paper}>
+                        <h2 id="server-modal-title">{t('registerRewardSucceed')}</h2>
+                    </div>
+                </Fade>
+            </Modal>
             <Modal
                 disablePortal
                 disableEnforceFocus
