@@ -61,25 +61,10 @@ export const onClickInstall = (setButton1, setButton1Disabled ) => {
 }
 
 export const onClickConnect = async (network, chainId, addr, dispatch) => {
-    console.log('at signing utils imtoken dapp browser: ', window.imToken, window.ethereum)
     try {
-        if (!!window.imToken) {
-            console.log('imtoken dapp browser!!!')
-            window.ethereum.request({
-                method: 'eth_requestAccounts',
-            }, (err, res) => {
-                if (err) {
-                    console.log('error : ', err)
-                }
-                console.log('requested account: ', res)
-            })
-        } else {
-            console.log('here instead')
-            await window.ethereum.request({
-                method: 'eth_requestAccounts',
-            })
-        }
-
+        await window.ethereum.request({
+            method: 'eth_requestAccounts',
+        })
         await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
     } catch (error) {
         console.error(error)
