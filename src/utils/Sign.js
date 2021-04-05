@@ -1,5 +1,6 @@
 import {authActions} from "../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
+import Web3 from "web3";
 export const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
@@ -59,7 +60,7 @@ export const onClickInstall = (setButton1, setButton1Disabled ) => {
     setButton1Disabled(true)
 }
 
-export const onClickConnect = async (network, chainId, addr, web3, dispatch) => {
+export const onClickConnect = async (network, chainId, addr, dispatch) => {
     console.log('at signing utils imtoken dapp browser: ', window.imToken, window.ethereum)
     try {
         if (!!window.imToken) {
@@ -79,7 +80,7 @@ export const onClickConnect = async (network, chainId, addr, web3, dispatch) => 
             })
         }
 
-        await unlock('unlock', addr, chainId, network, web3, false, dispatch)
+        await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
     } catch (error) {
         console.error(error)
     }

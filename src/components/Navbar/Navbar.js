@@ -12,10 +12,7 @@ import MetaMaskOnboarding from "@metamask/onboarding";
 import {onClickConnect, onClickInstall} from "../../utils/Sign";
 import CustomButton from "../CommonElements/CustomButton";
 import useWindowDimensions from "../../utils/WindowDimensions";
-import Web3 from "web3";
 const { isMetaMaskInstalled } = MetaMaskOnboarding
-let web3 = new Web3(window.ethereum)
-
 let tempHeight = null;
 
 function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId, button1, sendBackButton1, sendBackButton1Disabled}){
@@ -243,7 +240,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                                 </NavLink>
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
-                            <Button className={classes.addrBtn} onClick={window.ethereum || !!window.imToken ? registered ? handleOpen : () => onClickConnect(network, chainId, addr, web3, dispatch) : () => onClickInstall(sendBackButton1, sendBackButton1Disabled) } variant="contained">
+                            <Button className={classes.addrBtn} onClick={window.ethereum || !!window.imToken ? registered ? handleOpen : () => onClickConnect(network, chainId, addr, dispatch) : () => onClickInstall(sendBackButton1, sendBackButton1Disabled) } variant="contained">
                                 {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
                             </Button>
                         </List>
