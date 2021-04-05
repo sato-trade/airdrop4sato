@@ -221,7 +221,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                                 </NavLink>
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
-                            <Button className={classes.addrBtn} onClick={isMetaMaskInstalled() ? (window.ethereum && registered) || window.ethereum.isImToken ? handleOpen : onClickConnect : () => onClickInstall(sendBackButton1, sendBackButton1Disabled) } variant="contained">
+                            <Button className={classes.addrBtn} onClick={isMetaMaskInstalled() || window.ethereum.isImToken ? (window.ethereum && registered) ? handleOpen : onClickConnect ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) } variant="contained">
                                 {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
                             </Button>
                         </List>
