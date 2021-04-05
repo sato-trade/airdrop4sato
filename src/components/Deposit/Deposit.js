@@ -83,7 +83,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             borderRadius: 36,
             height: 72,
             fontWeight: 600,
-            minWidth: "100%"
+            minWidth: "100%",
+            textTransform:"none"
         },
         btn_disabled: {
             backgroundColor: '#83ACF4',
@@ -92,7 +93,9 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             borderRadius: 25,
             height: 45,
             fontWeight: 600,
-            opacity: 0.2
+            opacity: 0.2,
+            textTransform:"none"
+
         },
         capitalList: {
             width: '100%',
@@ -344,7 +347,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
                         <CustomTextField
                             label={t('depositAmount')}
-                            disabled={!loggedIn}
+                            // disabled={!loggedIn}
                             style={{ width: '70%', textTransform: 'none' }}
                             inputRef={inputRef}
                             onChange={(e) => handleAmountChange(e.target.value)}

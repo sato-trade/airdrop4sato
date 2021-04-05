@@ -68,7 +68,7 @@
   "enterAmountHigherThanFee": "请输入高于手续费的金额",
   "insufficient_fund": "余额不足",
   "insufficient_fee": "手续费币种",
-  "invalidInput":"请输入大于0的数字",
+  "invalidInput":"请输入大于0的有效数字",
   "withdrawNotAvailable": "提币暂时关闭，请稍后重试",
   "transactionDetails": "交易详情",
   "amount": "金额"

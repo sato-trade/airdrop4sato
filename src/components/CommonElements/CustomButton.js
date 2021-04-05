@@ -42,6 +42,7 @@ const connectStyle = makeStyles((theme) => ({
         fontWeight: 'bold',
         color:'white',
         fontSize: 20,
+        textTransform:"none"
 
     }
 }));

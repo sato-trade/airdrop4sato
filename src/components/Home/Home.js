@@ -68,7 +68,8 @@ function Home({ t, navBarHeight, address, network, chainId,
         textSmall: {
             color: 'white',
             fontSize: 16,
-            fontWeight: '600'
+            fontWeight: '600',
+            textTransform:"none"
         },
         result: {
             fontSize: 10,
