@@ -74,5 +74,7 @@
   "invalidInput":"Please enter a valid amount",
   "withdrawNotAvailable": "Withdraw is temporarily closed. Please try again later",
   "transactionDetails": "Transaction Details",
-  "amount": "amount"
+  "amount": "amount",
+  "toOfficialWeb":"SATO Official Website"
+
 }
