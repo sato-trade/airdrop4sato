@@ -310,11 +310,11 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         <Typography style={{ textTransform:'none',fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
                             {t('deposit')}
                         </Typography>
-                 
+
                         <Typography style={{ textTransform: 'none', fontSize: 12, textAlign: 'left', fontWeight: 'bold', color: '#8FB9E1' }} color="textSecondary" gutterBottom>
                             {t('depositContent')}
                         </Typography>
-            
+
                     </div>
                     <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
 
@@ -528,7 +528,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 depositHash.length > 1 ?
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
+                                        <Button target="_blank" href={"https://etherscan.io/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
                                             {t('checkEtherscan')}
                                         </Button>
                                     </Grid> : null
