@@ -356,7 +356,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             error={warning !== ''}
                             rightbuttonlabel={ capital.free > 0.0001 ?  t('all') : null}
                             onRightButtonClick={allIn}
-                            
+
                         >
 
                         </CustomTextField>
@@ -462,8 +462,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12} style={{ marginTop: 24 }}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton style={{ width: '100%' }} buttonStyle="connectStyle" onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                                    >
+                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                         {button1}
                                     </CustomButton> : null
                             }
@@ -473,7 +472,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                         <CustomButton  style={{ width: '100%' }}  onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }

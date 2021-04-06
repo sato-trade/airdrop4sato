@@ -7,13 +7,12 @@ const unlockStyle = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: '#A2E6F5',
         },
-       
+
         background:"#75E2F9",
 
         borderRadius: 36,
         border: 0,
         color: 'white',
-        height: 48,
         height:72
     },
     label: {
@@ -29,13 +28,12 @@ const connectStyle = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: '#7095F0',
         },
-       
+
         background:"#4477F1",
 
         borderRadius: 36,
         border: 0,
         color: 'white',
-        height: 48,
         height:72
     },
     label: {
@@ -52,14 +50,13 @@ const confirmStyle = makeStyles((theme) => ({
         '&:hover': {
             backgroundColor: '#6BF5C6',
         },
-       
+
         background:"#1DF0A9",
         // background:"red",
 
         borderRadius: 36,
         border: 0,
         color: 'white',
-        height: 48,
         height:72
     },
     label: {

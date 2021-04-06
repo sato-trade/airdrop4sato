@@ -56,11 +56,7 @@ const useStylesInput = makeStyles((theme) => ({
 
     '&:focused': {
       color: '#1DF0A9'
-    },
-  },
-  placeholder: {
-    backgroundColor: 'red',
-    fontSize: 24
+    }
   }
 
 
@@ -72,7 +68,6 @@ export default function CustomTextField(props) {
 
   // return <TextField placeholder="666" InputProps={{ classes, disableUnderline: true, }} {...props} />;
   return <TextField
-    placeholder="aaa"
     id="filled-full-width"
     margin="normal"
     InputLabelProps={{ className: "textfield__label" }}

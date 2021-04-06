@@ -679,8 +679,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                                    >
+                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                         {button1}
                                     </CustomButton> : null
                             }
@@ -690,7 +689,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                         <CustomButton style={{ width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }

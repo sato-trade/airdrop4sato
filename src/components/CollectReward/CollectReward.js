@@ -199,8 +199,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     <div style={{ marginTop: 24 }}>
                         {
                             address.length < 42 || !isValidAddress(address) ?
-                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}
-                                >
+                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                     {button1}
                                 </CustomButton> : null
                         }
