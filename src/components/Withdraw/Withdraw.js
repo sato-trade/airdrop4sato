@@ -195,7 +195,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
     const handleAmountChange = (amount) => {
         if (parseFloat(amount) >= 0) {
-            if (countDecimals(parseFloat(amount) <= 8)) {
+            if (countDecimals(parseFloat(amount)) <= 8) {
                 setWithdrawAmount(amount)
             } else {
                 setWithdrawAmount(roundingDown(parseFloat(amount), 8).toString())
@@ -600,7 +600,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
                             <CustomTextField
                                 label={t('withdrawAmount')}
-                                disabled={!loggedIn}
+                                disabled={!loggedIn || coin === ''}
                                 style={{ width: '70%', textTransform: 'none' }}
                                 inputRef={inputRef}
                                 onChange={(e) => handleAmountChange(e.target.value)}
