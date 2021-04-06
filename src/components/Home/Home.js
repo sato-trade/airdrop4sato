@@ -1,22 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, Link, Redirect } from 'react-router-dom';
-import { Typography, Grid, Button, Card, CardContent, Modal } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
+import {Link, Redirect} from 'react-router-dom';
+import {Button, Grid, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 import './Home.css';
-import { withTranslation } from 'react-i18next';
-import MetaMaskOnboarding from '@metamask/onboarding'
-import { isValidAddress } from 'ethereumjs-util'
-import useWindowDimensions from '../../utils/WindowDimensions'
-import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
+import {withTranslation} from 'react-i18next';
+import {isValidAddress} from 'ethereumjs-util'
+import {onClickConnect, onClickInstall, unlock} from '../../utils/Sign'
 
-import { authActions } from '../../redux/actions/authActions';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 const Web3 = require("web3");
-const currentUrl = new URL(window.location.href)
-const forwarderOrigin = currentUrl.hostname === 'localhost'
-    ? 'http://localhost:9010'
-    : undefined
 
 function Home({ t, navBarHeight, address, network, chainId,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
@@ -24,7 +17,6 @@ function Home({ t, navBarHeight, address, network, chainId,
 }) {
 
 
-    const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
             ...theme.typography.button,
@@ -96,9 +88,8 @@ function Home({ t, navBarHeight, address, network, chainId,
         },
     }));
     const classes = useStyles();
-    const { registered, loggedIn, loggingIn, loading } = useSelector(state => state.auth)
+    const { registered, loggedIn, loading } = useSelector(state => state.auth)
     const dispatch = useDispatch();
-    const location = useLocation();
 
     return (
         <div className={classes.root}>

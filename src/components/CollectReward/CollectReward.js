@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './CollectReward.css';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import useWindowDimensions from '../../utils/WindowDimensions'
 import logo from '../../images/rewardHeadImage.png'
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
-import { withTranslation } from 'react-i18next';
-import { Typography, Grid, Button, Card, CardContent, Modal, CardHeader, Backdrop, Fade } from '@material-ui/core';
-import { useDispatch, useSelector } from "react-redux";
-import { walletActions } from "../../redux/actions/walletActions";
-import { isValidAddress } from "ethereumjs-util";
-import { isMetaMaskInstalled, onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
-import { FormatNumber } from "../../utils/Common";
+import {withTranslation} from 'react-i18next';
+import {Backdrop, Fade, Grid, Modal, Typography} from '@material-ui/core';
+import {useDispatch, useSelector} from "react-redux";
+import {walletActions} from "../../redux/actions/walletActions";
+import {isValidAddress} from "ethereumjs-util";
+import {onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
+import {FormatNumber} from "../../utils/Common";
 import CustomButton from '../CommonElements/CustomButton';
-import { Language } from '@material-ui/icons';
 import i18n from '../../i18n';
 
 const Web3 = require("web3");

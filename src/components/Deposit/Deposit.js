@@ -1,38 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
-import {
-    Typography,
-    Grid,
-    Button,
-    Card,
-    CardContent,
-    Avatar,
-    TextField,
-    InputAdornment,
-    IconButton,
-    MenuItem,
-    FormHelperText,
-    Backdrop, Fade, Modal
-} from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import { withTranslation } from 'react-i18next';
+import React, {useEffect, useState} from 'react';
+import {useLocation} from 'react-router-dom';
+import {Avatar, Backdrop, Button, Fade, Grid, MenuItem, Modal, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {withTranslation} from 'react-i18next';
 import useWindowDimensions from '../../utils/WindowDimensions'
 import './Deposit.css';
 import CustomTextField from '../CommonElements/CustomTextField'
-import { walletActions } from '../../redux/actions/walletActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { roundingDown } from '../../utils/RoundingDown'
-import { getIcons, formDateString } from "../../utils/Common";
+import {walletActions} from '../../redux/actions/walletActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {roundingDown} from '../../utils/RoundingDown'
+import {formDateString, getChain, getIcons, isNumeric} from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
-import { history } from '../../utils/History';
-import { isNumeric, getChain } from "../../utils/Common";
-import { wallet } from "../../redux/reducers/wallet";
-import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
-import { isValidAddress } from "ethereumjs-util";
+import {history} from '../../utils/History';
+import {onClickConnect, onClickInstall, unlock} from '../../utils/Sign'
+import {isValidAddress} from "ethereumjs-util";
 import CustomDropBox from '../CommonElements/CustomDropBox';
 import CustomButton from '../CommonElements/CustomButton';
+
 const Web3 = require("web3");
-let web3 = new Web3(window.ethereum)
 
 function Deposit({ t, navBarHeight, address, chainId, network,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
@@ -146,7 +131,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     const classes = useStyles();
 
     const [depositAmount, setDepositAmount] = useState('')
-    const [coin, setCoin] = React.useState('SAP');
+    const [coin, setCoin] = React.useState('');
     const [capital, setCapital] = React.useState({ free: 0 })
     const [warning, setWarning] = React.useState(' ')
     const [cantDeposit, setCantDeposit] = React.useState(true)

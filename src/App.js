@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
-import {BrowserRouter as Router, Switch, Route, Link, Redirect, useLocation} from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import Home from './components/Home/Home';
 import CollectReward from './components/CollectReward/CollectReward';
 
@@ -11,10 +11,9 @@ import Swap from './components/Swap/Swap';
 import Withdraw from './components/Withdraw/Withdraw';
 import Deposit from './components/Deposit/Deposit';
 import Records from './components/Records/Records';
-import Footer from './components/Footer/Footer';
 import {useDispatch, useSelector} from "react-redux";
 import {withTranslation} from "react-i18next";
-import {isMetaMaskConnected, isMetaMaskInstalled, onBoard} from "./utils/Sign";
+import {isMetaMaskConnected, onBoard} from "./utils/Sign";
 import {isValidAddress} from "ethereumjs-util";
 import {authActions} from "./redux/actions";
 import i18n from './i18n';

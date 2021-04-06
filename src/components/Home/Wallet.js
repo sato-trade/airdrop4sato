@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import {useLocation, Link, Redirect} from 'react-router-dom';
-import { Typography, Grid, Button, Card, CardContent,
-    List, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemSecondaryAction
+import React, {useEffect} from 'react';
+import {Link, Redirect} from 'react-router-dom';
+import {
+    Avatar,
+    Button,
+    Grid,
+    List,
+    ListItem,
+    ListItemAvatar,
+    ListItemSecondaryAction,
+    ListItemText,
+    Typography
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import './Home.css';
-import { withTranslation } from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import useWindowDimensions from '../../utils/WindowDimensions'
 
-import { walletActions } from '../../redux/actions/walletActions';
-import { useDispatch, useSelector } from 'react-redux';
-import { roundingDown } from '../../utils/RoundingDown'
-import { getIcons } from "../../utils/Common";
-import {history} from "../../utils/History";
-import backArrow from "../../images/backArrow.png";
-import {isValidAddress} from "ethereumjs-util";
-import {isMetaMaskInstalled, onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
+import {walletActions} from '../../redux/actions/walletActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {roundingDown} from '../../utils/RoundingDown'
+import {getIcons} from "../../utils/Common";
 
 function Wallet({t, navBarHeight, address, network, chainId}) {
     const { height, width } = useWindowDimensions();
