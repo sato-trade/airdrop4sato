@@ -178,7 +178,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     const handleAmountChange = (amount) => {
         setDepositAmount(amount);
-        if (isNumeric(amount)) {
+        if (isNumeric(amount) && amount>0) {
             if (parseFloat(amount) <= capital.free) {
                 setWarning(' ')
                 setCantDeposit(false)
@@ -347,7 +347,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
                         <CustomTextField
                             label={t('depositAmount')}
-                            // disabled={!loggedIn}
+                            disabled={!loggedIn}
                             style={{ width: '70%', textTransform: 'none' }}
                             inputRef={inputRef}
                             onChange={(e) => handleAmountChange(e.target.value)}
@@ -356,6 +356,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             error={warning !== ''}
                             rightbuttonlabel={ capital.free > 0.0001 ?  t('all') : null}
                             onRightButtonClick={allIn}
+                            
                         >
 
                         </CustomTextField>
@@ -469,7 +470,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <CustomButton style={{ width: '100%' }} disabled={!loggedIn} onClick={confirmDeposit} disabled={cantDeposit}>
+                                        <CustomButton  style={{ width: '100%' }}  onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('confirm')}
                                         </CustomButton> :
                                         <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={() => loading ? null : unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>

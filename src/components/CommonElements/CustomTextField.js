@@ -11,6 +11,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { green } from '@material-ui/core/colors';
+import CancelIcon from '@material-ui/icons/Cancel';
 
 import IconButton from '@material-ui/core/IconButton';
 
@@ -57,6 +58,10 @@ const useStylesInput = makeStyles((theme) => ({
       color: '#1DF0A9'
     },
   },
+  placeholder: {
+    backgroundColor: 'red',
+    fontSize: 24
+  }
 
 
 }));
@@ -67,6 +72,7 @@ export default function CustomTextField(props) {
 
   // return <TextField placeholder="666" InputProps={{ classes, disableUnderline: true, }} {...props} />;
   return <TextField
+    placeholder="aaa"
     id="filled-full-width"
     margin="normal"
     InputLabelProps={{ className: "textfield__label" }}
@@ -76,18 +82,29 @@ export default function CustomTextField(props) {
       classes, disableUnderline: true,
 
       endAdornment:
+        <InputAdornment position="end">
 
-        props.rightbuttonlabel === "" ?
-          null
-          :
-          <InputAdornment position="end">
+          {props.rightbuttonlabel === "" ?
+            null
+            :
+
             <IconButton position="end"
               style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}
               onClick={props.onRightButtonClick}
             >
               {props.rightbuttonlabel}
             </IconButton>
-          </InputAdornment>
+
+          }
+
+          {props.showCancelButton ?
+
+            <CancelIcon style={{color:'white'}} onClick={props.clear} />
+            :
+            null
+          }
+        </InputAdornment>
+
 
     }
 

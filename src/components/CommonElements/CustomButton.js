@@ -53,7 +53,8 @@ const confirmStyle = makeStyles((theme) => ({
             backgroundColor: '#6BF5C6',
         },
        
-        background:"#4477F1",
+        background:"#1DF0A9",
+        // background:"red",
 
         borderRadius: 36,
         border: 0,
