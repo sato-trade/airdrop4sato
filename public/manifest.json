@@ -1,6 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SwapAll",
+  "name": "Claim SATO Airdrop Rewards | a cross-chain algorithmic token",
+  "description": "With the launch of our airdrop program on 5th April (Est), you will be able to claim SATO if you qualify for our retroactive airdrop.",
   "icons": [
     {
       "src": "favicon.ico",
