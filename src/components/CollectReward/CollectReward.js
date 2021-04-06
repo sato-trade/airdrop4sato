@@ -13,10 +13,10 @@ import { isValidAddress } from "ethereumjs-util";
 import { isMetaMaskInstalled, onClickConnect, onClickInstall, unlock } from "../../utils/Sign";
 import { FormatNumber } from "../../utils/Common";
 import CustomButton from '../CommonElements/CustomButton';
+import { Language } from '@material-ui/icons';
+import i18n from '../../i18n';
 
 const Web3 = require("web3");
-let web3 = new Web3(window.ethereum)
-
 function CollectReward({ t, navBarHeight, address, network, chainId,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled }) {
@@ -88,13 +88,15 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
             borderRadius: 20,
             textAlign: 'center'
         },
+
+
     }));
     const classes = useStyles();
     const prevMessageRef = useRef();
 
     const dispatch = useDispatch();
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { amplRewardsInfo, rewardMessage, loading } = useSelector(state => state.wallet)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
+    const { amplRewardsInfo, rewardMessage, walletLoading } = useSelector(state => state.wallet)
 
     const [openFailedModal, setOpenFailedModal] = useState(false)
 
@@ -134,18 +136,17 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     }, [loggedIn])
 
     useEffect(() => {
-        if (prevMessageRef.current === '' && (rewardMessage === 'NotEligibleError' || rewardMessage === 'NotAvailable') ) {
+        if (prevMessageRef.current === '' && (rewardMessage === 'NotEligibleError' || rewardMessage === 'NotAvailable')) {
             handleOpenFailedModal()
         }
-        if ((loading === false && rewardMessage === 'RegisterSuccess')) {
+        if ((walletLoading === false && rewardMessage === 'RegisterSuccess')) {
             handleOpenSucceedModal()
             dispatch(walletActions.getAmplRewards(token))
         }
         prevMessageRef.current = rewardMessage;
         return () => {
         }
-    }, [rewardMessage, loading])
-
+    }, [rewardMessage, walletLoading])
 
     return (
         <div className={classes.root}>
@@ -168,37 +169,37 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
                     <div className='cards__cell__wrapper'>
                         <div className='cards__small__cell'>
-                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
+                            <Typography className='cards__cell__title' style={{ fontSize: 10, fontWeight: 'bold' }}>
                                 {t('registeredUser')}
                             </Typography>
-                            <Typography className='cards__cell__value' style={{ fontSize: 24, fontWeight: 'bold',marginTop:12 }}>
+                            <Typography className='cards__cell__value' style={{ fontSize: 24, fontWeight: 'bold', marginTop: 12 }}>
                                 {FormatNumber(amplRewardsInfo.registeredUsers)}
                             </Typography>
 
                         </div>
                         <div className='cards__small__cell'>
-                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
+                            <Typography className='cards__cell__title' style={{ fontSize: 10, fontWeight: 'bold' }}>
                                 {t('releasedReward')}
                             </Typography>
-                            <Typography className='cards__cell__value__large' style={{ fontSize: 24, fontWeight: 'bold',marginTop:12 }}>
+                            <Typography className='cards__cell__value__large' style={{ fontSize: 24, fontWeight: 'bold', marginTop: 12 }}>
                                 {FormatNumber(amplRewardsInfo.totalRewards)}
                             </Typography>
 
                         </div>
 
                         <div className='cards__small__cell'>
-                            <Typography className='cards__cell__title' style={{ fontSize: 12, fontWeight: 'bold' }}>
+                            <Typography className='cards__cell__title' style={{ fontSize: 10, fontWeight: 'bold' }}>
                                 {t('expectedRewardPerPerson')}(SATO)
                             </Typography>
-                            <Typography className='cards__cell__value' style={{ fontSize: 24, fontWeight: 'bold',marginTop:12 }}>
+                            <Typography className='cards__cell__value' style={{ fontSize: 24, fontWeight: 'bold', marginTop: 12 }}>
                                 {`${FormatNumber(amplRewardsInfo.rewardsPerUser)} `}
                             </Typography>
                         </div>
                     </div>
-                    <div style={{marginTop:24}}>
+                    <div style={{ marginTop: 24 }}>
                         {
                             address.length < 42 || !isValidAddress(address) ?
-                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}
                                 >
                                     {button1}
                                 </CustomButton> : null
@@ -207,20 +208,63 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             address.length === 42 && isValidAddress(address) ?
                                 loggedIn ?
                                     amplRewardsInfo.hasClaimed ?
-
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} disabled={amplRewardsInfo.hasClaimed}>
+                                        <CustomButton style={{ width: '100%'  ,marginBottom:28}} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
                                         </CustomButton> :
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} onClick={confirmRegister} >
+                                        <CustomButton style={{ width: '100%'  ,marginBottom:28}} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%',marginBottom:28 }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }
+
+                        {/* <div style={{ width: '100%' }} style={{ width: 500 ,backgroundColor:'red',marginTop:24}} disabled={amplRewardsInfo.hasClaimed}>
+                            {t('claimed')}
+                        </div> */}
+
+
+                        {/* <td style={{backgroundColor:'red',fontSize:16,alignSelf:"center",width:'100%'}} onClick={() => window.open("https://sato.trade/", "_blank")}>text</td> */}
+                        <Link
+                            style={{ textDecoration: 'none' }}
+                            onClick={() => {
+                                i18n.language === 'en' ?
+                                window.open("https://sato.trade/", "_blank")
+                                :
+                                window.open("https://sato.trade/index-cn.html", "_blank")
+
+                            }}
+                        >
+                            <typography style={{ fontSize: 16, color: 'white',padding:50 ,fontWeight:'bold'}}>
+                            {t('toOfficialWeb')}
+                            </typography>
+                        </Link>
+
+
                     </div>
                 </div>
             </div>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openSucceedModal}
+                onClose={handleCloseSucceedModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openSucceedModal}>
+                    <div className={classes.paper}>
+                        <h2 id="server-modal-title">{t('registerRewardSucceed')}</h2>
+                    </div>
+                </Fade>
+            </Modal>
             <Modal
                 disablePortal
                 disableEnforceFocus

@@ -1,5 +1,6 @@
 import {authActions} from "../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
+import Web3 from "web3";
 export const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
@@ -9,6 +10,7 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
 export const onBoard = new MetaMaskOnboarding({ forwarderOrigin })
 
 export const unlock = async (msg, address, chainId, network, Web3, registered, dispatch) => {
+    console.log('checking: ', address, chainId, network, registered)
     try {
 
         dispatch(authActions.authSigning())
@@ -53,12 +55,15 @@ export const onClickInstall = (setButton1, setButton1Disabled ) => {
     setButton1Disabled(true)
 }
 
-export const onClickConnect = async () => {
+export const onClickConnect = async (network, chainId, addr, dispatch) => {
     try {
         await window.ethereum.request({
             method: 'eth_requestAccounts',
         })
+        await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
     } catch (error) {
         console.error(error)
     }
+
+
 }

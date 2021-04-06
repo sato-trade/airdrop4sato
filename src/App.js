@@ -76,13 +76,13 @@ function App({t}){
     }
 
     const updateButtons = () => {
-        const accountButtonsDisabled = !isMetaMaskInstalled() || !isMetaMaskConnected()
+        const accountButtonsDisabled = window.ethereum === undefined
         if (accountButtonsDisabled) {
             setButton2Disabled(true)
         } else {
             setButton2Disabled(false)
         }
-        if (!isMetaMaskInstalled()) {
+        if (window.ethereum === undefined) {
             setButton1(t('noWallet'))
             setButton1Disabled(false)
         } else if (isMetaMaskConnected()) {
@@ -92,7 +92,7 @@ function App({t}){
                 onBoard.stopOnboarding()
             }
         } else {
-            setButton1('Connect')
+            setButton1(t('connect'))
             setButton1Disabled(false)
         }
     }

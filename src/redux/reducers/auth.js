@@ -20,7 +20,8 @@ export function auth (state = {
     loggedIn: false,
     loggingIn: false,
     loading: false,
-    registered: false
+    registered: false,
+    message: ''
 }, action) {
     switch (action.type) {
         case AUTH_SIGNING:
@@ -48,7 +49,8 @@ export function auth (state = {
         case CHECK_EXIST:
             return {
                 ...state,
-                loading: true
+                loading: true,
+                message: ''
             }
         case CHECK_SUCCEED:
             return {
