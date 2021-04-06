@@ -138,7 +138,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     }));
     const classes = useStyles();
 
-    const [withdrawTo, setWithdrawTo] = useState(address)
+    const [withdrawTo, setWithdrawTo] = useState('')
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
     const [coin, setCoin] = React.useState('');
@@ -152,7 +152,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
     const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
-    const location = useLocation();
     const inputRef = React.useRef();
 
     const [openNote, setOpenNote] = useState(false)
@@ -438,130 +437,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                     </div>
                     <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
                     <Grid container spacing={2} className={classes.fieldWrapper}>
-                        {/* <Grid item xs={12} >
-                            <TextField
-                                inputRef={inputRef}
-                                label={t('withdrawAddress')}
-                                type="text"
-                                fullWidth
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                    },
-                                }}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                    endAdornment: <InputAdornment position="end">
-                                        <IconButton className={classes.fillAddress} onClick={fillAddress} position="end">{t('l1Wallet')}</IconButton>
-                                        <CancelIcon onClick={clear} />
-                                    </InputAdornment>
-                                }}
-                                onChange={(e) => handleAddressChange(e.target.value)}
-                                onBlur={() => handleFinish(false)}
-                                variant="standard"
-                                value={withdrawTo}
-                                helperText={addrWarning}
-                                FormHelperTextProps={{
-                                    className: classes.helperText
-                                }}
-                                error={addrWarning !== ''}
-                            />
-                        </Grid> */}
-
-
-
-                        {/* <Grid item xs={8} >
-                            <TextField
-                                inputRef={inputRef}
-                                label={t('withdrawAmount')}
-                                type="number"
-                                fullWidth
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                    },
-                                }}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                    endAdornment: <InputAdornment position="end"><IconButton className={classes.fillAddress} onClick={allIn} position="end">{t('all')}</IconButton></InputAdornment>
-                                }}
-                                onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => handleFinish(true)}
-                                variant="standard"
-                                value={withdrawAmount}
-                                helperText={warning}
-                                FormHelperTextProps={{
-                                    className: classes.helperText
-                                }}
-                                error={warning !== ''}
-                                disabled={!loggedIn || coin === ''}
-                            />
-                        </Grid> */}
-                        {/* <Grid item xs={4} >
-                            <TextField
-                                select
-                                fullWidth
-                                label={`${t('l2Amount')} ${capital.token !== undefined ? roundingDown(capital.free, 4) : '--'} ${capital.token === undefined ? '' : capital.token}`}
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                        width: 'max-content'
-                                    },
-                                }}
-                                value={coin ? coin : ''}
-                                onChange={handleCoinChange}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                }}
-                                defaultValue={'--'}
-                                disabled={!loggedIn}
-                            >
-                                {coins.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        <Grid container >
-                                            <Grid item xs={3} >
-                                                <Avatar alt="Coin Icon" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
-                                            </Grid>
-                                            <Grid item xs={9} >
-                                                {option.label}
-                                            </Grid>
-                                        </Grid>
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid> */}
-                        {/* <Grid className={classes.feeContentLeft} item xs={6} >
-                            <p>{t('fee')}</p>
-                        </Grid>
-                        <Grid className={classes.feeContentRight} item xs={6} >
-                            <p>{`${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || coin === '' ? '--' : roundingDown(withdrawFeeObj.amount, 4)} ${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || coin === '' ? '' : withdrawFeeObj.base}`}</p>
-                        </Grid>
-                        <Grid className={classes.feeContentLeft} item xs={6} >
-                            <p>{t('amountReceiving')}</p>
-                        </Grid>
-                        <Grid className={classes.feeContentRight} item xs={6} >
-                            <p>{`${receivingAmount} ${receivingBase}`}</p>
-                        </Grid> */}
-
-
                         <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                             <CustomTextField
                                 inputRef={inputRef}
@@ -578,7 +453,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                 // variant="standard"
                                 value={withdrawTo}
                                 helperText={addrWarning}
-
+                                disabled={!loggedIn}
                                 error={addrWarning !== ''}
                             >
 
@@ -588,6 +463,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                             <Button
                                 style={{ backgroundColor: '#1DF0A9', height: 60, bottom: 10, borderRadius: 16, width: '18%' }}
                                 onClick={fillAddress}
+                                disabled={!loggedIn}
                             >
                                 <Typography style={{ fontSize: 14, fontWeight: 'bold', color: '#010746' }}>
                                     {t('l1Wallet')}

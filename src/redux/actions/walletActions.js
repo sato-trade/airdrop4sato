@@ -15,6 +15,7 @@ import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
 import Web3 from 'web3'
 import * as Contract from "../../config/Contract.json";
+import {getChain} from "../../utils/Common";
 import {Container} from "@material-ui/core";
 let web3 = new Web3(window.ethereum)
 
@@ -98,12 +99,13 @@ function deposit(payload) {
     return dispatch => {
         dispatch(request());
         let transactionParameters = {}
+        let chain = getChain(payload.network, payload.chainId) + '_test'
         if (payload.coin === 'ETH') {
             transactionParameters = {
                 // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
                 // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
                 // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
-                to: Contract.ropsten.dacb.address, // Required except during contract publications.
+                to: Contract.default[chain].dacb.address, // Required except during contract publications.
                 from: payload.l2Address, // must match user's active address.
                 value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
                 // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
@@ -111,11 +113,11 @@ function deposit(payload) {
 
 
         } else {
-            let contractInstance = new web3.eth.Contract(Contract.ropsten.transferErc20.abi, Contract.ropsten.coins[payload.coin].address);
-            let contractData = contractInstance.methods.transfer(Contract.ropsten.dacb.address, web3.utils.toBN(payload.amount * Math.pow(10, Contract.ropsten.coins[payload.coin].decimals))).encodeABI()
+            let contractInstance = new web3.eth.Contract(Contract.transferErc20.abi, Contract.default[chain].coins[payload.coin].address);
+            let contractData = contractInstance.methods.transfer(Contract.default[chain].dacb.address, web3.utils.toBN(payload.amount * Math.pow(10, Contract.default[chain].coins[payload.coin].decimals))).encodeABI()
             // // calculate ERC20 token amount
             // // call transfer function
-            // contract.transfer(Contract.ropsten.dacb.address, value, (error, txHash) => {
+            // contract.transfer(Contract[chain + '_test].dacb.address, value, (error, txHash) => {
             //     // it returns tx hash because sending tx
             //     console.log(txHash);
             // });
@@ -124,7 +126,7 @@ function deposit(payload) {
                 // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
                 // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
                 // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
-                to: Contract.ropsten.coins[payload.coin].address, // Required except during contract publications.
+                to: Contract.default[chain].coins[payload.coin].address, // Required except during contract publications.
                 from: payload.l2Address, // must match user's active address.
                 data: contractData,
                 // value: web3.utils.toWei(0, 'ether'), // Only required to send ether to the recipient from the initiating external account.
@@ -191,9 +193,9 @@ function getAllTokenStatus(token) {
     function failure(message) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, message } }
 }
 
-function getL1Capital(address) {
+function getL1Capital(address, network, chainId) {
     return dispatch => {
-        walletService.getL1Capital(address)
+        walletService.getL1Capital(address, network, chainId)
             .then(
                 res => {
                     dispatch(success(res));

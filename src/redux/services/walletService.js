@@ -3,13 +3,14 @@ import { authHeader } from '../../utils/AuthHeader';
 import { handleResponse } from '../../utils/HandleResponse'
 import * as Contract from "../../config/Contract.json";
 import Web3 from 'web3'
+import {getChain} from "../../utils/Common";
+
 let web3 = new Web3(window.ethereum)
 
 export const walletService = {
     getUserCapital,
     withdraw,
     getAllTokenStatus,
-    deposit,
     getL1Capital,
     getTransactionRecords,
     getAmplRewards,
@@ -23,26 +24,6 @@ async function getUserCapital(token) {
         headers: authHeader(token),
     };
     return fetch(Url.GET_USER_CAPITAL, requestOptions).then(handleResponse);
-}
-
-async function deposit(payload) {
-    const gasPrice = await web3.eth.getGasPrice()
-
-    const nonce = await web3.eth.getTransactionCount(payload.l1Address)
-
-    const chainId = await web3.eth.getChainId()
-
-
-    const transactionParameters = {
-        // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
-        // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
-        // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
-        to: Contract.ropsten.dacb.address, // Required except during contract publications.
-        from: payload.l2Address, // must match user's active address.
-        value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
-        // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
-    };
-    return await web3.eth.sendTransaction(transactionParameters)
 }
 
 async function withdraw(payload) {
@@ -62,25 +43,25 @@ async function getAllTokenStatus(token) {
     return fetch(Url.GET_ALL_TOKENS_STATUS, requestOptions).then(handleResponse);
 }
 
-async function getL1Capital(address) {
+async function getL1Capital(address, network, chainId) {
     async function loopingCapital () {
+        let chain = getChain(network, chainId) + '_test'
         let balance = []
-        let balanceCheckerContract = new web3.eth.Contract(Contract.ropsten.balanceChecker.abi, Contract.ropsten.balanceChecker.address);
-        for (const key in Contract.ropsten.coins) {
+        let balanceCheckerContract = new web3.eth.Contract(Contract.default[chain].balanceChecker.abi, Contract.default[chain].balanceChecker.address);
+        for (const key in Contract.default[chain].coins) {
             if (key === 'ETH') {
                 await web3.eth.getBalance(address, (err, res) => {
                     if (err){
                         console.log('failed: ', err)
                     }
-                    balance.push({token: key, free: Number(res) / Math.pow(10, 18)})
+                    balance.push({token: key, free: Number(res) / Math.pow(10, Contract.default[chain].coins[key].decimals)})
                 })
-
             } else {
-                await balanceCheckerContract.methods.tokenBalance(address, Contract.ropsten.coins[key].address).call({}, (err, res) => {
+                await balanceCheckerContract.methods.tokenBalance(address, Contract.default[chain].coins[key].address).call({}, (err, res) => {
                     if (err){
                         console.log('failed: ', err)
                     }
-                    balance.push({token: key, free: Number(res) / Math.pow(10, 18)})
+                    balance.push({token: key, free: Number(res) / Math.pow(10, Contract.default[chain].coins[key].decimals)})
                 })
             }
         }

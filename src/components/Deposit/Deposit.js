@@ -193,6 +193,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             l2Address: address,
             amount: depositAmount,
             coin: coin,
+            network, chainId
         }
         try {
             if (depositFinished) {
@@ -207,7 +208,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             // dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
-            dispatch(walletActions.getL1Capital(address))
+            dispatch(walletActions.getL1Capital(address, network, chainId))
         }
         return () => {
         }
@@ -217,7 +218,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             // dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
-            dispatch(walletActions.getL1Capital(address))
+            dispatch(walletActions.getL1Capital(address, network, chainId))
         }
         return () => {
         }

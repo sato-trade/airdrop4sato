@@ -121,7 +121,7 @@ function Records({ t, navBarHeight, address, chainId, network,
     const dispatch = useDispatch()
     const location = useLocation();
 
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
     const { tokenIcons, transactionRecords } = useSelector(state => state.wallet)
 
     const [time, setTime] = useState('')
@@ -131,6 +131,7 @@ function Records({ t, navBarHeight, address, chainId, network,
     const [hash, setHash] = useState('')
     const [openRecordDetail, setOpenRecordDetail] = useState(false)
     const [coin, setCoin] = useState('')
+    const [arrangedRecords, setArrangedRecords] = useState([])
 
     const handleOpenRecordDetail= (item) => {
         setOpenRecordDetail(true);
@@ -204,6 +205,21 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
     }, [loggedIn])
 
+    useEffect(() => {
+        let temRecords = []
+        if (transactionRecords !== undefined) {
+            for ( let i = 0; i < transactionRecords; i++) {
+                let chain = transactionRecords[i].token.substr(transactionRecords[i].token.indexOf('_'))
+                console.log('chain: ', chain)
+
+            }
+        }
+        return () => {
+            console.log('clear login')
+        }
+    }, [transactionRecords])
+    console.log('transactionRecords: ', transactionRecords)
+
     return (
         <div className={classes.root}>
             <div className='deposit__container'>
@@ -246,8 +262,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12}>
                                 {
                                     address.length < 42 || !isValidAddress(address) ?
-                                        <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled()  ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                                        >
+                                        <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                             {button1}
                                         </CustomButton> : null
                                 }
@@ -255,7 +270,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                                     address.length === 42 && isValidAddress(address) ?
                                         loggedIn ?
                                             null :
-                                            <CustomButton style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                            <CustomButton buttonStyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                                 {t('unlock')}
                                             </CustomButton> : null
                                 }
