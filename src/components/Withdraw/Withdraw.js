@@ -621,7 +621,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
                                     {`${t('l2Amount')} ${capital.token !== undefined ? roundingDown(capital.free, 4) : '--'} ${capital.token === undefined ? '' : capital.token}`}                                </Typography>
                                 <CustomDropBox
-                                    label={"选择币种"}
+                                    label={t('selectCoin')}
                                     onChange={handleCoinChange}
 
                                     value={coin}
