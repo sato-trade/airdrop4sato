@@ -3,21 +3,23 @@ import './Navbar.css';
 import { withTranslation } from 'react-i18next';
 import { NavLink, useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import {IconButton, List, ListItem, ListItemText, AppBar, Button, Toolbar, Container, Modal, Fade, Backdrop} from '@material-ui/core';
+import { IconButton, List, ListItem, ListItemText, AppBar, Button, Toolbar, Container, Modal, Fade, Backdrop } from '@material-ui/core';
 import logo from '../../images/logo.png'
 import i18n from '../../i18n';
-import {useDispatch, useSelector} from "react-redux";
-import {authActions} from "../../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "../../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
-import {onClickConnect, onClickInstall} from "../../utils/Sign";
+import { onClickConnect, onClickInstall } from "../../utils/Sign";
 import CustomButton from "../CommonElements/CustomButton";
 import useWindowDimensions from "../../utils/WindowDimensions";
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 
 let tempHeight = null;
 
+
 function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId, button1, sendBackButton1, sendBackButton1Disabled}){
     const { height, width } = useWindowDimensions();
+
     const useStyles = makeStyles((theme) => ({
         bar: {
             background: '#010846'
@@ -76,10 +78,10 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     const [open, setOpen] = useState(false)
 
-    const [ chainId, setChainId ] = useState(0)
-    const [ network, setNetwork ] = useState('')
-    const [ addr, setAddr ] = useState('')
-    const [ startWatch, setStartWatch ] = useState(false)
+    const [chainId, setChainId] = useState(0)
+    const [network, setNetwork] = useState('')
+    const [addr, setAddr] = useState('')
+    const [startWatch, setStartWatch] = useState(false)
 
     const { loggedIn, registered } = useSelector(state => state.auth)
     const history = useHistory();
@@ -87,8 +89,11 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
+        window.location.reload();
+
         i18n.changeLanguage(newLang);
         localStorage.setItem('lng', newLang)
+
     }
 
 
@@ -123,17 +128,17 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     };
 
 
-    function handleNewChain (chainId) {
+    function handleNewChain(chainId) {
         setChainId(chainId)
         sendBackChainId(chainId)
     }
 
-    function handleNewNetwork (networkId) {
+    function handleNewNetwork(networkId) {
         setNetwork(networkId)
         sendBackNetworkId(networkId)
     }
 
-    function handleNewAccounts (addr) {
+    function handleNewAccounts(addr) {
         let address = addr === undefined || addr.length < 1 ? '' : addr[0]
         setAddr(address)
         sendBackAddr(address)
@@ -176,7 +181,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     useEffect(() => {
         initialize()
-        return() => {
+        return () => {
             console.log('clear initialization')
         }
     }, [])
@@ -189,13 +194,13 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     }, [])
 
 
-    return(
+    return (
         <div ref={barRef}>
             <AppBar className={classes.bar} position="static">
                 <Toolbar>
                     <Container maxWidth="md" className={classes.navbarDisplayFlex}>
                         <IconButton edge="start" color="inherit" aria-label="home">
-                            <img className={classes.logo} src={logo}/>
+                            <img className={classes.logo} src={logo} />
                         </IconButton>
                         <List
                             component="nav"
@@ -204,16 +209,16 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                         >
                             {navLinks.map(({ title, path }) => (
                                 <NavLink to={path} key={title} className={classes.linkText}
-                                         activeClassName={classes.selected}
-                                         isActive={(match, location) => {
-                                             if ( location.pathname === path ) {
-                                                 return true
-                                             } else if (location.pathname.includes('wallet') && path === '/wallet') {
-                                                 return true
-                                             } else {
-                                                 return false
-                                             }
-                                         }}
+                                    activeClassName={classes.selected}
+                                    isActive={(match, location) => {
+                                        if (location.pathname === path) {
+                                            return true
+                                        } else if (location.pathname.includes('wallet') && path === '/wallet') {
+                                            return true
+                                        } else {
+                                            return false
+                                        }
+                                    }}
                                 >
                                     <ListItem button>
                                         <ListItemText primary={title} />
@@ -222,7 +227,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
                             <Button className={classes.addrBtn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : window.ethereum && registered ? handleOpen : onClickConnect} variant="contained">
-                                {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
+                                {`${addr.slice(0, 5)} ... ${addr.slice(addr.length - 3)}`}
                             </Button>
                         </List>
                     </Container>

@@ -28,7 +28,7 @@ const useStylesInput = makeStyles((theme) => ({
         // '&$focused': {
         //     backgroundColor: '#1F32B4',
         // },
-        backgroundColor: 'red',
+        // backgroundColor: 'red',
         borderRadius: 16,
         alignItems: 'center',
         // backgroundColor: 'red',
