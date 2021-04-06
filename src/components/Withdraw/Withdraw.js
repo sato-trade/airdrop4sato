@@ -193,9 +193,10 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
         }
     };
 
-    const handleAmountChange = (amount) => {
+    const handleAmountChange = (e) => {
+        let amount = e.target.value
         if (parseFloat(amount) >= 0) {
-            if (countDecimals(parseFloat(amount) <= 8)) {
+            if (countDecimals(parseFloat(amount)) <= 8) {
                 setWithdrawAmount(amount)
             } else {
                 setWithdrawAmount(roundingDown(parseFloat(amount), 8).toString())
@@ -603,7 +604,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                 disabled={!loggedIn}
                                 style={{ width: '70%', textTransform: 'none' }}
                                 inputRef={inputRef}
-                                onChange={(e) => handleAmountChange(e.target.value)}
+                                onChange={handleAmountChange}
                                 onBlur={() => handleFinish(true)}
                                 value={withdrawAmount}
                                 helperText={warning}
