@@ -113,11 +113,8 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
-        window.location.reload();
-
         i18n.changeLanguage(newLang);
         localStorage.setItem('lng', newLang)
-
     }
 
 
