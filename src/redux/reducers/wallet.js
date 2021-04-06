@@ -42,53 +42,60 @@ export function wallet (state = {
         amount: 0,
         base: ''
     },
-    walletSigning: false
+    walletSigning: false,
+    walletLoading: false,
+    walletMsg: ''
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
         case WALLET_SIGNING:
             return {
                 ...state,
-                walletSigning: action.loading
+                walletSigning: action.loading,
+                withdrawSucceed: false,
+                withdrawFinished: false,
+                walletMsg: '',
+                withdrawMsg: ''
             }
         case WALLET_SIGNING_CANCELLED:
             return {
                 ...state,
-                walletSigning: action.loading
+                walletSigning: action.loading,
+                walletMsg: action.message
             }
         case GET_USER_CAPITAL:
             return {
                 ...state,
-                loading: true
+                walletLoading: true
             }
         case GET_USER_CAPITAL_SUCCEED:
             return {
                 ...state,
                 userCapitals: action.data,
-                loading: false
+                walletLoading: false
             }
         case GET_USER_CAPITAL_FAILED:
             return {
                 ...state,
                 message: action.message,
-                loading: false
+                walletLoading: false
             }
         case GET_ALL_TOKEN_STATUS:
             return {
                 ...state,
-                loading: true
+                walletLoading: true
             }
         case GET_ALL_TOKEN_STATUS_SUCCEED:
             return {
                 ...state,
                 tokenList: action.data,
-                loading: false
+                walletLoading: false
             }
         case GET_ALL_TOKEN_STATUS_FAILED:
             return {
                 ...state,
                 message: action.message,
-                loading: false
+                walletLoading: false
             }
         case GET_ALL_TOKEN_ICONS_SUCCEED:
             return {
@@ -115,7 +122,8 @@ export function wallet (state = {
                 ...state,
                 withdrawFinished: true,
                 withdrawSucceed: true,
-                withdrawMsg: action.msg
+                withdrawMsg: action.message,
+                walletSigning: false
             }
         case WITHDRAW_FAILED:
             return {
@@ -180,12 +188,12 @@ export function wallet (state = {
             return {
                 ...state,
                 rewardMessage: '',
-                loading: true
+                walletLoading: true
             }
         case REGISTER_AMPL_REWARDS_SUCCEED:
             return {
                 ...state,
-                loading: false,
+                walletLoading: false,
                 rewardMessage: action.message
             }
         case NOT_QUALIFIED:

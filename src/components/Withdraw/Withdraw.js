@@ -25,7 +25,7 @@ import { roundingDown } from '../../utils/RoundingDown'
 import { getIcons, formDateString } from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import { history } from '../../utils/History';
-import { isNumeric, getChain } from "../../utils/Common";
+import { isNumeric, getChain, countDecimals } from "../../utils/Common";
 import { wallet } from "../../redux/reducers/wallet";
 import { unlock, isMetaMaskConnected, onClickInstall, onClickConnect, onBoard, isMetaMaskInstalled } from '../../utils/Sign'
 import { isValidAddress } from "ethereumjs-util";
@@ -158,7 +158,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     const [withdrawTo, setWithdrawTo] = useState(address)
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
-    const [coin, setCoin] = React.useState();
+    const [coin, setCoin] = React.useState('');
     const [capital, setCapital] = React.useState({ free: 0 })
     const [warning, setWarning] = React.useState('')
     const [validAddress, setValidAddress] = React.useState(false)
@@ -167,12 +167,12 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
 
-    const [openCallback, setOpenCallback] = useState(false)
+    const [openNote, setOpenNote] = useState(false)
     const [time, setTime] = useState('')
     const [receivingAmount, setReceivingAmount] = useState('--')
     const [receivingBase, setReceivingBase] = useState('')
@@ -187,12 +187,12 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
         handleAddressChange(address)
     }
 
-    const handleOpenCallback = () => {
-        setOpenCallback(true);
+    const handleOpenNote = () => {
+        setOpenNote(true);
     };
 
-    const handleCloseCallback = () => {
-        setOpenCallback(false);
+    const handleCloseNote = () => {
+        setOpenNote(false);
     };
 
     const handleAddressChange = (addr) => {
@@ -211,11 +211,19 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     };
 
     const handleAmountChange = (amount) => {
-        setWithdrawAmount(amount);
+        if (parseFloat(amount) >= 0) {
+            if (countDecimals(parseFloat(amount) <= 8)) {
+                setWithdrawAmount(amount)
+            } else {
+                setWithdrawAmount(roundingDown(parseFloat(amount), 8).toString())
+            }
+        } else {
+            setWithdrawAmount('')
+        }
+
     };
 
     const handleCoinChange = (event) => {
-        console.log('coin: ', event.target.value)
         setCoin(event.target.value);
         let coinInfo = coins.find(item => item.label === event.target.value)
         let _coinWithdrawInfo = tokenList.find(item => item.token === event.target.value + '_' + getChain(network, chainId))
@@ -232,6 +240,9 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
             const _msg = Web3.utils.soliditySha3(msg);
             dispatch(walletActions.walletSigning())
             if (!walletSigning) {
+                setTime(formDateString(new Date().getTime()))
+                handleOpenNote()
+
                 const sign = await window.ethereum.request({
                     method: 'personal_sign',
                     params: [_msg, from],
@@ -254,7 +265,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
             }
 
         } catch (err) {
-            console.error('withdraw request failed: ', err)
+            console.error('withdraw request cancelled: ', err)
             dispatch(walletActions.walletSigningCancelled())
 
         }
@@ -331,15 +342,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
         }
 
     }, [coin, address, userCapitals, tokenList, chainId, network])
-
-    useEffect(() => {
-        if (!withdrawFinished) {
-            setTime(formDateString(new Date().getTime()))
-            handleOpenCallback()
-            return () => {
-            }
-        }
-    }, [withdrawFinished])
 
     useEffect(() => {
         if (validAmount) {
@@ -521,6 +523,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                     className: classes.helperText
                                 }}
                                 error={warning !== ''}
+                                disabled={!loggedIn || coin === ''}
                             />
                         </Grid> */}
                         {/* <Grid item xs={4} >
@@ -566,7 +569,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                             <p>{t('fee')}</p>
                         </Grid>
                         <Grid className={classes.feeContentRight} item xs={6} >
-                            <p>{`${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || !validAmount ? '--' : roundingDown(withdrawFeeObj.amount, 4)} ${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || !validAmount ? '' : withdrawFeeObj.base}`}</p>
+                            <p>{`${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || coin === '' ? '--' : roundingDown(withdrawFeeObj.amount, 4)} ${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || coin === '' ? '' : withdrawFeeObj.base}`}</p>
                         </Grid>
                         <Grid className={classes.feeContentLeft} item xs={6} >
                             <p>{t('amountReceiving')}</p>
@@ -702,45 +705,36 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                 aria-labelledby="server-modal-title"
                 aria-describedby="server-modal-description"
                 className={classes.modal}
-                open={openCallback}
-                onClose={handleCloseCallback}
+                open={openNote}
+                onClose={handleCloseNote}
                 closeAfterTransition
                 BackdropComponent={Backdrop}
                 BackdropProps={{
                     timeout: 500,
                 }}
             >
-                <Fade in={openCallback}>
+                <Fade in={openNote}>
                     <div className={classes.paper}>
-                        <h2 id="server-modal-title">{withdrawSucceed && withdrawFinished ? t('withdrawSucceed') : t('confirming')}</h2>
-                        <Grid container spacing={2} >
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('withdrawAmount')}: ${withdrawAmount}`}</p>
+                        <h2 id="server-modal-title">{walletSigning ? t('confirming') : withdrawSucceed?  t(withdrawMsg) : t(walletMsg) }</h2>
+                        {
+                            walletSigning ?
+                                <Grid container spacing={2} >
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('withdrawAmount')}: ${withdrawAmount}`}</p>
 
-                            </Grid>
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('withdrawAddress')}: ${withdrawTo}`}</p>
-                            </Grid>
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('action')}: ${t('withdrawAction')}`}</p>
-                            </Grid>
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('status')}: ${withdrawFinished && withdrawSucceed ? t('withdrawSucceed') : t('loading')}`}</p>
-                            </Grid>
-                            {/*<Grid item xs={12} >*/}
-                            {/*    <Button style={{ width: 180 }}  className={classes.btn} >*/}
-                            {/*        {withdrawMsg}*/}
-                            {/*    </Button>*/}
-                            {/*</Grid>*/}
-                            {/*{*/}
-                            {/*    Object.keys(withdrawReceipt).length > 0 ?*/}
-                            {/*        <Grid item xs={12} >*/}
-                            {/*            <p id="server-modal-description">{`${t('confirmedBlock')}: ${withdrawReceipt.blockNumber}`}</p>*/}
-                            {/*        </Grid> : null*/}
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('withdrawAddress')}: ${withdrawTo}`}</p>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('action')}: ${t('withdrawAction')}`}</p>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('status')}: ${walletSigning ? t('loading') : withdrawSucceed ? t(withdrawMsg) : t(walletMsg)}`}</p>
+                                    </Grid>
+                                </Grid> : null
 
-                            {/*}*/}
-                            {/*{*/}
-                        </Grid>
+                        }
                     </div>
                 </Fade>
             </Modal>

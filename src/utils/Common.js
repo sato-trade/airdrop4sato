@@ -74,3 +74,13 @@ export const getChain = (networkId, chainId) => {
             return 'BSC'
     }
 }
+
+export const countDecimals = function (num) {
+    if (isNumeric(parseFloat(num))) {
+        if(Math.floor(num) === num) return 0;
+        return num.toString().split(".")[1].length || 0;
+    } else {
+        return 0
+    }
+
+}

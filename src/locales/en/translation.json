@@ -1,6 +1,6 @@
 {
   "home": "L2 Wallet",
-  "wallet": "Wallet",
+  "wallet": "L2 Wallet",
   "swap": "Swap",
   "pool": "Pool",
   "lang": "中文",
@@ -21,7 +21,7 @@
   "metamaskConnected": "Connected to Wallet",
   "switch": "Switch Account",
   "noCapitals": "No available capitals",
-  "collectReward": "Claim Reward",
+  "collectReward": "Claim Rewards",
   "depositContent": "SwapAll is a Layer 2 Dex. Transfering assets from your decentralized wallet (Layer 1) to SwapAll Layer 2 wallet to experience gas-free and real-time token transfer and swap. In SwapAll Layer 2, your assets are managed by a group of decentralized smart contracts. You and only you have total control over the assets through private keys. Your assets are safe, and you could be able to withdraw assets to your Layer 1 wallet any time.\n\n",
   "depositAmount": "Deposit Amount",
   "all": "All",
@@ -51,7 +51,7 @@
 
   "balanceLow":"Not enough balance",
   "registerReward": "Claim Reward",
-  "inviteReward": "Claim Airdrop Reward",
+  "inviteReward": "Claim SATO Airdrop",
   "registeredUser": "Claimed Addrs.",
   "releasedReward": "Total SATO Airdrop",
   "expectedRewardPerPerson": "Est. Reward/addr.",
@@ -75,6 +75,8 @@
   "withdrawNotAvailable": "Withdraw is temporarily closed. Please try again later",
   "transactionDetails": "Transaction Details",
   "amount": "amount",
-  "toOfficialWeb":"SATO Official Website"
-
+  "toOfficialWeb":"SATO Official Website",
+  "wrongNetwork": "Please switch to supported Network",
+  "wrongNetworkContent": "Please switch to ETH or HECO mainnet",
+  "actionCancelled": "Cancelled"
 }

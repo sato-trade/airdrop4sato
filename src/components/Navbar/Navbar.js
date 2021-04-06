@@ -1,9 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import './Navbar.css';
 import { withTranslation } from 'react-i18next';
 import { NavLink, useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, List, ListItem, ListItemText, AppBar, Button, Toolbar, Container, Modal, Fade, Backdrop } from '@material-ui/core';
+import {
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    AppBar,
+    Button,
+    Toolbar,
+    Container,
+    Modal,
+    Fade,
+    Backdrop,
+    Grid
+} from '@material-ui/core';
 import logo from '../../images/logo.png'
 import i18n from '../../i18n';
 import { useDispatch, useSelector } from "react-redux";
@@ -13,7 +26,6 @@ import { onClickConnect, onClickInstall } from "../../utils/Sign";
 import CustomButton from "../CommonElements/CustomButton";
 import useWindowDimensions from "../../utils/WindowDimensions";
 const { isMetaMaskInstalled } = MetaMaskOnboarding
-
 let tempHeight = null;
 
 
@@ -83,9 +95,21 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     const [addr, setAddr] = useState('')
     const [startWatch, setStartWatch] = useState(false)
 
-    const { loggedIn, registered } = useSelector(state => state.auth)
+    const { loggedIn, registered, message } = useSelector(state => state.auth)
+    const prevNavMessageRef = useRef();
     const history = useHistory();
     const dispatch = useDispatch();
+
+    const [openMsgModal, setOpenMsgModal] = useState(false)
+
+    const handleOpenMsgModal = () => {
+        setOpenMsgModal(true);
+    };
+
+    const handleCloseMsgModal = () => {
+        setOpenMsgModal(false);
+        dispatch(authActions.checkUser(addr))
+    };
 
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
@@ -98,11 +122,11 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
 
     const navLinks = [
-        // { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
-        // { title: t('swap'), path: `/swap` },
-        //
-        // { title: t('pool'), path: `/pool` },
-        // { title: t('collectReward'), path: `/collectReward` },
+        { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
+        { title: t('swap'), path: `/swap` },
+
+        { title: t('pool'), path: `/pool` },
+        { title: t('collectReward'), path: `/collectReward` },
     ]
 
     const barRef = React.useRef(null);
@@ -181,8 +205,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     useEffect(() => {
         initialize()
-        return () => {
-            console.log('clear initialization')
+        return() => {
         }
     }, [])
 
@@ -191,8 +214,37 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             tempHeight = barRef.current.getBoundingClientRect().height;
             sendBackHeight(tempHeight)
         }
+        return() => {
+        }
     }, [])
 
+    useEffect(() => {
+        /**
+         * imToken DApp browser
+         */
+        if (!!window.imToken) {
+            setAddr(window.ethereum.selectedAddress)
+            sendBackAddr(window.ethereum.selectedAddress)
+            setChainId(window.ethereum.chainId)
+            sendBackChainId(window.ethereum.chainId)
+            setNetwork(window.ethereum.networkVersion)
+            sendBackNetworkId(window.ethereum.networkVersion)
+        }
+        return() => {
+        }
+
+    }, window.imToken)
+
+    useEffect(() => {
+        if (prevNavMessageRef.current === '' && (message === 'Wrong network id.')) {
+            handleOpenMsgModal()
+        }
+
+        prevNavMessageRef.current = message;
+        return () => {
+        }
+
+    }, [message])
 
     return (
         <div ref={barRef}>
@@ -226,8 +278,8 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                                 </NavLink>
                             ))}
                             <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
-                            <Button className={classes.addrBtn} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : window.ethereum && registered ? handleOpen : onClickConnect} variant="contained">
-                                {`${addr.slice(0, 5)} ... ${addr.slice(addr.length - 3)}`}
+                            <Button className={classes.addrBtn} onClick={window.ethereum || !!window.imToken ? registered ? handleOpen : () => onClickConnect(network, chainId, addr, dispatch) : () => onClickInstall(sendBackButton1, sendBackButton1Disabled) } variant="contained">
+                                {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
                             </Button>
                         </List>
                     </Container>
@@ -255,6 +307,34 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
                         <Button className={classes.addrBtn} onClick={switchAccount} variant="contained">
                             {t('switch')}
                         </Button>
+                    </div>
+                </Fade>
+            </Modal>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openMsgModal}
+                onClose={handleCloseMsgModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openMsgModal}>
+                    <div className={classes.paper}>
+                    <div className={classes.paper}>
+                        <h2 id="transition-modal-title">{t('wrongNetwork')}</h2>
+                        </div>
+                        <Grid container spacing={2} >
+                            <Grid item xs={12} >
+                                <p id="transition-modal-description">{t('wrongNetworkContent')}</p>
+                            </Grid>
+                        </Grid>
                     </div>
                 </Fade>
             </Modal>

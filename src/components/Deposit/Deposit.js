@@ -528,7 +528,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             {
                                 depositHash.length > 1 ?
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://etherscan.io/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
+                                        <Button target="_blank" href={"https:/ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
                                             {t('checkEtherscan')}
                                         </Button>
                                     </Grid> : null

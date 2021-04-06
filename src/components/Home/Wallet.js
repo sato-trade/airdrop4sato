@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import {useLocation, Link, Redirect} from 'react-router-dom';
 import { Typography, Grid, Button, Card, CardContent,
     List, ListItem, ListItemAvatar, ListItemText, Avatar, ListItemSecondaryAction
 } from '@material-ui/core';
@@ -17,7 +17,7 @@ import backArrow from "../../images/backArrow.png";
 import {isValidAddress} from "ethereumjs-util";
 import {isMetaMaskInstalled, onClickConnect, onClickInstall, unlock} from "../../utils/Sign";
 
-function Wallet({t, navBarHeight}) {
+function Wallet({t, navBarHeight, address, network, chainId}) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
         root: {
@@ -114,7 +114,7 @@ function Wallet({t, navBarHeight}) {
     }, [])
 
     return (
-        <div className={classes.root}>
+        loggedIn ? <div className={classes.root}>
             <div className='cards__container'>
                 <div className='cards__wrapper'>
 
@@ -177,7 +177,9 @@ function Wallet({t, navBarHeight}) {
                 </div>
             </div>
 
-        </div>
+        </div> : <Redirect to='/' />
+
+
     );
 }
 

@@ -17,8 +17,6 @@ import { Language } from '@material-ui/icons';
 import i18n from '../../i18n';
 
 const Web3 = require("web3");
-let web3 = new Web3(window.ethereum)
-
 function CollectReward({ t, navBarHeight, address, network, chainId,
     sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
     sendBackButton2, sendBackButton2Disabled, button2, button2Disabled }) {
@@ -97,8 +95,8 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     const prevMessageRef = useRef();
 
     const dispatch = useDispatch();
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
-    const { amplRewardsInfo, rewardMessage, loading } = useSelector(state => state.wallet)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
+    const { amplRewardsInfo, rewardMessage, walletLoading } = useSelector(state => state.wallet)
 
     const [openFailedModal, setOpenFailedModal] = useState(false)
 
@@ -141,15 +139,14 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
         if (prevMessageRef.current === '' && (rewardMessage === 'NotEligibleError' || rewardMessage === 'NotAvailable')) {
             handleOpenFailedModal()
         }
-        if ((loading === false && rewardMessage === 'RegisterSuccess')) {
+        if ((walletLoading === false && rewardMessage === 'RegisterSuccess')) {
             handleOpenSucceedModal()
             dispatch(walletActions.getAmplRewards(token))
         }
         prevMessageRef.current = rewardMessage;
         return () => {
         }
-    }, [rewardMessage, loading])
-
+    }, [rewardMessage, walletLoading])
 
     return (
         <div className={classes.root}>
@@ -202,7 +199,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     <div style={{ marginTop: 24 }}>
                         {
                             address.length < 42 || !isValidAddress(address) ?
-                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' ,marginBottom:28}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
+                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}
                                 >
                                     {button1}
                                 </CustomButton> : null
@@ -211,14 +208,13 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                             address.length === 42 && isValidAddress(address) ?
                                 loggedIn ?
                                     amplRewardsInfo.hasClaimed ?
-
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} disabled={amplRewardsInfo.hasClaimed}>
+                                        <CustomButton style={{ width: '100%'  ,marginBottom:28}} disabled={amplRewardsInfo.hasClaimed}>
                                             {t('claimed')}
                                         </CustomButton> :
-                                        <CustomButton style={{ width: '100%' }}  style={{ width: '100%' }} onClick={confirmRegister} >
+                                        <CustomButton style={{ width: '100%'  ,marginBottom:28}} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }}  style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%',marginBottom:28 }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }
@@ -239,7 +235,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
 
                             }}
                         >
-                            <typography style={{ fontSize: 16, color: 'white',padding:24 ,fontWeight:'bold'}}>
+                            <typography style={{ fontSize: 16, color: 'white',padding:50 ,fontWeight:'bold'}}>
                             {t('toOfficialWeb')}
                             </typography>
                         </Link>
@@ -248,6 +244,27 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     </div>
                 </div>
             </div>
+            <Modal
+                disablePortal
+                disableEnforceFocus
+                disableAutoFocus
+                aria-labelledby="server-modal-title"
+                aria-describedby="server-modal-description"
+                className={classes.modal}
+                open={openSucceedModal}
+                onClose={handleCloseSucceedModal}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Fade in={openSucceedModal}>
+                    <div className={classes.paper}>
+                        <h2 id="server-modal-title">{t('registerRewardSucceed')}</h2>
+                    </div>
+                </Fade>
+            </Modal>
             <Modal
                 disablePortal
                 disableEnforceFocus

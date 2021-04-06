@@ -1,5 +1,6 @@
 import {authActions} from "../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
+import Web3 from "web3";
 export const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
@@ -19,12 +20,6 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
             method: 'personal_sign',
             params: [_msg, from],
         })
-        /***
-         * need to send network id to java backend & symbol (? huobi eco chain) -- 210205
-         * @type {{sig: *, address: string, data: string}}
-         */
-
-
         let payload = {
             data: msg,
             sig: sign,
@@ -59,12 +54,15 @@ export const onClickInstall = (setButton1, setButton1Disabled ) => {
     setButton1Disabled(true)
 }
 
-export const onClickConnect = async () => {
+export const onClickConnect = async (network, chainId, addr, dispatch) => {
     try {
         await window.ethereum.request({
             method: 'eth_requestAccounts',
         })
+        await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
     } catch (error) {
         console.error(error)
     }
+
+
 }
