@@ -74,5 +74,6 @@
   "amount": "金额",
   "toOfficialWeb":"前往SATO官网",
   "wrongNetwork": "请切换至支持的网络",
-  "wrongNetworkContent": "现支持以太坊及HECO主网"
+  "wrongNetworkContent": "现支持以太坊及HECO主网",
+  "actionCancelled": "交易已取消"
 }

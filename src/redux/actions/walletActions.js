@@ -43,7 +43,7 @@ function walletSigningCancelled() {
     return dispatch => {
         dispatch(walletSigningCancelled(false))
     }
-    function walletSigningCancelled(loading) {return { type: WALLET_SIGNING_CANCELLED, loading }}
+    function walletSigningCancelled(loading) {return { type: WALLET_SIGNING_CANCELLED, loading, message: 'actionCancelled' }}
 }
 
 function getUserCapital(token) {
@@ -76,7 +76,7 @@ function withdraw(payload) {
         walletService.withdraw(payload)
             .then(
                 res => {
-                    dispatch(success(!res.success));
+                    dispatch(success('withdrawSucceed'));
                 },
                 error => {
                     if (error === 'This username has been used by another account.') {
@@ -90,7 +90,7 @@ function withdraw(payload) {
     };
 
     function request() { return { type: WITHDRAW } }
-    function success(msg) { return { type: WITHDRAW_SUCCEED, msg } }
+    function success(message) { return { type: WITHDRAW_SUCCEED, message } }
     function failure(error) { return { type: WITHDRAW_FAILED, error } }
 }
 

@@ -43,19 +43,25 @@ export function wallet (state = {
         base: ''
     },
     walletSigning: false,
-    walletLoading: false
+    walletLoading: false,
+    walletMsg: ''
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
         case WALLET_SIGNING:
             return {
                 ...state,
-                walletSigning: action.loading
+                walletSigning: action.loading,
+                withdrawSucceed: false,
+                withdrawFinished: false,
+                walletMsg: '',
+                withdrawMsg: ''
             }
         case WALLET_SIGNING_CANCELLED:
             return {
                 ...state,
-                walletSigning: action.loading
+                walletSigning: action.loading,
+                walletMsg: action.message
             }
         case GET_USER_CAPITAL:
             return {
@@ -116,7 +122,8 @@ export function wallet (state = {
                 ...state,
                 withdrawFinished: true,
                 withdrawSucceed: true,
-                withdrawMsg: action.msg
+                withdrawMsg: action.message,
+                walletSigning: false
             }
         case WITHDRAW_FAILED:
             return {
