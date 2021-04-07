@@ -124,11 +124,8 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
 
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
-        window.location.reload();
-
         i18n.changeLanguage(newLang);
         localStorage.setItem('lng', newLang)
-
     }
 
 
@@ -180,8 +177,9 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
     }
 
     const initialize = async () => {
-        if (isMetaMaskInstalled()) {
+        if (window.ethereum) {
             try {
+                await window.ethereum.enable();
                 const newAccounts = await window.ethereum.request({
                     method: 'eth_accounts',
                 })
@@ -279,14 +277,14 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
 
     return (
         <div ref={barRef}>
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 48, backgroundColor: '#000C75' }}>
-                <Typography style={{ color: 'white', fontSize: 16, fontWeight: "bold" }}>metamask iconmetamask iconmetamask iconmetamask icon</Typography>
-                <Button style={{ alignItems: 'center', justifyContent: 'center' }} aria-label="home">
-                    <Typography style={{ color: '#1DF0A9', fontSize: 16, fontWeight: "bold" }}>链接钱包</Typography>
+            {/*<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 48, backgroundColor: '#000C75' }}>*/}
+            {/*    <Typography style={{ color: 'white', fontSize: 16, fontWeight: "bold" }}>metamask iconmetamask iconmetamask iconmetamask icon</Typography>*/}
+            {/*    <Button style={{ alignItems: 'center', justifyContent: 'center' }} aria-label="home">*/}
+            {/*        <Typography style={{ color: '#1DF0A9', fontSize: 16, fontWeight: "bold" }}>链接钱包</Typography>*/}
 
-                    <img style={{ width: 13, height: 12, marginLeft: 4 }} src={toArrow} />
-                </Button>
-            </div>
+            {/*        <img style={{ width: 13, height: 12, marginLeft: 4 }} src={toArrow} />*/}
+            {/*    </Button>*/}
+            {/*</div>*/}
             <div style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: 80 }}>
 
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>

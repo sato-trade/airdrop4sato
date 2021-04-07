@@ -14,7 +14,7 @@ import {
     GET_L1_CAPITAL_SUCCEED, GET_L1_CAPITAL_FAILED, GET_TRANSACTION_RECORDS_FAILED, GET_TRANSACTION_RECORDS_SUCCEED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
     REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, NOT_QUALIFIED, ALREADY_REGISTERED, REGISTER_AMPL_REWARDS_FAILED,
-    GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED
+    GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED, CLEAR_INFO
 } from '../constants';
 
 export function wallet (state = {
@@ -44,10 +44,20 @@ export function wallet (state = {
     },
     walletSigning: false,
     walletLoading: false,
-    walletMsg: ''
+    walletMsg: '',
+    depositMsg: ''
 }, action) {
     // console.log('action: ', action)
     switch (action.type) {
+        case CLEAR_INFO:
+            return {
+                ...state,
+                depositHash: '',
+                depositReceipt: {},
+                depositConfirmationNumber: 0,
+                depositFinished: true,
+                depositSucceed: false
+            }
         case WALLET_SIGNING:
             return {
                 ...state,
@@ -61,7 +71,7 @@ export function wallet (state = {
             return {
                 ...state,
                 walletSigning: action.loading,
-                walletMsg: action.message
+                walletMsg: action.message,
             }
         case GET_USER_CAPITAL:
             return {
@@ -105,7 +115,8 @@ export function wallet (state = {
         case GET_L1_CAPITAL_SUCCEED:
             return {
                 ...state,
-                l1Capital: action.data
+                l1Capital: action.data,
+                depositMsg: ''
             }
         case GET_ALL_TOKEN_STATUS_FAILED:
             return {
@@ -136,31 +147,39 @@ export function wallet (state = {
             return {
                 ...state,
                 depositFinished: false,
-                walletSigning: true
+                walletSigning: true,
+                depositMsg: ''
             }
         case DEPOSIT_HASH:
             return {
                 ...state,
-                depositHash: action.hash
+                depositHash: action.hash,
+                depositMsg: '',
+                walletSigning: false,
             }
         case DEPOSIT_RECEIPT:
             return {
                 ...state,
-                depositReceipt: action.receipt
+                depositReceipt: action.receipt,
+                depositMsg: ''
             }
         case DEPOSIT_SUCCEED:
             return {
                 ...state,
                 depositFinished: true,
                 depositSucceed: true,
-                depositConfirmationNumber: action.confirmationNumber
+                depositConfirmationNumber: action.confirmationNumber,
+                depositHash: action.receipt.transactionHash,
+                depositReceipt: action.receipt,
+                depositMsg: '',
             }
         case DEPOSIT_FAILED:
             return {
                 ...state,
                 depositFinished: true,
                 depositSucceed: false,
-                message: action.error
+                depositMsg: action.error,
+                walletSigning: false
             }
         case GET_TRANSACTION_RECORDS_SUCCEED:
             return {

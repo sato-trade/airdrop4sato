@@ -20,6 +20,7 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
         const from = address
         const readable = `0x${Buffer.from(msg, 'utf8').toString('hex')}`
         const buffer = [...toBuffer(readable)]
+        // const _msg = Web3.utils.soliditySha3(msg);
         const sign = await window.ethereum.request({
             method: 'personal_sign',
             params: [readable, from],

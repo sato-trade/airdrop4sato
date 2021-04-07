@@ -75,7 +75,7 @@ export default function CustomTextField(props) {
 
             <IconButton position="end"
               style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}
-              onClick={props.onRightButtonClick}
+              onClick={props.onrightbuttonclick}
             >
               {props.rightbuttonlabel}
             </IconButton>

@@ -9,13 +9,16 @@ import {
     GET_TRANSACTION_RECORDS_SUCCEED, GET_TRANSACTION_RECORDS_FAILED,
     GET_AMPL_REWARDS_SUCCEED, GET_AMPL_REWARDS_FAILED,
     REGISTER_AMPL_REWARDS, REGISTER_AMPL_REWARDS_SUCCEED, ALREADY_REGISTERED, NOT_QUALIFIED, REGISTER_AMPL_REWARDS_FAILED,
-    GET_WITHDRAW_FEE, GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED
+    GET_WITHDRAW_FEE, GET_WITHDRAW_FEE_SUCCESS, GET_WITHDRAW_FEE_FAILED, WALLET_SIGNING, WALLET_SIGNING_CANCELLED, CLEAR_INFO
 } from '../constants';
 import { history } from '../../utils/History';
 import { alertActions } from './alertActions';
 import Web3 from 'web3'
 import * as Contract from "../../config/Contract.json";
+import {getChain} from "../../utils/Common";
 import {Container} from "@material-ui/core";
+import bigDecimal from 'js-big-decimal';
+
 let web3 = new Web3(window.ethereum)
 
 export const walletActions = {
@@ -29,8 +32,16 @@ export const walletActions = {
     registerAmplRewards,
     getFee,
     walletSigning,
-    walletSigningCancelled
+    walletSigningCancelled,
+    clearInfo
 };
+
+function clearInfo() {
+    return dispatch => {
+        dispatch(clearInfo())
+    }
+    function clearInfo() {return { type: CLEAR_INFO }}
+}
 
 function walletSigning() {
     return dispatch => {
@@ -79,12 +90,28 @@ function withdraw(payload) {
                     dispatch(success('withdrawSucceed'));
                 },
                 error => {
-                    if (error === 'This username has been used by another account.') {
-                        dispatch('add succeed!');
+                    let toast = ''
+                    if (error.data === 'Service unavailable') {
+                        toast = 'withdrawNotAvailable'
+                    } else if (error.status === 503) {
+                        toast = 'intercepted'
+                    } else if (error.status === 409) {
+                        toast = 'airdropping'
+                    } else if (error.data === 'TooFrequentError') {
+                        toast = 'tooFrequent'
+                    } else if (error.data === 'LessThanMinimumAmount') {
+                        toast = 'lessThanMin'
+                    } else if (error.data === 'Over limit') {
+                        toast = 'overLimit'
+                    } else if (error.data === 'Need deposit before withdraw') {
+                        toast = 'noDepositBeforeWithdraw'
+                    } else if (error.data === 'Need deposit before transfer') {
+                        toast = 'noDepositBeforeTransfer'
                     } else {
-                        dispatch(failure(error.toString()));
-                        dispatch(alertActions.error(error.toString()));
+                        toast = 'unCaught'
                     }
+                    dispatch(failure(toast));
+                    dispatch(alertActions.error(toast));
                 }
             );
     };
@@ -98,62 +125,78 @@ function deposit(payload) {
     return dispatch => {
         dispatch(request());
         let transactionParameters = {}
-        if (payload.coin === 'ETH') {
-            transactionParameters = {
-                // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
-                // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
-                // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
-                to: Contract.ropsten.dacb.address, // Required except during contract publications.
-                from: payload.l2Address, // must match user's active address.
-                value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
-                // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
-            };
+        let chain = getChain(payload.network, payload.chainId) + '_test'
+        try {
+            if (payload.coin === 'ETH') {
+                transactionParameters = {
+                    // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
+                    // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
+                    // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
+                    to: Contract.default[chain].dacb.address, // Required except during contract publications.
+                    from: payload.l2Address, // must match user's active address.
+                    value: web3.utils.toWei(payload.amount, 'ether'), // Only required to send ether to the recipient from the initiating external account.
+                    // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+                };
 
 
-        } else {
-            let contractInstance = new web3.eth.Contract(Contract.ropsten.transferErc20.abi, Contract.ropsten.coins[payload.coin].address);
-            let contractData = contractInstance.methods.transfer(Contract.ropsten.dacb.address, web3.utils.toBN(payload.amount * Math.pow(10, Contract.ropsten.coins[payload.coin].decimals))).encodeABI()
-            // // calculate ERC20 token amount
-            // // call transfer function
-            // contract.transfer(Contract.ropsten.dacb.address, value, (error, txHash) => {
-            //     // it returns tx hash because sending tx
-            //     console.log(txHash);
-            // });
+            } else {
+                let amount = new bigDecimal(parseFloat(payload.amount) * Math.pow(10, Contract.default[chain].coins[payload.coin].decimals))
+                // let amount = parseFloat(payload.amount) * Math.pow(10, Contract.default[chain].coins[payload.coin].decimals)
+                let contractInstance = new web3.eth.Contract(Contract.transferErc20.abi, Contract.default[chain].coins[payload.coin].address);
+                let contractData = contractInstance.methods.transfer(Contract.default[chain].dacb.address, web3.utils.toBN(amount.value)).encodeABI()
+                // // calculate ERC20 token amount
+                // // call transfer function
+                // contract.transfer(Contract[chain + '_test].dacb.address, value, (error, txHash) => {
+                //     // it returns tx hash because sending tx
+                //     console.log(txHash);
+                // });
 
-            transactionParameters = {
-                // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
-                // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
-                // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
-                to: Contract.ropsten.coins[payload.coin].address, // Required except during contract publications.
-                from: payload.l2Address, // must match user's active address.
-                data: contractData,
-                // value: web3.utils.toWei(0, 'ether'), // Only required to send ether to the recipient from the initiating external account.
-                // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
-            };
+                transactionParameters = {
+                    // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
+                    // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.
+                    // gas: web3.utils.toHex(21000), // customizable by user during MetaMask confirmation.
+                    to: Contract.default[chain].coins[payload.coin].address, // Required except during contract publications.
+                    from: payload.l2Address, // must match user's active address.
+                    data: contractData,
+                    // value: web3.utils.toWei(0, 'ether'), // Only required to send ether to the recipient from the initiating external account.
+                    // chainId: chainId, // Used to prevent transaction reuse across blockchains. Auto-filled by MetaMask.
+                };
+            }
+
+            web3.eth.sendTransaction(transactionParameters)
+                .on('transactionHash', function(hash){
+                    dispatch(onHash(hash))
+                })
+                .on('receipt', function(receipt){
+                    dispatch(onReceipt(receipt))
+                })
+                .on('confirmation', function(confirmationNumber, receipt){
+                    if (confirmationNumber === 5) {
+                        dispatch(success(confirmationNumber, receipt))
+                    }
+                })
+                .on('error', function(error) {
+                    console.log('rejected: ', error)
+                    if (error.code === 4001) {
+                        dispatch(failure('actionCancelled'))
+                    } else {
+                        dispatch(failure(error.message))
+                    }
+                });
+        } catch(error) {
+            if (error.toString().includes('Value must be an integer, hex string, BN or BigNumber instance. Note, decimals are not supported. Given value: "undefined"')) {
+                dispatch(failure('notSent'))
+            } else {
+                dispatch(failure('unCaught'))
+            }
         }
-
-        web3.eth.sendTransaction(transactionParameters)
-            .on('transactionHash', function(hash){
-                dispatch(onHash(hash))
-            })
-            .on('receipt', function(receipt){
-                dispatch(onReceipt(receipt))
-            })
-            .on('confirmation', function(confirmationNumber, receipt){
-                if (confirmationNumber = 5) {
-                    dispatch(success(confirmationNumber))
-                }
-            })
-            .on('error', function(error) {
-                dispatch(failure(error))
-            });
 
     };
 
     function request(payload) { return { type: DEPOSIT, payload } }
     function onHash(hash) { return { type: DEPOSIT_HASH, hash } }
     function onReceipt(receipt) { return { type: DEPOSIT_RECEIPT, receipt } }
-    function success(confirmationNumber) { return { type: DEPOSIT_SUCCEED, confirmationNumber } }
+    function success(confirmationNumber, receipt) { return { type: DEPOSIT_SUCCEED, confirmationNumber, receipt } }
     function failure(error) { return { type: DEPOSIT_FAILED, error } }
 }
 
@@ -191,9 +234,9 @@ function getAllTokenStatus(token) {
     function failure(message) { return { type: GET_ALL_TOKEN_STATUS_SUCCEED, message } }
 }
 
-function getL1Capital(address) {
+function getL1Capital(address, network, chainId) {
     return dispatch => {
-        walletService.getL1Capital(address)
+        walletService.getL1Capital(address, network, chainId)
             .then(
                 res => {
                     dispatch(success(res));

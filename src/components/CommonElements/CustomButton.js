@@ -69,10 +69,10 @@ const confirmStyle = makeStyles((theme) => ({
 
 export default function CustomButton(props) {
     var classes
-    if (props.buttonStyle=="connectStyle"){
+    if (props.buttonstyle=="connectStyle"){
         classes = connectStyle()
 
-    } else if (props.buttonStyle == "unlockStyle"){
+    } else if (props.buttonstyle == "unlockStyle"){
         classes = unlockStyle()
 
     } else {
