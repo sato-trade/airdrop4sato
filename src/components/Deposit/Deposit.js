@@ -20,8 +20,7 @@ import CustomButton from '../CommonElements/CustomButton';
 const Web3 = require("web3");
 
 function Deposit({ t, navBarHeight, address, chainId, network,
-    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+    sendBackButton1, sendBackButton1Disabled, button1, button2Disabled
 }) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -315,32 +314,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
                     </div>
                     <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
-
-                    {/*
-                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-
-                        <CustomTextField label="充值金额" helperText="ccc"
-                            style={{ width: '70%' }}
-                        >
-
-                        </CustomTextField>
-
-                        <TextField
-                            id="outlined-basic"
-                            variant="filled"
-                            select
-                            style={{ width: '25%', height: '70%', backgroundColor: '#1DF0A9', borderRadius: 24 }}
-                            label="选择币种"
-                            InputProps={{ disableUnderline: true }}
-                            root={{ backgroundColor: 'blue' }}
-                        >
-
-                        </TextField>
-
-
-
-                    </div> */}
-
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
                         <CustomTextField
@@ -387,76 +360,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         </div>
                     </div>
 
-
-
                     <Grid container spacing={2} className={classes.fieldWrapper}>
-                        {/* <Grid item xs={6} >
-                            <TextField
-                                inputRef={inputRef}
-                                label={t('depositAmount')}
-                                type="number"
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                    },
-                                }}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                    endAdornment: <InputAdornment position="end"><IconButton className={classes.allIn} onClick={allIn} position="end">{t('all')}</IconButton></InputAdornment>
-                                }}
-                                onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => { setWarning('') }}
-                                variant="standard"
-                                value={depositAmount}
-                                helperText={warning}
-                                FormHelperTextProps={{
-                                    className: classes.helperText
-                                }}
-                                error={warning !== ''}
-                            />
-                        </Grid> */}
-
-                        {/* <Grid item xs={6} >
-                            <TextField
-                                select
-                                label={`${t('availableCapital')} ${loggedIn ? roundingDown(capital.free, 4) : '--'} ${capital.token}`}
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                        width: 'max-content'
-                                    },
-                                }}
-                                value={coin}
-                                onChange={handleCoinChange}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                }}
-                            >
-                                {coins.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        <Grid container >
-                                            <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />                            </Grid>
-                                            <Grid item xs={6} >
-                                                {option.label}
-                                            </Grid>
-                                        </Grid>
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid> */}
                         <Grid item xs={12} style={{ marginTop: 24 }}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
@@ -475,11 +379,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                         </CustomButton> : null
                             }
                         </Grid>
-
-                        {/* <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                        >
-                            {button1}
-                        </CustomButton> */}
                     </Grid>
                 </div>
             </div>

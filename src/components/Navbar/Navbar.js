@@ -5,7 +5,6 @@ import { NavLink, useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import {
     ListItem,
-    ListItemText,
     Button,
     Modal,
     Fade,
@@ -14,14 +13,10 @@ import {
     Typography
 } from '@material-ui/core';
 import logo from '../../images/swapAllIconWithL.png'
-import toArrow from '../../images/toArrow.png'
-
 import i18n from '../../i18n';
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../redux/actions";
-import MetaMaskOnboarding from "@metamask/onboarding";
 import { onClickConnect, onClickInstall } from "../../utils/Sign";
-import CustomButton from "../CommonElements/CustomButton";
 import useWindowDimensions from "../../utils/WindowDimensions";
 import mataLogo from '../../images/mataLogo.png'
 import downButton from '../../images/downButton.png'
@@ -32,8 +27,6 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import satoShapLogo from '../../images/satoShapLogo.png'
-
-const { isMetaMaskInstalled } = MetaMaskOnboarding
 let tempHeight = null;
 
 
@@ -131,9 +124,8 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
 
     const navLinks = [
         { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
-        // { title: t('swap'), path: `/swap` },
-        //
-        // { title: t('pool'), path: `/pool` },
+        { title: t('swap'), path: `/swap` },
+        { title: t('pool'), path: `/pool` },
         { title: t('collectReward'), path: `/collectReward` },
     ]
 
@@ -331,12 +323,10 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
                                 onClick={handleToggle}
                             >
                                 <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', marginLeft: 16, marginRight: 16 }}>
-                                    more
-                            </Typography>
+                                    {t('more')}
+                                </Typography>
                                 <img style={{ width: 13, height: 7.5, marginLeft: -8, marginRight: 8 }} src={downButton} />
                             </Button>
-
-
                             <Popper open={openMore} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                                 {({ TransitionProps, placement }) => (
                                     <Grow
@@ -346,24 +336,51 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
                                         <Paper>
                                             <ClickAwayListener onClickAway={handleCloseMore}>
                                                 <MenuList autoFocusItem={openMore} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                                                    <MenuItem
-                                                        onClick={() => {
-                                                            i18n.language === 'en' ?
-                                                                window.open("https://sato.trade/", "_blank")
+                                                    <MenuItem onClick={() => {
+                                                        i18n.language.includes('zh') ?
+                                                                window.open('https://docs.sato.trade/v/cn/social-media', '_blank')
                                                                 :
-                                                                window.open("https://sato.trade/index-cn.html", "_blank")
-
-                                                        }}
-
-                                                    >
-
-                                                        <img style={{ height: 40, width: 40, marginLeft: 24, marginRight: 4, }} src={satoShapLogo} />
-
+                                                                window.open('https://docs.sato.trade/contact-us', '_blank')
+                                                        }}>
                                                         <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
-                                                            前往SATO官网
+                                                            {t('aboutSATO')}
                                                         </Typography>
                                                     </MenuItem>
-
+                                                    <MenuItem onClick={() => {window.open("https://swapall.io/download", '_blank')}}>
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('downloadAndroid')}
+                                                        </Typography>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={() => {
+                                                        i18n.language.includes('zh') ?
+                                                            window.open('https://swapall.io/download', '_blank')
+                                                            :
+                                                            window.open('https://apps.apple.com/app/swapall/id1532973986?l=en', '_blank')
+                                                    }}>
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('downloadIOS')}
+                                                        </Typography>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={() => {window.open('https://t.me/SwapAll_announcement', '_blank')}}>
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('telegram')}
+                                                        </Typography>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={() => {window.open('https://twitter.com/SwapAll_', '_blank')}}>
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('twitter')}
+                                                        </Typography>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={() => {window.open('https://discord.com/invite/TSjdAE4Ksu', '_blank')}}>
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('discord')}
+                                                        </Typography>
+                                                    </MenuItem>
+                                                    <MenuItem onClick={() => {window.open('https://medium.com/swapall', '_blank')}}>
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('medium')}
+                                                        </Typography>
+                                                    </MenuItem>
                                                     {/* <MenuItem
                                                         onClick={changeLanguage}
 
@@ -384,10 +401,6 @@ function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetw
                                 )}
                             </Popper>
                         </div>
-
-                        {/* 语言按钮和链接matamask按钮
-                     <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
-                   */}
                     </div>
                 </div>
                 <Button style={{ marginRight: 0, borderRadius: 0, backgroundColor: '#1DF0A9' }}

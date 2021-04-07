@@ -4,8 +4,6 @@ import Web3 from "web3";
 import { toBuffer } from 'ethereumjs-util'
 import {walletActions} from "../redux/actions/walletActions";
 import {formDateString} from "./Common";
-
-export const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
     ? 'http://localhost:9010'

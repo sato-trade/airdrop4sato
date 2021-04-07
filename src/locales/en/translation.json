@@ -1,8 +1,8 @@
 {
   "home": "L2 Wallet",
   "wallet": "L2 Wallet",
-  "swap": "Swap",
-  "pool": "Pool",
+  "swap": "L2 Exchange",
+  "pool": "L2 Pool",
   "lang": "中文",
   "noWallet": "Install Wallet",
   "unlock": "Unlock Wallet",
@@ -47,8 +47,9 @@
   "failed": "Failed",
   "manual": "Processing",
   "closed": "Closed",
-  "rewardContent": "Click the button below to register airdrop reward claim between April 5-25, 2021 (UTC) if you are satisfied with the claim requirements (please connect the same wallet address that was satisfied with the requirements to this site). The system will calculate your SATO reward amount based on total claimed addresses after the registration ends. Your SATO reward will be airdropped to your SwapAll Layer 2 wallet in a week.\n\n",
-
+  "rewardContent": "If you meet the requirements for claiming SATO airdrop awards, you can click the button below to register for receiving SATO rewards from April 5 to April 25, 2021 (UTC time). You need to use the same wallet address that meets the requirements to connect. In order to ensure that the users who registered early can receive the airdrop rewards as soon as possible in order to participate in SATO liquidity mining, the rewards will be distributed in two rounds.",
+  "rewardContent2": "",
+  "rewardContent3": "Firstly, Users who have successfully registered before 13:00 (UTC) on April 14 can receive SATO airdrop rewards (a total of 300,000 tokens) before 21:00 (UTC) on April 14. On the other hand, starting from 13:00 (UTC) April 14, the number of SATO tokens that are going to be distributed per user will no longer change by the number of newly registered users. Users who successfully register after 13:00 (UTC) on April 14 will receive rewards (a total of 200,000 tokens) before 21:00 (UTC) on April 25 until all tokens are completely distributed. If there are not enough people claim the remaining airdrops, they will be distributed evenly to all registered users who qualified for the airdrop.",
   "balanceLow":"Not enough balance",
   "registerReward": "Claim Reward",
   "inviteReward": "Claim SATO Airdrop",
@@ -87,5 +88,15 @@
   "tooFrequent": "Operate too frequently, please try again later",
   "lessThanMin": "Withdraw request failed to send: amount requested is lower than minimum withdraw requirement",
   "overLimit": "The amount of the coin you deposit or transfer has exceeded your daily limit. Please try a smaller amount or come back tomorrow.",
-  "noDepositBeforeWithdraw": "Can't withdraw if you haven't deposited at least once"
+  "noDepositBeforeWithdraw": "Can't withdraw if you haven't deposited at least once",
+  "more": "More",
+  "contactUs": "Contact US",
+  "privacy": "Privacy Policy",
+  "aboutSATO": "About SATO",
+  "downloadAndroid": "Download App (Android)",
+  "downloadIOS": "Download App (iOS)",
+  "telegram": "Telegram",
+  "twitter": "Twitter",
+  "discord": "Discord",
+  "medium": "Medium"
 }

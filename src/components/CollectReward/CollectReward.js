@@ -163,7 +163,12 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                         <Typography className='cards__content__text' style={{ fontSize: 12, fontWeight: 'bold' }}>
                             {t('rewardContent')}
                         </Typography>
-
+                        <Typography className='cards__content__text' style={{ marginTop:5, fontSize: 12, fontWeight: 'bold' }}>
+                            {t('rewardContent2')}
+                        </Typography>
+                        <Typography className='cards__content__text' style={{ marginTop:5, fontSize: 12, fontWeight: 'bold' }}>
+                            {t('rewardContent3')}
+                        </Typography>
                     </div>
 
                     <div className='cards__cell__wrapper'>

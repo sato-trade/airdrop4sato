@@ -20,9 +20,8 @@ import CustomDropBox from '../CommonElements/CustomDropBox';
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
 
-function Withdraw({ t, navBarHeight, address, chainId, network,
-    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+function Withdraw({ t, address, chainId, network,
+    sendBackButton1, sendBackButton1Disabled, button1, button2Disabled
 }) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -150,7 +149,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const inputRef = React.useRef();
 
@@ -384,19 +383,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                     }} >
                         <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
                     </Button>
-                    {/* <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('withdraw')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <Typography className={classes.contentWrapper} color="textSecondary" gutterBottom>
-                                {t('withdrawContent')}
-                            </Typography>
-                        </Grid>
-                    </Grid> */}
-
                     <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                         <Typography style={{ textTransform: 'none', fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
                             {t('withdraw')}

@@ -29,45 +29,21 @@ function Footer({ t }) {
 
     const changeLanguage = (e) => {
         let newLang = i18n.language === 'en' ? 'cn' : 'en'
-        window.location.reload();
-
         i18n.changeLanguage(newLang);
         localStorage.setItem('lng', newLang)
-
     }
     return (
         <div style={{ height: 72, width: '100%', backgroundColor: 'white', display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
 
             <Button style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
-                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>Contact Us</Typography>
-
-                </div>
-            </Button>
-
-
-            <Button style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
-                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>F.A.Q</Typography>
-
-                </div>
-            </Button>
-
-            <Button style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
-                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>Cookies Policy</Typography>
-
-                </div>
-            </Button>
-            <Button  style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
-                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
-                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>Legal Tearms</Typography>
+                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>{t('contactUs')}</Typography>
 
                 </div>
             </Button>
             <Button  style={{ marginRight: 0, borderRadius: 0, height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
-                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>Privacy Policy</Typography>
+                    <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>{t('privacy')}</Typography>
 
                 </div>
             </Button>
@@ -75,7 +51,7 @@ function Footer({ t }) {
             <Button onClick={changeLanguage} style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
                     <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>{t('lang')}</Typography>
-                    <img style={{ width: 24, height: 24, marginLeft: 4, marginLeft: 8 }} src={i18n.language === 'en' ? cnLogo : enLogo} />
+                    <img style={{ width: 24, height: 24, marginLeft: 8 }} src={i18n.language === 'en' ? cnLogo : enLogo} />
                 </div>
             </Button>
 
