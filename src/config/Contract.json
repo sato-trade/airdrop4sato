@@ -90,7 +90,9 @@
             ]
         },
         "coins": {
-            "ETH": {},
+            "ETH": {
+                "decimals": 18
+            },
             "SATO": {
                 "address": "0x58FF315B5D31529071E27C2d252684052b7D5f21",
                 "abi": [
@@ -787,7 +789,9 @@
             ]
         },
         "coins": {
-            "ETH": {},
+            "ETH": {
+                "decimals": 18
+            },
             "SATO": {
                 "address": "0x58FF315B5D31529071E27C2d252684052b7D5f21",
                 "abi": [
@@ -1540,6 +1544,9 @@
             ]
         },
         "coins": {
+            "ETH": {
+                "decimals": 18
+            },
             "USDT": {
                 "address": "0x04F535663110A392A6504839BEeD34E019FdB4E0",
                 "decimals": 6
@@ -1604,6 +1611,9 @@
             ]
         },
         "coins": {
+            "ETH": {
+                "decimals": 18
+            },
             "USDT": {
                 "address": "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd",
                 "decimals": 18

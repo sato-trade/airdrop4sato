@@ -166,8 +166,9 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     }
 
     const initialize = async () => {
-        if (isMetaMaskInstalled()) {
+        if (window.ethereum) {
             try {
+                await window.ethereum.enable();
                 const newAccounts = await window.ethereum.request({
                     method: 'eth_accounts',
                 })

@@ -458,13 +458,10 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                 helperText={addrWarning}
                                 disabled={!loggedIn}
                                 error={addrWarning !== ''}
-                            >
-
-
-                            </CustomTextField>
+                            />
 
                             <Button
-                                style={{ backgroundColor: '#1DF0A9', height: 60, bottom: 10, borderRadius: 16, width: '18%' }}
+                                style={{ opacity: !loggedIn ? 0.2: 1,  backgroundColor: '#1DF0A9', height: 60, bottom: 10, borderRadius: 16, width: '18%' }}
                                 onClick={fillAddress}
                                 disabled={!loggedIn}
                             >
@@ -489,7 +486,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
                                 error={warning !== ''}
                                 rightbuttonlabel={t(capital.free > 0.0001 ?'all' :null)}
-                                onRightButtonClick={allIn}
+                                onrightbuttonclick={allIn}
 
                             >
 
@@ -541,17 +538,17 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
+                                    <CustomButton buttonstyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                         {button1}
                                     </CustomButton> : null
                             }
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <CustomButton style={!validAmount || !validAddress ? {width: '100%', opacity: 0.2} : { width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
+                                        <CustomButton style={{ opacity: !validAmount || !validAddress ? 0.2 : 1, width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }
@@ -594,7 +591,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                         <p id="server-modal-description">{`${t('status')}: ${walletSigning ? t('loading') : withdrawSucceed ? t(withdrawMsg) : t(walletMsg)}`}</p>
                                     </Grid>
                                 </Grid> : null
-
                         }
                     </div>
                 </Fade>

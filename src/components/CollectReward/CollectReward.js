@@ -198,7 +198,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                     <div style={{ marginTop: 24 }}>
                         {
                             address.length < 42 || !isValidAddress(address) ?
-                                <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
+                                <CustomButton buttonstyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                     {button1}
                                 </CustomButton> : null
                         }
@@ -212,7 +212,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                                         <CustomButton style={{ width: '100%'  ,marginBottom:28}} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonStyle="unlockStyle" style={{ width: '100%',marginBottom:28 }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                    <CustomButton buttonstyle="unlockStyle" style={{ width: '100%',marginBottom:28 }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }
