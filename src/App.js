@@ -18,6 +18,7 @@ import {isMetaMaskConnected, onBoard} from "./utils/Sign";
 import {isValidAddress} from "ethereumjs-util";
 import {authActions} from "./redux/actions";
 import i18n from './i18n';
+import useWindowDimensions from "./utils/WindowDimensions";
 
 function App({t}){
     const [navBarHeight, setNavBarHeight] = useState(0)
@@ -28,6 +29,8 @@ function App({t}){
     const [ button1Disabled, setButton1Disabled ] = useState(true)
     const [ button2, setButton2] = useState('')
     const [ button2Disabled, setButton2Disabled] = useState(true)
+
+    const { height, width } = useWindowDimensions();
 
     const sendBackButton1 = (msg) => {
         setButton1(msg)
@@ -133,7 +136,7 @@ function App({t}){
 
     return (
         <Router>
-            <Navbar button1={button1} sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled}
+            <Navbar width={width} button1={button1} sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled}
                     sendBackAddr={sendBackAddr} sendBackChainId={sendBackChainId} sendBackNetworkId={sendBackNetworkId} sendBackHeight={sendBackHeight} />
             <Switch>
                 <Route exact path='/' >
