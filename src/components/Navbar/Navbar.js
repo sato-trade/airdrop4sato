@@ -1,23 +1,21 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Navbar.css';
 import { withTranslation } from 'react-i18next';
 import { NavLink, useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import {
-    IconButton,
-    List,
     ListItem,
     ListItemText,
-    AppBar,
     Button,
-    Toolbar,
-    Container,
     Modal,
     Fade,
     Backdrop,
-    Grid
+    Grid,
+    Typography
 } from '@material-ui/core';
-import logo from '../../images/logo.png'
+import logo from '../../images/swapAllIconWithL.png'
+import toArrow from '../../images/toArrow.png'
+
 import i18n from '../../i18n';
 import { useDispatch, useSelector } from "react-redux";
 import { authActions } from "../../redux/actions";
@@ -25,20 +23,32 @@ import MetaMaskOnboarding from "@metamask/onboarding";
 import { onClickConnect, onClickInstall } from "../../utils/Sign";
 import CustomButton from "../CommonElements/CustomButton";
 import useWindowDimensions from "../../utils/WindowDimensions";
+import mataLogo from '../../images/mataLogo.png'
+import downButton from '../../images/downButton.png'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import satoShapLogo from '../../images/satoShapLogo.png'
+
 const { isMetaMaskInstalled } = MetaMaskOnboarding
 let tempHeight = null;
 
 
-function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId, button1, sendBackButton1, sendBackButton1Disabled}){
+function Navbar({ t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetworkId, button1, sendBackButton1, sendBackButton1Disabled }) {
     const { height, width } = useWindowDimensions();
 
     const useStyles = makeStyles((theme) => ({
         bar: {
-            background: '#010846'
+            background: 'yellow'
         },
         navbarDisplayFlex: {
             display: `flex`,
-            justifyContent: `space-between`
+            justifyContent: `space-between`,
+            backgroundColor: 'blue',
+            width: '100%'
         },
         navDisplayFlex: {
             display: `flex`,
@@ -52,9 +62,9 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
         },
         selected: {
             textDecoration: `none`,
-            textTransform: `uppercase`,
             color: `green`,
             alignSelf: 'center'
+
         },
         logo: {
             width: width > 1000 ? 200 : width * 0.2,
@@ -89,6 +99,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
     const classes = useStyles();
 
     const [open, setOpen] = useState(false)
+    const [openMore, setOpenMore] = React.useState(false);
 
     const [chainId, setChainId] = useState(0)
     const [network, setNetwork] = useState('')
@@ -205,7 +216,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     useEffect(() => {
         initialize()
-        return() => {
+        return () => {
         }
     }, [])
 
@@ -214,7 +225,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             tempHeight = barRef.current.getBoundingClientRect().height;
             sendBackHeight(tempHeight)
         }
-        return() => {
+        return () => {
         }
     }, [])
 
@@ -230,7 +241,7 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             setNetwork(window.ethereum.networkVersion)
             sendBackNetworkId(window.ethereum.networkVersion)
         }
-        return() => {
+        return () => {
         }
 
     }, window.imToken)
@@ -246,45 +257,156 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
 
     }, [message])
 
+    const anchorRef = React.useRef(null);
+    const handleToggle = () => {
+        setOpenMore((prevOpen) => !prevOpen);
+    };
+
+    function handleListKeyDown(event) {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            setOpenMore(false);
+        }
+    }
+
+    const handleCloseMore = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+            return;
+        }
+
+        setOpenMore(false);
+    };
+
     return (
         <div ref={barRef}>
-            <AppBar className={classes.bar} position="static">
-                <Toolbar>
-                    <Container maxWidth="md" className={classes.navbarDisplayFlex}>
-                        <IconButton edge="start" color="inherit" aria-label="home">
-                            <img className={classes.logo} src={logo} />
-                        </IconButton>
-                        <List
-                            component="nav"
-                            aria-labelledby="main navigation"
-                            className={classes.navDisplayFlex}
-                        >
-                            {navLinks.map(({ title, path }) => (
-                                <NavLink to={path} key={title} className={classes.linkText}
-                                    activeClassName={classes.selected}
-                                    isActive={(match, location) => {
-                                        if (location.pathname === path) {
-                                            return true
-                                        } else if (location.pathname.includes('wallet') && path === '/wallet') {
-                                            return true
-                                        } else {
-                                            return false
-                                        }
-                                    }}
-                                >
-                                    <ListItem button>
-                                        <ListItemText primary={title} />
-                                    </ListItem>
-                                </NavLink>
-                            ))}
-                            <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
-                            <Button className={classes.addrBtn} onClick={window.ethereum || !!window.imToken ? registered ? handleOpen : () => onClickConnect(network, chainId, addr, dispatch) : () => onClickInstall(sendBackButton1, sendBackButton1Disabled) } variant="contained">
-                                {`${addr.slice(0,5)} ... ${addr.slice(addr.length - 3)}`}
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 48, backgroundColor: '#000C75' }}>
+                <Typography style={{ color: 'white', fontSize: 16, fontWeight: "bold" }}>metamask iconmetamask iconmetamask iconmetamask icon</Typography>
+                <Button style={{ alignItems: 'center', justifyContent: 'center' }} aria-label="home">
+                    <Typography style={{ color: '#1DF0A9', fontSize: 16, fontWeight: "bold" }}>链接钱包</Typography>
+
+                    <img style={{ width: 13, height: 12, marginLeft: 4 }} src={toArrow} />
+                </Button>
+            </div>
+            <div style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', height: 80 }}>
+
+                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    <Button aria-label="home" style={{ height: '100%' }}>
+                        <img style={{ height: 61 * 0.8, width: 53 * 0.8, marginLeft: 24, marginRight: 24 }} src={logo} />
+                    </Button>
+                    <div style={{ width: 1, height: '80%', backgroundColor: '#EAEAEA' }}>
+
+                    </div>
+                    <div
+                        style={{ display: 'flex', flexDirection: 'row', height: '100%' }}
+                    >
+                        {navLinks.map(({ title, path }) => (
+                            <NavLink to={path} key={title} style={{
+                                height: '100%', textDecoration: `none`
+                            }}
+                                InputProps={{ disableUnderline: true }}
+
+                                // activeClassName={classes.selected}
+                                isActive={(match, location) => {
+                                    if (location.pathname === path) {
+                                        return true
+                                    } else if (location.pathname.includes('wallet') && path === '/wallet') {
+                                        return true
+                                    } else {
+                                        return false
+                                    }
+                                }}
+                            >
+                                <ListItem button style={{ height: '100%' }}>
+                                    <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                        {title}
+                                    </Typography>
+
+                                </ListItem>
+                            </NavLink>
+                        ))}
+
+                        <div style={{ alignItems: 'center', justifyContent: 'center', }}>
+                            <Button style={{ backgroundColor: 'none', height: '100%' }}
+                                ref={anchorRef}
+                                aria-controls={openMore ? 'menu-list-grow' : undefined}
+                                aria-haspopup="true"
+                                onClick={handleToggle}
+                            >
+                                <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', marginLeft: 16, marginRight: 16 }}>
+                                    more
+                            </Typography>
+                                <img style={{ width: 13, height: 7.5, marginLeft: -8, marginRight: 8 }} src={downButton} />
                             </Button>
-                        </List>
-                    </Container>
-                </Toolbar>
-            </AppBar>
+
+
+                            <Popper open={openMore} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                                {({ TransitionProps, placement }) => (
+                                    <Grow
+                                        {...TransitionProps}
+                                        style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+                                    >
+                                        <Paper>
+                                            <ClickAwayListener onClickAway={handleCloseMore}>
+                                                <MenuList autoFocusItem={openMore} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                                                    <MenuItem
+                                                        onClick={() => {
+                                                            i18n.language === 'en' ?
+                                                                window.open("https://sato.trade/", "_blank")
+                                                                :
+                                                                window.open("https://sato.trade/index-cn.html", "_blank")
+
+                                                        }}
+
+                                                    >
+
+                                                        <img style={{ height: 40, width: 40, marginLeft: 24, marginRight: 4, }} src={satoShapLogo} />
+
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            前往SATO官网
+                                                        </Typography>
+                                                    </MenuItem>
+
+                                                    {/* <MenuItem
+                                                        onClick={changeLanguage}
+
+                                                    >
+
+                                                        <img style={{ height: 61 * 0.8, width: 53 * 0.8, marginLeft: 24, marginRight: 4, }} src={satoShapLogo} />
+
+                                                        <Typography style={{ fontSize: 16, color: '#010846', fontWeight: 'bold', textTransform: 'none', marginLeft: 16, marginRight: 16 }}>
+                                                            {t('lang')}
+                                                        </Typography>
+                                                    </MenuItem> */}
+
+                                                    {/* <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button> */}
+                                                </MenuList>
+                                            </ClickAwayListener>
+                                        </Paper>
+                                    </Grow>
+                                )}
+                            </Popper>
+                        </div>
+
+                        {/* 语言按钮和链接matamask按钮
+                     <Button className={classes.langBtn} onClick={changeLanguage} variant="contained" >{t('lang')}</Button>
+                   */}
+                    </div>
+                </div>
+                <Button style={{ marginRight: 0, borderRadius: 0, backgroundColor: '#1DF0A9' }}
+                    onClick={window.ethereum || !!window.imToken ? registered ? handleOpen : () => onClickConnect(network, chainId, addr, dispatch) : () => onClickInstall(sendBackButton1, sendBackButton1Disabled)}
+                    variant="contained">
+                    <img style={{ width: 37, height: 34, marginLeft: 4 }} src={mataLogo} />
+
+                    <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', marginLeft: 12, marginRight: 24 }}>
+                        <Typography style={{ fontSize: 16, color: '#000F93', fontWeight: 'bold' }}>
+                            已连接
+                        </Typography>
+                        <Typography style={{ fontSize: 12, color: '#111111', fontWeight: '600', marginTop: -8 }}>
+                            {`${addr.slice(0, 8)}...${addr.slice(addr.length - 3)}`}
+                        </Typography>
+                    </div>
+                </Button>
+            </div>
             <Modal
                 disablePortal
                 disableEnforceFocus
@@ -327,8 +449,8 @@ function Navbar({t, sendBackHeight, sendBackAddr, sendBackChainId, sendBackNetwo
             >
                 <Fade in={openMsgModal}>
                     <div className={classes.paper}>
-                    <div className={classes.paper}>
-                        <h2 id="transition-modal-title">{t('wrongNetwork')}</h2>
+                        <div className={classes.paper}>
+                            <h2 id="transition-modal-title">{t('wrongNetwork')}</h2>
                         </div>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >

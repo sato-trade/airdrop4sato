@@ -284,7 +284,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     return (
         <div className={classes.root}>
-            <div className="deposit__container">
+            <div  className="deposit__container">
                 <div className="deposit__wrapper">
                     <Button style={{ left: -24 }} onClick={() => {
                         history.back()

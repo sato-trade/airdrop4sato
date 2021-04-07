@@ -4,6 +4,7 @@ import Navbar from './components/Navbar/Navbar';
 import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import Home from './components/Home/Home';
 import CollectReward from './components/CollectReward/CollectReward';
+import Footer from './components/Footer/Footer';
 
 import Wallet from './components/Home/Wallet';
 import Pool from './components/Pool/Pool';
@@ -176,7 +177,7 @@ function App({t}){
                        address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
             </Switch>
-            {/*<Footer />*/}
+            <Footer />
         </Router>
     )
 }
