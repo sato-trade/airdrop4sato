@@ -191,7 +191,6 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
 
         return () => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -201,24 +200,28 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
 
         return () => {
-            console.log('clear login')
         }
     }, [loggedIn])
 
     useEffect(() => {
         let temRecords = []
         if (transactionRecords !== undefined) {
-            for ( let i = 0; i < transactionRecords; i++) {
-                let chain = transactionRecords[i].token.substr(transactionRecords[i].token.indexOf('_'))
-                console.log('chain: ', chain)
-
+            for ( let i = 0; i < transactionRecords.length; i++) {
+                if (transactionRecords[i].type === 1 || transactionRecords[i].type === 2) {
+                    let temRecord = transactionRecords[i]
+                    let chain = transactionRecords[i].token.substr(transactionRecords[i].token.indexOf('_'))
+                    if (!chain.includes('_')) {
+                        chain = '_ETH'
+                    }
+                    temRecord.chain = chain.substr(1)
+                    temRecords.push(temRecord)
+                }
             }
+            setArrangedRecords(temRecords)
         }
         return () => {
-            console.log('clear login')
         }
     }, [transactionRecords])
-    console.log('transactionRecords: ', transactionRecords)
 
     return (
         <div className={classes.root}>
@@ -240,17 +243,17 @@ function Records({ t, navBarHeight, address, chainId, network,
 
                         <Grid item xs={12} >
                             <div className={classes.wrapper}>
-                                {!loggedIn ? null : transactionRecords === undefined || transactionRecords.length <= 0 ?
+                                {!loggedIn ? null : arrangedRecords === undefined || arrangedRecords.length <= 0 ?
                                     <Typography style={{ fontSize: 13 }}>{t('noRecords')}</Typography> :
                                     <List className={classes.capitalList}>
                                         {
-                                            transactionRecords.map(item => (
+                                            arrangedRecords.map(item => (
                                                 <ListItem key={item.id} button onClick={() => handleOpenRecordDetail(item)}>
-                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
-                                                    <ListItemText style={{ color: color[item.status] }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
-                                                    <ListItemText>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</ListItemText>
+                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white', minWidth: width * 0.12} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
+                                                    <ListItemText style={{ color: 'white' }} >{`${item.chain} ${t('chain')}`}</ListItemText>
+                                                    <ListItemText style={{ color: color[item.status], minWidth: width * 0.1 }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
                                                     <ListItemSecondaryAction>
-                                                        <Typography>{roundingDown(item.free, 4)}</Typography>
+                                                        <Typography>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</Typography>
                                                     </ListItemSecondaryAction>
                                                 </ListItem>
                                             ))

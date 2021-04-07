@@ -78,5 +78,6 @@
   "toOfficialWeb":"SATO Official Website",
   "wrongNetwork": "Please switch to supported Network",
   "wrongNetworkContent": "Please switch to ETH or HECO mainnet",
-  "actionCancelled": "Cancelled"
+  "actionCancelled": "Cancelled",
+  "chain": "Chain"
 }
