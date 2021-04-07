@@ -212,6 +212,8 @@ function Records({ t, navBarHeight, address, chainId, network,
                     let chain = transactionRecords[i].token.substr(transactionRecords[i].token.indexOf('_'))
                     if (!chain.includes('_')) {
                         chain = '_ETH'
+                    } else {
+                        temRecord.token = transactionRecords[i].token.substr(0, transactionRecords[i].token.indexOf('_'))
                     }
                     temRecord.chain = chain.substr(1)
                     temRecords.push(temRecord)
