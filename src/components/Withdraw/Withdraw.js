@@ -350,10 +350,12 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
             if (withdrawAmount === "") {
                 setValidAmount(false)
                 setWarning('')
+                setReceivingAmount('--')
             }
             else if (!parseFloat(withdrawAmount)) {
                 setValidAmount(false)
                 setWarning(t('invalidInput'))
+                setReceivingAmount('--')
             }
             else if (withdrawAmount <= capital.free) {
                 if (receivingBase === coin) {
@@ -364,6 +366,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                     } else {
                         setValidAmount(false)
                         setWarning(t('enterAmountHigherThanFee'))
+                        setReceivingAmount('--')
                     }
                 } else {
                     if (feeCapital.free > withdrawFeeObj.amount) {
@@ -545,7 +548,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <CustomButton style={{ width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
+                                        <CustomButton style={!validAmount || !validAddress ? {width: '100%', opacity: 0.2} : { width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </CustomButton> :
                                         <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>

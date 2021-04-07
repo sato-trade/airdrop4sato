@@ -45,7 +45,8 @@ async function getAllTokenStatus(token) {
 
 async function getL1Capital(address, network, chainId) {
     async function loopingCapital () {
-        let chain = getChain(network, chainId) + '_test'
+        let chain = getChain(network, chainId)
+            // + '_test'
         let balance = []
         let balanceCheckerContract = new web3.eth.Contract(Contract.default[chain].balanceChecker.abi, Contract.default[chain].balanceChecker.address);
         for (const key in Contract.default[chain].coins) {
