@@ -265,7 +265,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
 
         setOpenMore(false);
     };
-    
+
     return (
         <div ref={barRef}>
             {/*<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', height: 48, backgroundColor: '#000C75' }}>*/}
@@ -344,7 +344,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                                     </label>
                                 </Button>
                             }
-                            <Popper open={openMore} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+                            <Popper open={openMore} anchorEl={anchorRef.current} role={undefined} transition>
                                 {({ TransitionProps, placement }) => (
                                     <Grow
                                         {...TransitionProps}
