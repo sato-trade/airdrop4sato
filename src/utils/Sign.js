@@ -1,6 +1,10 @@
 import {authActions} from "../redux/actions";
 import MetaMaskOnboarding from "@metamask/onboarding";
 import Web3 from "web3";
+import { toBuffer } from 'ethereumjs-util'
+import {walletActions} from "../redux/actions/walletActions";
+import {formDateString} from "./Common";
+
 export const { isMetaMaskInstalled } = MetaMaskOnboarding
 const currentUrl = new URL(window.location.href)
 const forwarderOrigin = currentUrl.hostname === 'localhost'
@@ -14,19 +18,21 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
 
         dispatch(authActions.authSigning())
         const from = address
-        // const msg = `0x${Buffer.from(exampleMessage, 'utf8').toString('hex')}`
-        const _msg = Web3.utils.soliditySha3(msg);
+        const readable = `0x${Buffer.from(msg, 'utf8').toString('hex')}`
+        const buffer = [...toBuffer(readable)]
         const sign = await window.ethereum.request({
             method: 'personal_sign',
-            params: [_msg, from],
+            params: [readable, from],
         })
         let payload = {
-            data: msg,
+            data: buffer,
             sig: sign,
             pubKeyAddress: address,
             chainId: Web3.utils.hexToNumber(chainId),
             networkId: Number(network)
         }
+
+        console.log('payload: ', typeof buffer, payload)
 
         if (registered !== undefined ) {
             if (registered) {
@@ -41,6 +47,43 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
     } catch (err) {
         console.error('sign error: ', err)
         dispatch(authActions.logOut())
+    }
+}
+
+export const withdraw = async (msg, address, chainId, network, Web3, registered, dispatch, walletSigning, setTime, handleOpenNote, coin, chain, withdrawAmount, withdrawTo, token) => {
+    try {
+        const from = address
+        const readable = `0x${Buffer.from(msg, 'utf8').toString('hex')}`
+        const buffer = [...toBuffer(readable)]
+        dispatch(walletActions.walletSigning())
+        if (!walletSigning) {
+            setTime(formDateString(new Date().getTime()))
+            handleOpenNote()
+
+            const sign = await window.ethereum.request({
+                method: 'personal_sign',
+                params: [readable, from],
+            })
+            let payload = {
+                personalSign: {
+                    data: buffer,
+                    sig: sign,
+                    pubKeyAddress: address,
+                    chainId: Web3.utils.hexToNumber(chainId),
+                    networkId: Number(network),
+                },
+                currency: coin,
+                chain: chain,
+                amount: withdrawAmount,
+                address: withdrawTo,
+                token: token
+            }
+            dispatch(walletActions.withdraw(payload))
+        }
+
+    } catch (err) {
+        console.error('withdraw request cancelled: ', err)
+        dispatch(walletActions.walletSigningCancelled())
     }
 }
 
@@ -63,6 +106,4 @@ export const onClickConnect = async (network, chainId, addr, dispatch) => {
     } catch (error) {
         console.error(error)
     }
-
-
 }

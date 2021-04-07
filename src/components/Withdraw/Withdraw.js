@@ -12,7 +12,7 @@ import {roundingDown} from '../../utils/RoundingDown'
 import {countDecimals, formDateString, getChain, getIcons} from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import {history} from '../../utils/History';
-import {onClickConnect, onClickInstall, unlock} from '../../utils/Sign'
+import {onClickConnect, onClickInstall, unlock, withdraw} from '../../utils/Sign'
 import {isValidAddress} from "ethereumjs-util";
 import CustomButton from '../CommonElements/CustomButton';
 import CustomDropBox from '../CommonElements/CustomDropBox';
@@ -211,47 +211,16 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
         let coinInfo = coins.find(item => item.label === event.target.value)
         let _coinWithdrawInfo = tokenList.find(item => item.token === event.target.value + '_' + getChain(network, chainId))
         setCoinWithdrawInfo(_coinWithdrawInfo)
+        setWarning('')
         handleAmountChange('')
         dispatch(walletActions.getFee({ token, amount: '1', action: coinInfo.contractWithdrawKey }))
 
     };
 
     const confirmWithdraw = async () => {
-        try {
-            let msg = 'Withdraw Request'
-            const from = address
-            const _msg = Web3.utils.soliditySha3(msg);
-            dispatch(walletActions.walletSigning())
-            if (!walletSigning) {
-                setTime(formDateString(new Date().getTime()))
-                handleOpenNote()
-
-                const sign = await window.ethereum.request({
-                    method: 'personal_sign',
-                    params: [_msg, from],
-                })
-                let payload = {
-                    personalSign: {
-                        data: msg,
-                        sig: sign,
-                        pubKeyAddress: address,
-                        chainId: Web3.utils.hexToNumber(chainId),
-                        networkId: Number(network),
-                    },
-                    currency: coin,
-                    chain: chain,
-                    amount: withdrawAmount,
-                    address: withdrawTo,
-                    token: token
-                }
-                dispatch(walletActions.withdraw(payload))
-            }
-
-        } catch (err) {
-            console.error('withdraw request cancelled: ', err)
-            dispatch(walletActions.walletSigningCancelled())
-
-        }
+        await withdraw('withdraw', address, chainId, network, Web3,
+            registered, dispatch, walletSigning, setTime, handleOpenNote,
+            coin, chain, withdrawAmount, withdrawTo, token)
     }
 
     const clear = () => {
