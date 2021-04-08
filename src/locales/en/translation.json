@@ -6,7 +6,7 @@
   "lang": "中文",
   "noWallet": "Install Wallet",
   "unlock": "Unlock Wallet",
-  "connected": "Connect Wallet",
+  "connected": "Connected",
   "connect": "Connect Wallet",
   "walletTitle": "SwapAll L2 Wallet",
   "deposit": "Deposit to L2",
@@ -90,7 +90,7 @@
   "overLimit": "The amount of the coin you deposit or transfer has exceeded your daily limit. Please try a smaller amount or come back tomorrow.",
   "noDepositBeforeWithdraw": "Can't withdraw if you haven't deposited at least once",
   "more": "More",
-  "contactUs": "Contact US",
+  "contactUs": "Contact Us",
   "privacy": "Privacy Policy",
   "aboutSATO": "About SATO",
   "downloadAndroid": "Download App (Android)",
@@ -98,5 +98,6 @@
   "telegram": "Telegram",
   "twitter": "Twitter",
   "discord": "Discord",
-  "medium": "Medium"
+  "medium": "Medium",
+  "comingSoon": "Coming Soon"
 }

@@ -6,7 +6,7 @@
   "lang": "English",
   "noWallet": "安装MetaMask",
   "unlock": "解锁钱包",
-  "connected": "连接钱包",
+  "connected": "已连接",
   "connect": "连接钱包",
   "walletTitle": "SwapAll 侧链钱包",
   "deposit": "充值到侧链",
@@ -96,5 +96,6 @@
   "telegram": "Telegram",
   "twitter": "Twitter",
   "discord": "Discord",
-  "medium": "Medium"
+  "medium": "Medium",
+  "comingSoon": "敬请期待"
 }

@@ -221,29 +221,6 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                                         {t('unlock')}
                                     </CustomButton> : null
                         }
-
-                        {/* <div style={{ width: '100%' }} style={{ width: 500 ,backgroundColor:'red',marginTop:24}} disabled={amplRewardsInfo.hasClaimed}>
-                            {t('claimed')}
-                        </div> */}
-
-
-                        {/* <td style={{backgroundColor:'red',fontSize:16,alignSelf:"center",width:'100%'}} onClick={() => window.open("https://sato.trade/", "_blank")}>text</td> */}
-                        <Link
-                            style={{ textDecoration: 'none' }}
-                            onClick={() => {
-                                i18n.language === 'en' ?
-                                window.open("https://sato.trade/", "_blank")
-                                :
-                                window.open("https://sato.trade/index-cn.html", "_blank")
-
-                            }}
-                        >
-                            <typography style={{ fontSize: 16, color: 'white',padding:50 ,fontWeight:'bold'}}>
-                            {t('toOfficialWeb')}
-                            </typography>
-                        </Link>
-
-
                     </div>
                 </div>
             </div>

@@ -5,7 +5,7 @@ import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom
 import Home from './components/Home/Home';
 import CollectReward from './components/CollectReward/CollectReward';
 import Footer from './components/Footer/Footer';
-
+import ComingSoon from './components/ComingSoon/ComingSoon';
 import Wallet from './components/Home/Wallet';
 import Pool from './components/Pool/Pool';
 import Swap from './components/Swap/Swap';
@@ -88,7 +88,7 @@ function App({t}){
         if (window.ethereum === undefined) {
             setButton1(t('noWallet'))
             setButton1Disabled(false)
-        } else if (isMetaMaskConnected()) {
+        } else if (isValidAddress(address)) {
             setButton1(t('connected'))
             setButton1Disabled(true)
             if (onBoard) {
@@ -148,18 +148,18 @@ function App({t}){
                     <>
                         <Route path={`${url}/`} exact >
                             <Wallet  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                     sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
                                      address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                         </Route>
                         <Route path={`${url}/withdraw`} >
                             <Withdraw  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                                     address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                                       sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                       address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                         </Route>
                         <Route path={`${url}/deposit`} >
                             <Deposit  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                                     address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                                      sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                      address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
                         </Route>
                         <Route path={`${url}/records`} >
                             <Records  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
@@ -171,13 +171,18 @@ function App({t}){
                 <Route path='/pool' >
                     <Pool navBarHeight={navBarHeight} />
                 </Route>
-                <Route path='/swap' component = {Swap} >
+                <Route path='/swap' component={Swap} >
                     <Swap navBarHeight={navBarHeight} />
                 </Route>
                 <Route path='/collectReward' component={CollectReward} >
                     <CollectReward sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                       sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                       address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
+                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                   address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
+                </Route>
+                <Route path='/comingSoon' component = {ComingSoon}>
+                    <ComingSoon sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
             </Switch>
             <Footer />

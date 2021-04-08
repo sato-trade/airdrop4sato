@@ -123,8 +123,11 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
 
     const navLinks = [
         { title: loggedIn ? t('wallet') : t('home'), path: loggedIn ? `/wallet` : `/` },
-        { title: t('swap'), path: `/swap` },
-        { title: t('pool'), path: `/pool` },
+        // { title: t('swap'), path: `/swap` },
+        // { title: t('pool'), path: `/pool` },
+        // { title: loggedIn ? t('wallet') : t('home'), path: `/comingSoon` },
+        { title: t('swap'), path: `/comingSoon` },
+        { title: t('pool'), path: `/comingSoon` },
         { title: t('collectReward'), path: `/collectReward` },
     ]
 
@@ -314,17 +317,18 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                         <div style={{ alignItems: 'center', justifyContent: 'center', }}>
                             { width > 900 ?
                                 <Button style={{backgroundColor: 'none', height: '100%'}}
-                                         ref={anchorRef}
-                                         aria-controls={openMore ? 'menu-list-grow' : undefined}
-                                         aria-haspopup="true"
-                                         onClick={handleToggle}
+                                        ref={anchorRef}
+                                        aria-controls={openMore ? 'menu-list-grow' : undefined}
+                                        aria-haspopup="true"
+                                        onClick={handleToggle}
                                 >
                                     <Typography style={{
                                         fontSize: 16,
                                         color: '#010846',
                                         fontWeight: 'bold',
                                         marginLeft: 16,
-                                        marginRight: 16
+                                        marginRight: 16,
+                                        textTransform: 'capitalize'
                                     }}>
                                         {t('more')}
                                     </Typography>
@@ -448,13 +452,13 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                     </div>
                 </div>
                 <Button style={{ marginRight: 0, borderRadius: 0, backgroundColor: '#1DF0A9' }}
-                    onClick={window.ethereum || !!window.imToken ? registered ? handleOpen : () => onClickConnect(network, chainId, addr, dispatch) : () => onClickInstall(sendBackButton1, sendBackButton1Disabled)}
-                    variant="contained">
+                        onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, addr, dispatch)}
+                        variant="contained">
                     <img style={{ width: 37, height: 34, marginLeft: 4 }} src={mataLogo} />
 
                     <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', marginLeft: 12, marginRight: 24 }}>
                         <Typography style={{ fontSize: 16, color: '#000F93', fontWeight: 'bold' }}>
-                            已连接
+                            {button1}
                         </Typography>
                         <Typography style={{ fontSize: 12, color: '#111111', fontWeight: '600', marginTop: -8 }}>
                             {`${addr.slice(0, 8)}...${addr.slice(addr.length - 3)}`}
