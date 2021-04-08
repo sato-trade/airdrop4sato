@@ -3,7 +3,9 @@ import {Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {withTranslation} from 'react-i18next';
 import useWindowDimensions from '../../utils/WindowDimensions'
+import bg from '../../images/bg.png'
 import './ComingSoon.css';
+import logo from "../../images/rewardHeadImage.png";
 
 const Web3 = require("web3");
 
@@ -88,6 +90,7 @@ function ComingSoon({ t }) {
             <div className='comingSoon__container '>
                 <div className='comingSoon__wrapper'>
                     <div className='comingSoon__title__wrapper' style={{ justifyContent: 'center' }}>
+                        <img className='comingSoon__background' src={bg} />
                         <Typography className={classes.textLarge} style={{textTransform:'none'}}>
                             {t('comingSoon')}
                         </Typography>
