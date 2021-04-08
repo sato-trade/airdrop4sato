@@ -216,7 +216,7 @@ function Withdraw({ t, address, chainId, network,
     };
 
     const confirmWithdraw = async () => {
-        await withdraw('withdraw', address, chainId, network, Web3,
+        await withdraw(address, chainId, network, Web3,
             registered, dispatch, walletSigning, setTime, handleOpenNote,
             coin, chain, withdrawAmount, withdrawTo, token)
     }
@@ -520,7 +520,7 @@ function Withdraw({ t, address, chainId, network,
                                         <CustomButton style={{ opacity: !validAmount || !validAddress ? 0.2 : 1, width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }

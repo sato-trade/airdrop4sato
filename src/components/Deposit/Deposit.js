@@ -389,7 +389,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                         <CustomButton  style={{ opacity: cantDeposit ? 0.2 : 1, width: '100%' }}  onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }

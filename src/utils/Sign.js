@@ -11,9 +11,11 @@ const forwarderOrigin = currentUrl.hostname === 'localhost'
 
 export const onBoard = new MetaMaskOnboarding({ forwarderOrigin })
 
-export const unlock = async (msg, address, chainId, network, Web3, registered, dispatch) => {
+export const unlock = async (address, chainId, network, Web3, registered, dispatch) => {
     try {
-
+        let msg = 'Access SwapAll L1 wallet.\n' +
+            '\n' +
+            'Only sign this message for a trusted client!'
         dispatch(authActions.authSigning())
         const from = address
         const readable = `0x${Buffer.from(msg, 'utf8').toString('hex')}`
@@ -47,7 +49,11 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
     }
 }
 
-export const withdraw = async (msg, address, chainId, network, Web3, registered, dispatch, walletSigning, setTime, handleOpenNote, coin, chain, withdrawAmount, withdrawTo, token) => {
+export const withdraw = async (address, chainId, network, Web3, registered, dispatch, walletSigning, setTime, handleOpenNote, coin, chain, withdrawAmount, withdrawTo, token) => {
+    let msg = 'Withdrawing from SwapAll L2 wallet\n\n' +
+        `Amount: ${withdrawAmount} ${coin}\n` +
+        `To: ${withdrawTo}\n` +
+        `ChainId: ${Web3.utils.hexToNumber(chainId)}`
     try {
         const from = address
         const readable = `0x${Buffer.from(msg, 'utf8').toString('hex')}`
@@ -101,7 +107,7 @@ export const onClickConnect = async (network, chainId, addr, dispatch, handleOpe
         })
         if (!!window.imToken) {
             if (registered !== undefined && loggedIn !== undefined && loading !== undefined) {
-                await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
+                await unlock(addr, chainId, network, Web3, false, dispatch)
             }
         } else {
             if (handleOpen !== undefined) {

@@ -276,7 +276,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                                     address.length === 42 && isValidAddress(address) ?
                                         loggedIn ?
                                             null :
-                                            <CustomButton buttonStyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                            <CustomButton buttonStyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                                 {t('unlock')}
                                             </CustomButton> : null
                                 }

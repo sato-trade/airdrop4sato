@@ -145,7 +145,7 @@ function Home({ t, navBarHeight, address, network, chainId,
                                         }
                                         {
                                             address.length === 42 && isValidAddress(address) ?
-                                                <Button style={{textTransform:'none', width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
+                                                <Button style={{textTransform:'none', width: 197 }} className={button2Disabled ? classes.btn_disabled : classes.btn} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} variant="outlined" color="primary" disabled={button2Disabled}>
                                                     {button2}
                                                 </Button> : null
                                         }
