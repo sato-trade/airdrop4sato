@@ -41,7 +41,7 @@ function ComingSoon({ t }) {
         },
         textLarge: {
             color: 'white',
-            fontSize: 34,
+            fontSize: 40,
             fontWeight: '600',
         },
 
@@ -87,7 +87,7 @@ function ComingSoon({ t }) {
         <div className={classes.root}>
             <div className='comingSoon__container '>
                 <div className='comingSoon__wrapper'>
-                    <img className='comingSoon__background' src={bg} style={{ width: 300, height: 300 }}/>
+                    <img className='comingSoon__background' src={bg} style={{ width: 300, height: 234 }}/>
                     <Typography className={classes.textLarge} style={{textTransform:'none'}}>
                         {t('comingSoon')}
                     </Typography>
