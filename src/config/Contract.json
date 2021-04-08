@@ -1611,6 +1611,64 @@
             ]
         }
     },
+    "HECO": {
+        "balanceCheker": {
+            "address": "0x3B5bA5993d93dC1964f1fC2fbb3F0D29d6F0C172",
+            "abi": [
+                {
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "users",
+                            "type": "address[]"
+                        },
+                        {
+                            "name": "tokens",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "balances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "user",
+                            "type": "address"
+                        },
+                        {
+                            "name": "token",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "tokenBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+        }
+    },
     "BSC_test": {
         "dacb": {"address": "0xfc1d0437dbf3ebdc819f12090fe6e14933c7e68a",
             "abi": [
