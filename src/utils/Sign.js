@@ -94,12 +94,21 @@ export const onClickInstall = (setButton1, setButton1Disabled ) => {
     setButton1Disabled(true)
 }
 
-export const onClickConnect = async (network, chainId, addr, dispatch) => {
+export const onClickConnect = async (network, chainId, addr, dispatch, handleOpen, registered, loggedIn, loading) => {
     try {
         await window.ethereum.request({
             method: 'eth_requestAccounts',
         })
-        await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
+        if (!!window.imToken) {
+            if (registered !== undefined && loggedIn !== undefined && loading !== undefined) {
+                await unlock('unlock', addr, chainId, network, Web3, false, dispatch)
+            }
+        } else {
+            if (handleOpen !== undefined) {
+                handleOpen()
+            }
+        }
+
     } catch (error) {
         console.error(error)
     }

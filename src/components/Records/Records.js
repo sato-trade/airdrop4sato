@@ -225,8 +225,6 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
     }, [transactionRecords])
 
-    console.log('records: ', transactionRecords)
-
     return (
         <div className={classes.root}>
             <div className='deposit__container'>

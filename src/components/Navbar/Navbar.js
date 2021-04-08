@@ -98,7 +98,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
     const [addr, setAddr] = useState('')
     const [startWatch, setStartWatch] = useState(false)
 
-    const { loggedIn, registered, message } = useSelector(state => state.auth)
+    const { loggedIn, registered, message, loading } = useSelector(state => state.auth)
     const prevNavMessageRef = useRef();
     const history = useHistory();
     const dispatch = useDispatch();
@@ -112,6 +112,14 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
     const handleCloseMsgModal = () => {
         setOpenMsgModal(false);
         dispatch(authActions.checkUser(addr))
+    };
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     const changeLanguage = (e) => {
@@ -132,15 +140,6 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
     ]
 
     const barRef = React.useRef(null);
-
-
-    const handleOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
 
     const switchAccount = async () => {
         await window.ethereum.request({
@@ -385,7 +384,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                                                             )) : null
                                                     }
                                                     <MenuItem onClick={() => {
-                                                        i18n.language.includes('zh') ?
+                                                        i18n.language === 'cn' ?
                                                             window.open('https://docs.sato.trade/v/cn/social-media', '_blank')
                                                             :
                                                             window.open('https://docs.sato.trade/contact-us', '_blank')
@@ -400,7 +399,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                                                         </Typography>
                                                     </MenuItem>
                                                     <MenuItem onClick={() => {
-                                                        i18n.language.includes('zh') ?
+                                                        i18n.language === 'cn' ?
                                                             window.open('https://swapall.io/download', '_blank')
                                                             :
                                                             window.open('https://apps.apple.com/app/swapall/id1532973986?l=en', '_blank')
@@ -452,7 +451,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                     </div>
                 </div>
                 <Button style={{ marginRight: 0, borderRadius: 0, backgroundColor: '#1DF0A9' }}
-                        onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, addr, dispatch)}
+                        onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, addr, dispatch, handleOpen, registered, loggedIn, loading) }
                         variant="contained">
                     <img style={{ width: 37, height: 34, marginLeft: 4 }} src={mataLogo} />
 
