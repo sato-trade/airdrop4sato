@@ -31,8 +31,6 @@ export const unlock = async (msg, address, chainId, network, Web3, registered, d
             networkId: Number(network)
         }
 
-        console.log('payload: ', typeof buffer, payload)
-
         if (registered !== undefined ) {
             if (registered) {
                 dispatch(authActions.logIn(payload))

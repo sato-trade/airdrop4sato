@@ -50,7 +50,7 @@ async function getL1Capital(address, network, chainId) {
         let balance = []
         let balanceCheckerContract = new web3.eth.Contract(Contract.default[chain].balanceChecker.abi, Contract.default[chain].balanceChecker.address);
         for (const key in Contract.default[chain].coins) {
-            if (key === 'ETH') {
+            if (key === 'ETH' || key === 'HT' || key === 'BNB') {
                 await web3.eth.getBalance(address, (err, res) => {
                     if (err){
                         console.log('failed: ', err)

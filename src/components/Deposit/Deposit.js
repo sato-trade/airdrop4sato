@@ -230,33 +230,48 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     useEffect(() => {
         let _coins = []
+        let chain = '_' + getChain(network, chainId)
+        /**
+         * Sorting available coins based on current chain  -- Richard 210408
+         */
         for (let i = 0; i < tokenList.length; i++) {
-            if (tokenList[i].contractDepositIsOn) {
-                if (tokenList[i].token === 'USDT_ERC20') {
-                    if (_coins.find(item => item.label === 'USDT') === undefined) {
-                        _coins.push({
-                            label: 'USDT',
-                            value: 'USDT'
-                        })
+            if (tokenList[i].depositIsOn) {
+                let coinChain = tokenList[i].token.substr(tokenList[i].token.indexOf('_') )
+                let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
+                if (getChain(network, chainId) === 'ETH') {
+                    if (tokenList[i].token === 'USDT_ERC20') {
+                        if (_coins.find(item => item.label === 'USDT') === undefined) {
+                            _coins.push({
+                                label: 'USDT',
+                                value: 'USDT'
+                            })
+                        }
                     }
-                } else if (tokenList[i].token.includes('_' + getChain(network, chainId))) {
-                    let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
-                    if (_coins.find(item => item.label === token) === undefined) {
+                    if (coinChain === chain) {
                         _coins.push({
                             label: token,
                             value: token
                         })
                     }
-                } else if (!tokenList[i].token.includes('_ETH')) {
-                    _coins.push({
-                        label: tokenList[i].token,
-                        value: tokenList[i].token
-                    })
                 }
-
+                if (getChain(network, chainId) === 'HECO') {
+                    if (coinChain === chain) {
+                        _coins.push({
+                            label: token,
+                            value: token
+                        })
+                    }
+                }
+                if (getChain(network, chainId) === 'BSC') {
+                    if (coinChain === chain) {
+                        _coins.push({
+                            label: token,
+                            value: token
+                        })
+                    }
+                }
             }
         }
-
         setCoins(_coins)
         return () => {
         }
@@ -293,6 +308,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     //         handleOpenCallback()
     //     }
     // },[depositConfirmationNumber, depositReceipt])
+
 
     return (
         <div className={classes.root}>

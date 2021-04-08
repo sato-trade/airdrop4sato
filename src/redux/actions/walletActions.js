@@ -127,7 +127,7 @@ function deposit(payload) {
         let transactionParameters = {}
         let chain = getChain(payload.network, payload.chainId) + '_test'
         try {
-            if (payload.coin === 'ETH') {
+            if (payload.coin === 'ETH' || payload.coin === 'HT' || payload.coin === 'BNB') {
                 transactionParameters = {
                     // nonce: web3.utils.toHex(nonce), // ignored by MetaMask
                     // gasPrice: gasPrice, // customizable by user during MetaMask confirmation.

@@ -1399,7 +1399,7 @@
     },
     "HECO_test": {
         "dacb": {
-            "address": "0x9B37E7E51c7Ed5E9D490D5b07E1E61BFbef309FA",
+            "address": "0x1e120bf89c649594d21ab446389c38afe3cd9198",
             "abi": [
                 {
                     "inputs": [
@@ -1544,7 +1544,7 @@
             ]
         },
         "coins": {
-            "ETH": {
+            "HT": {
                 "decimals": 18
             },
             "USDT": {

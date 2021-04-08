@@ -261,6 +261,8 @@ function Withdraw({ t, address, chainId, network,
     useEffect(() => {
         let _coins = []
         let _capital = userCapitals.find(item => item.token === coin)
+        let chain = '_' + getChain(network, chainId)
+        let token
         if (_capital === undefined) {
             _capital = {
                 free: 0,
@@ -270,7 +272,20 @@ function Withdraw({ t, address, chainId, network,
         setCapital(_capital)
 
         for (let i = 0; i < userCapitals.length; i++) {
-            let token = tokenList.find(item => item.token === userCapitals[i].token)
+            if (getChain(network, chainId) === 'ETH') {
+                token = tokenList.find(item => item.token === userCapitals[i].token)
+
+            }
+
+            if (getChain(network, chainId) === 'HECO') {
+                token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            }
+
+            if (getChain(network, chainId) === 'BSC') {
+                token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            }
+
+            console.log('userCapitals: ', userCapitals)
             if (token === undefined) {
                 token = {
                     token: userCapitals[i].token,
@@ -286,6 +301,7 @@ function Withdraw({ t, address, chainId, network,
                 })
                 setChain(chain)
             }
+
         }
         setCoins(_coins)
         return () => {
