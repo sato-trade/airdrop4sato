@@ -82,7 +82,7 @@ export default function CustomTextField(props) {
 
           }
 
-          {props.showCancelButton ?
+          {props.showcancellbutton ?
 
             <CancelIcon style={{color:'white'}} onClick={props.clear} />
             :

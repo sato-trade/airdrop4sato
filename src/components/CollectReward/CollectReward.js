@@ -217,7 +217,7 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
                                         <CustomButton style={{ width: '100%'  ,marginBottom:28}} onClick={confirmRegister} >
                                             {t('registerReward')}
                                         </CustomButton> :
-                                    <CustomButton buttonstyle="unlockStyle" style={{ width: '100%',marginBottom:28 }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                    <CustomButton buttonstyle="unlockStyle" style={{ width: '100%',marginBottom:28 }} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                         {t('unlock')}
                                     </CustomButton> : null
                         }

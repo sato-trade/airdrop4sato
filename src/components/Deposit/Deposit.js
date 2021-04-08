@@ -309,7 +309,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     //     }
     // },[depositConfirmationNumber, depositReceipt])
 
-
     return (
         <div className={classes.root}>
             <div  className="deposit__container">
@@ -390,7 +389,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                         <CustomButton  style={{ opacity: cantDeposit ? 0.2 : 1, width: '100%' }}  onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }
@@ -412,6 +411,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                 BackdropProps={{
                     timeout: 500,
                 }}
+                disableEscapeKeyDown={!depositFinished}
+                disableBackdropClick={!depositFinished}
             >
                 <Fade in={openCallback}>
                     <div className={classes.paper}>
@@ -442,7 +443,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                                     {
                                         depositHash.length > 0 ?
                                             <Grid item xs={12} >
-                                                <Button target="_blank" href={getChain(network, chainId) === 'ETH' ? "https:/ropsten.etherscan.io/tx/" + depositHash : "https://testnet.hecoinfo.com/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
+                                                <Button target="_blank" href={getChain(network, chainId) === 'HT' ? "https://testnet.hecoinfo.com/tx/" + depositHash : getChain(network, chainId) === 'BSC' ? "https://testnet.bscscan.com/tx/" + depositHash : "https:/ropsten.etherscan.io/tx/" + depositHash } style={{ width: 180 }} className={classes.btn} >
                                                     {t('checkEtherscan')}
                                                 </Button>
                                             </Grid> : null

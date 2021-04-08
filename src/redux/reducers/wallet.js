@@ -72,6 +72,9 @@ export function wallet (state = {
                 ...state,
                 walletSigning: action.loading,
                 walletMsg: action.message,
+                withdrawFinished: true,
+                withdrawMsg: action.message,
+                depositFinished: true
             }
         case GET_USER_CAPITAL:
             return {
@@ -141,7 +144,8 @@ export function wallet (state = {
                 ...state,
                 withdrawFinished: true,
                 withdrawSucceed: false,
-                withdrawMsg: action.error
+                withdrawMsg: action.error,
+                walletSigning: false
             }
         case DEPOSIT:
             return {

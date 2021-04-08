@@ -1553,66 +1553,8 @@
             }
         }
     },
-    "BSC": {
-        "balanceChecker": {
-            "address": "0xc004e01CE7B53d586a0b4ddda94fd6791c2Ca6fe",
-            "abi": [
-                {
-                    "payable": true,
-                    "stateMutability": "payable",
-                    "type": "fallback"
-                },
-                {
-                    "constant": true,
-                    "inputs": [
-                        {
-                            "name": "users",
-                            "type": "address[]"
-                        },
-                        {
-                            "name": "tokens",
-                            "type": "address[]"
-                        }
-                    ],
-                    "name": "balances",
-                    "outputs": [
-                        {
-                            "name": "",
-                            "type": "uint256[]"
-                        }
-                    ],
-                    "payable": false,
-                    "stateMutability": "view",
-                    "type": "function"
-                },
-                {
-                    "constant": true,
-                    "inputs": [
-                        {
-                            "name": "user",
-                            "type": "address"
-                        },
-                        {
-                            "name": "token",
-                            "type": "address"
-                        }
-                    ],
-                    "name": "tokenBalance",
-                    "outputs": [
-                        {
-                            "name": "",
-                            "type": "uint256"
-                        }
-                    ],
-                    "payable": false,
-                    "stateMutability": "view",
-                    "type": "function"
-                }
-            ]
-        }
-    },
     "HECO": {
-        "balanceCheker": {
+        "balanceChecker": {
             "address": "0x3B5bA5993d93dC1964f1fC2fbb3F0D29d6F0C172",
             "abi": [
                 {
@@ -1667,96 +1609,101 @@
                     "type": "function"
                 }
             ]
+        },
+        "coins": {
+            "HT": {
+                "decimals": 18
+            }
         }
     },
     "BSC_test": {
         "dacb": {"address": "0xfc1d0437dbf3ebdc819f12090fe6e14933c7e68a",
             "abi": [
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "target",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
-        "stateMutability": "payable",
-        "type": "fallback"
-    },
-    {
-        "inputs": [],
-        "name": "getOwner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getTarget",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "target",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "newTarget",
-                "type": "address"
-            }
-        ],
-        "name": "setTarget",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
-            }
-        ],
-        "name": "transferOwnership",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "newTarget",
-                "type": "address"
-            }
-        ],
-        "name": "upgradeTarget",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "stateMutability": "payable",
-        "type": "receive"
-    }
-]
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "target",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "nonpayable",
+                    "type": "constructor"
+                },
+                {
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "inputs": [],
+                    "name": "getOwner",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "owner",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "getTarget",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "target",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "newTarget",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "setTarget",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "newOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "transferOwnership",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "newTarget",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "upgradeTarget",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "stateMutability": "payable",
+                    "type": "receive"
+                }
+            ]
         },
         "balanceChecker": {
             "address": "0xcFE3456e0df2340c21f7D7a9C2c09b9c25473cbb",
@@ -1815,13 +1762,71 @@
             ]
         },
         "coins": {
-            "ETH": {
+            "BNB": {
                 "decimals": 18
             },
             "USDT": {
                 "address": "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd",
                 "decimals": 18
             }
+        }
+    },
+    "BSC": {
+        "balanceChecker": {
+            "address": "0xc004e01CE7B53d586a0b4ddda94fd6791c2Ca6fe",
+            "abi": [
+                {
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "users",
+                            "type": "address[]"
+                        },
+                        {
+                            "name": "tokens",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "balances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "user",
+                            "type": "address"
+                        },
+                        {
+                            "name": "token",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "tokenBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
         }
     },
     "transferErc20": {

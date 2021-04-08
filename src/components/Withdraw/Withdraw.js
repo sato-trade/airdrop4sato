@@ -149,7 +149,7 @@ function Withdraw({ t, address, chainId, network,
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawSucceed, withdrawFinished, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const inputRef = React.useRef();
 
@@ -216,7 +216,7 @@ function Withdraw({ t, address, chainId, network,
     };
 
     const confirmWithdraw = async () => {
-        await withdraw('withdraw', address, chainId, network, Web3,
+        await withdraw(address, chainId, network, Web3,
             registered, dispatch, walletSigning, setTime, handleOpenNote,
             coin, chain, withdrawAmount, withdrawTo, token)
     }
@@ -388,6 +388,9 @@ function Withdraw({ t, address, chainId, network,
         }
     }, [withdrawFeeObj])
 
+    // useEffect(() => {
+    // }, [withdrawMsg])
+
     return (
         <div className={classes.root}>
             <div className="deposit__container">
@@ -418,7 +421,7 @@ function Withdraw({ t, address, chainId, network,
 
                                 helperText={warning}
                                 error={warning !== ''}
-                                showCancelButton={true}
+                                showcancellbutton={true}
                                 clear={clear}
                                 onChange={(e) => handleAddressChange(e.target.value)}
                                 onBlur={() => handleFinish(false)}
@@ -517,7 +520,7 @@ function Withdraw({ t, address, chainId, network,
                                         <CustomButton style={{ opacity: !validAmount || !validAddress ? 0.2 : 1, width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock(address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }
@@ -539,10 +542,12 @@ function Withdraw({ t, address, chainId, network,
                 BackdropProps={{
                     timeout: 500,
                 }}
+                disableEscapeKeyDown={!withdrawFinished}
+                disableBackdropClick={!withdrawFinished}
             >
                 <Fade in={openNote}>
                     <div className={classes.paper}>
-                        <h2 id="server-modal-title">{walletSigning ? t('confirming') : withdrawSucceed?  t(withdrawMsg) : t(walletMsg) }</h2>
+                        <h2 id="server-modal-title">{walletSigning ? t('confirming') : withdrawFinished?  t(withdrawMsg) : t(walletMsg) }</h2>
                         {
                             walletSigning ?
                                 <Grid container spacing={2} >

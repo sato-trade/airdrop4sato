@@ -84,36 +84,38 @@ function getUserCapital(token) {
 function withdraw(payload) {
     return dispatch => {
         dispatch(request());
-        // walletService.withdraw(payload)
-        //     .then(
-        //         res => {
-        //             dispatch(success('withdrawSucceed'));
-        //         },
-        //         error => {
-        //             let toast = ''
-        //             if (error.data === 'Service unavailable') {
-        //                 toast = 'withdrawNotAvailable'
-        //             } else if (error.status === 503) {
-        //                 toast = 'intercepted'
-        //             } else if (error.status === 409) {
-        //                 toast = 'airdropping'
-        //             } else if (error.data === 'TooFrequentError') {
-        //                 toast = 'tooFrequent'
-        //             } else if (error.data === 'LessThanMinimumAmount') {
-        //                 toast = 'lessThanMin'
-        //             } else if (error.data === 'Over limit') {
-        //                 toast = 'overLimit'
-        //             } else if (error.data === 'Need deposit before withdraw') {
-        //                 toast = 'noDepositBeforeWithdraw'
-        //             } else if (error.data === 'Need deposit before transfer') {
-        //                 toast = 'noDepositBeforeTransfer'
-        //             } else {
-        //                 toast = 'unCaught'
-        //             }
-        //             dispatch(failure(toast));
-        //             dispatch(alertActions.error(toast));
-        //         }
-        //     );
+        walletService.withdraw(payload)
+            .then(
+                res => {
+                    dispatch(success('withdrawSucceed'));
+                },
+                error => {
+                    console.log('error: ', error)
+                    let toast = ''
+                    if (error.message === 'Service unavailable') {
+                        toast = 'withdrawNotAvailable'
+                    } else if (error.status === 503) {
+                        toast = 'intercepted'
+                    } else if (error.status === 409) {
+                        toast = 'airdropping'
+                    } else if (error.message === 'TooFrequentError') {
+                        toast = 'tooFrequent'
+                    } else if (error.message === 'LessThanMinimumAmount') {
+                        toast = 'lessThanMin'
+                    } else if (error.message === 'Over limit') {
+                        toast = 'overLimit'
+                    } else if (error.message === 'Need deposit before withdraw') {
+                        console.log(error.message === 'Need deposit before withdraw')
+                        toast = 'noDepositBeforeWithdraw'
+                    } else if (error.message === 'Need deposit before transfer') {
+                        toast = 'noDepositBeforeTransfer'
+                    } else {
+                        toast = 'unCaught'
+                    }
+                    dispatch(failure(toast));
+                    dispatch(alertActions.error(toast));
+                }
+            );
     };
 
     function request() { return { type: WITHDRAW } }
@@ -125,7 +127,8 @@ function deposit(payload) {
     return dispatch => {
         dispatch(request());
         let transactionParameters = {}
-        let chain = getChain(payload.network, payload.chainId) + '_test'
+        let suffix = payload.network === '1' || payload.network === '56' || payload.network === '128' ?  '' : '_test'
+        let chain = getChain(payload.network, payload.chainId) + suffix
         try {
             if (payload.coin === 'ETH' || payload.coin === 'HT' || payload.coin === 'BNB') {
                 transactionParameters = {

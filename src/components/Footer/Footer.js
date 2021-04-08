@@ -35,13 +35,12 @@ function Footer({ t }) {
     return (
         <div style={{ height: 72, width: '100%', backgroundColor: 'white', display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
 
-            <Button style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
+            <Button onClick={() => {window.open('mailto:support@swapall.io')}} style={{ marginRight: 0, borderRadius: 0,  height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
                     <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>{t('contactUs')}</Typography>
-
                 </div>
             </Button>
-            <Button  style={{ marginRight: 0, borderRadius: 0, height: '100%' }}>
+            <Button  onClick={() => {window.open('https://swapall.io/privacy', '_blank')}} style={{ marginRight: 0, borderRadius: 0, height: '100%' }}>
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginLeft: 16, marginRight: 16 }}>
                     <Typography style={{ fontSize: 16, fontWeight: 'bold', textTransform: 'none' }}>{t('privacy')}</Typography>
 
