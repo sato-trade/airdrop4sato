@@ -1,5 +1,5 @@
 {
-    "ropsten": {
+    "ETH_test": {
         "dacb": {
             "address": "0x9B37E7E51c7Ed5E9D490D5b07E1E61BFbef309FA",
             "abi": [
@@ -90,7 +90,9 @@
             ]
         },
         "coins": {
-            "ETH": {},
+            "ETH": {
+                "decimals": 18
+            },
             "SATO": {
                 "address": "0x58FF315B5D31529071E27C2d252684052b7D5f21",
                 "abi": [
@@ -694,34 +696,9 @@
                         "type": "function"
                     }
                 ]
-        },
-        "transferErc20": {
-            "abi": [
-                {
-                    "constant": false,
-                    "inputs": [
-                        {
-                            "name": "_to",
-                            "type": "address"
-                        },
-                        {
-                            "name": "_value",
-                            "type": "uint256"
-                        }
-                    ],
-                    "name": "transfer",
-                    "outputs": [
-                        {
-                            "name": "",
-                            "type": "bool"
-                        }
-                    ],
-                    "type": "function"
-                }
-            ]
         }
     },
-    "mainnet": {
+    "ETH": {
         "dacb": {
             "address": "0x9B37E7E51c7Ed5E9D490D5b07E1E61BFbef309FA",
             "abi": [
@@ -812,7 +789,9 @@
             ]
         },
         "coins": {
-            "ETH": {},
+            "ETH": {
+                "decimals": 18
+            },
             "SATO": {
                 "address": "0x58FF315B5D31529071E27C2d252684052b7D5f21",
                 "abi": [
@@ -1416,31 +1395,458 @@
                     "type": "function"
                 }
             ]
-        },
-        "transferErc20": {
+        }
+    },
+    "HECO_test": {
+        "dacb": {
+            "address": "0x1e120bf89c649594d21ab446389c38afe3cd9198",
             "abi": [
                 {
-                    "constant": false,
                     "inputs": [
                         {
-                            "name": "_to",
+                            "internalType": "address",
+                            "name": "target",
                             "type": "address"
-                        },
-                        {
-                            "name": "_value",
-                            "type": "uint256"
                         }
                     ],
-                    "name": "transfer",
+                    "stateMutability": "nonpayable",
+                    "type": "constructor"
+                },
+                {
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "inputs": [],
+                    "name": "getOwner",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "owner",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [],
+                    "name": "getTarget",
+                    "outputs": [
+                        {
+                            "internalType": "address",
+                            "name": "target",
+                            "type": "address"
+                        }
+                    ],
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "newTarget",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "setTarget",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "newOwner",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "transferOwnership",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "inputs": [
+                        {
+                            "internalType": "address",
+                            "name": "newTarget",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "upgradeTarget",
+                    "outputs": [],
+                    "stateMutability": "nonpayable",
+                    "type": "function"
+                },
+                {
+                    "stateMutability": "payable",
+                    "type": "receive"
+                }
+            ]
+        },
+        "balanceChecker": {
+            "address": "0xcFE3456e0df2340c21f7D7a9C2c09b9c25473cbb",
+            "abi": [
+                {
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "users",
+                            "type": "address[]"
+                        },
+                        {
+                            "name": "tokens",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "balances",
                     "outputs": [
                         {
                             "name": "",
-                            "type": "bool"
+                            "type": "uint256[]"
                         }
                     ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "user",
+                            "type": "address"
+                        },
+                        {
+                            "name": "token",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "tokenBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+        },
+        "coins": {
+            "HT": {
+                "decimals": 18
+            },
+            "USDT": {
+                "address": "0x04F535663110A392A6504839BEeD34E019FdB4E0",
+                "decimals": 6
+            }
+        }
+    },
+    "BSC": {
+        "balanceChecker": {
+            "address": "0xc004e01CE7B53d586a0b4ddda94fd6791c2Ca6fe",
+            "abi": [
+                {
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "users",
+                            "type": "address[]"
+                        },
+                        {
+                            "name": "tokens",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "balances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "user",
+                            "type": "address"
+                        },
+                        {
+                            "name": "token",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "tokenBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
                     "type": "function"
                 }
             ]
         }
+    },
+    "HECO": {
+        "balanceCheker": {
+            "address": "0x3B5bA5993d93dC1964f1fC2fbb3F0D29d6F0C172",
+            "abi": [
+                {
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "users",
+                            "type": "address[]"
+                        },
+                        {
+                            "name": "tokens",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "balances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "user",
+                            "type": "address"
+                        },
+                        {
+                            "name": "token",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "tokenBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+        }
+    },
+    "BSC_test": {
+        "dacb": {"address": "0xfc1d0437dbf3ebdc819f12090fe6e14933c7e68a",
+            "abi": [
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "target",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "fallback"
+    },
+    {
+        "inputs": [],
+        "name": "getOwner",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTarget",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "target",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newTarget",
+                "type": "address"
+            }
+        ],
+        "name": "setTarget",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newOwner",
+                "type": "address"
+            }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "newTarget",
+                "type": "address"
+            }
+        ],
+        "name": "upgradeTarget",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "stateMutability": "payable",
+        "type": "receive"
+    }
+]
+        },
+        "balanceChecker": {
+            "address": "0xcFE3456e0df2340c21f7D7a9C2c09b9c25473cbb",
+            "abi": [
+                {
+                    "payable": true,
+                    "stateMutability": "payable",
+                    "type": "fallback"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "users",
+                            "type": "address[]"
+                        },
+                        {
+                            "name": "tokens",
+                            "type": "address[]"
+                        }
+                    ],
+                    "name": "balances",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256[]"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                },
+                {
+                    "constant": true,
+                    "inputs": [
+                        {
+                            "name": "user",
+                            "type": "address"
+                        },
+                        {
+                            "name": "token",
+                            "type": "address"
+                        }
+                    ],
+                    "name": "tokenBalance",
+                    "outputs": [
+                        {
+                            "name": "",
+                            "type": "uint256"
+                        }
+                    ],
+                    "payable": false,
+                    "stateMutability": "view",
+                    "type": "function"
+                }
+            ]
+        },
+        "coins": {
+            "ETH": {
+                "decimals": 18
+            },
+            "USDT": {
+                "address": "0x337610d27c682E347C9cD60BD4b3b107C9d34dDd",
+                "decimals": 18
+            }
+        }
+    },
+    "transferErc20": {
+        "abi": [
+            {
+                "constant": false,
+                "inputs": [
+                    {
+                        "name": "_to",
+                        "type": "address"
+                    },
+                    {
+                        "name": "_value",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "transfer",
+                "outputs": [
+                    {
+                        "name": "",
+                        "type": "bool"
+                    }
+                ],
+                "type": "function"
+            }
+        ]
     }
 }

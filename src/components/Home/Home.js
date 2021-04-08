@@ -24,7 +24,7 @@ function Home({ t, navBarHeight, address, network, chainId,
             padding: theme.spacing(1),
             flexGrow: 1,
             textAlign: 'center',
-            height:1000
+            height:900
         },
         walletBox: {
             maxWidth: 441,

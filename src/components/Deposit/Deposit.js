@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {Avatar, Backdrop, Button, Fade, Grid, MenuItem, Modal, Typography} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
@@ -20,8 +20,7 @@ import CustomButton from '../CommonElements/CustomButton';
 const Web3 = require("web3");
 
 function Deposit({ t, navBarHeight, address, chainId, network,
-    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+    sendBackButton1, sendBackButton1Disabled, button1, button2Disabled
 }) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -139,15 +138,14 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, message, depositHash, depositReceipt } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, l1Capital, depositFinished, depositSucceed, depositMsg, depositConfirmationNumber, depositHash, depositReceipt, walletSigning } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const location = useLocation();
     const inputRef = React.useRef();
+    const prevMessageRef = useRef();
 
     const [openCallback, setOpenCallback] = useState(false)
     const [time, setTime] = useState('')
-
-
 
     const allIn = () => {
         handleAmountChange(roundingDown(capital.free, 4))
@@ -159,6 +157,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     const handleCloseCallback = () => {
         setOpenCallback(false);
+        dispatch(walletActions.clearInfo())
+        setCantDeposit(false)
     };
 
     const handleAmountChange = (amount) => {
@@ -193,13 +193,18 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             l2Address: address,
             amount: depositAmount,
             coin: coin,
+            network, chainId
         }
         try {
             if (depositFinished) {
+                setTime(formDateString(new Date().getTime()))
+                handleOpenCallback()
                 dispatch(walletActions.deposit(payload))
             }
         } catch (err) {
             console.log('deposit request failed: ', err)
+            setCantDeposit(false)
+            setDepositAmount('')
         }
     }
 
@@ -207,7 +212,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             // dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
-            dispatch(walletActions.getL1Capital(address))
+            dispatch(walletActions.getL1Capital(address, network, chainId))
         }
         return () => {
         }
@@ -217,7 +222,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
         if (loggedIn) {
             // dispatch(walletActions.getUserCapital(token))
             dispatch(walletActions.getAllTokenStatus(token))
-            dispatch(walletActions.getL1Capital(address))
+            dispatch(walletActions.getL1Capital(address, network, chainId))
         }
         return () => {
         }
@@ -225,33 +230,48 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
     useEffect(() => {
         let _coins = []
+        let chain = '_' + getChain(network, chainId)
+        /**
+         * Sorting available coins based on current chain  -- Richard 210408
+         */
         for (let i = 0; i < tokenList.length; i++) {
-            if (tokenList[i].contractDepositIsOn) {
-                if (tokenList[i].token === 'USDT_ERC20') {
-                    if (_coins.find(item => item.label === 'USDT') === undefined) {
-                        _coins.push({
-                            label: 'USDT',
-                            value: 'USDT'
-                        })
+            if (tokenList[i].depositIsOn) {
+                let coinChain = tokenList[i].token.substr(tokenList[i].token.indexOf('_') )
+                let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
+                if (getChain(network, chainId) === 'ETH') {
+                    if (tokenList[i].token === 'USDT_ERC20') {
+                        if (_coins.find(item => item.label === 'USDT') === undefined) {
+                            _coins.push({
+                                label: 'USDT',
+                                value: 'USDT'
+                            })
+                        }
                     }
-                } else if (tokenList[i].token.includes('_' + getChain(network, chainId))) {
-                    let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
-                    if (_coins.find(item => item.label === token) === undefined) {
+                    if (coinChain === chain) {
                         _coins.push({
                             label: token,
                             value: token
                         })
                     }
-                } else if (!tokenList[i].token.includes('_ETH')) {
-                    _coins.push({
-                        label: tokenList[i].token,
-                        value: tokenList[i].token
-                    })
                 }
-
+                if (getChain(network, chainId) === 'HECO') {
+                    if (coinChain === chain) {
+                        _coins.push({
+                            label: token,
+                            value: token
+                        })
+                    }
+                }
+                if (getChain(network, chainId) === 'BSC') {
+                    if (coinChain === chain) {
+                        _coins.push({
+                            label: token,
+                            value: token
+                        })
+                    }
+                }
             }
         }
-
         setCoins(_coins)
         return () => {
         }
@@ -276,15 +296,23 @@ function Deposit({ t, navBarHeight, address, chainId, network,
     useEffect(() => {
         if (depositHash.length > 0 && !depositFinished) {
             setTime(formDateString(new Date().getTime()))
-            handleOpenCallback()
-            return () => {
-            }
         }
-    }, [depositHash, depositFinished])
+        return () => {
+        }
+
+    }, [depositHash, depositFinished, depositMsg])
+
+    // useEffect(() => {
+    //     console.log('confirmed receipt: ', depositConfirmationNumber)
+    //     if (depositConfirmationNumber === 5) {
+    //         handleOpenCallback()
+    //     }
+    // },[depositConfirmationNumber, depositReceipt])
+
 
     return (
         <div className={classes.root}>
-            <div className="deposit__container">
+            <div  className="deposit__container">
                 <div className="deposit__wrapper">
                     <Button style={{ left: -24 }} onClick={() => {
                         history.back()
@@ -302,32 +330,6 @@ function Deposit({ t, navBarHeight, address, chainId, network,
 
                     </div>
                     <div style={{ height: 1, marginTop: 40, marginBottom: 20, backgroundColor: '#2134A7' }} />
-
-                    {/*
-                    <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-
-                        <CustomTextField label="充值金额" helperText="ccc"
-                            style={{ width: '70%' }}
-                        >
-
-                        </CustomTextField>
-
-                        <TextField
-                            id="outlined-basic"
-                            variant="filled"
-                            select
-                            style={{ width: '25%', height: '70%', backgroundColor: '#1DF0A9', borderRadius: 24 }}
-                            label="选择币种"
-                            InputProps={{ disableUnderline: true }}
-                            root={{ backgroundColor: 'blue' }}
-                        >
-
-                        </TextField>
-
-
-
-                    </div> */}
-
                     <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
 
                         <CustomTextField
@@ -340,7 +342,7 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                             helperText={warning}
                             error={warning !== ''}
                             rightbuttonlabel={ capital.free > 0.0001 ?  t('all') : null}
-                            onRightButtonClick={allIn}
+                            onrightbuttonclick={allIn}
 
                         >
 
@@ -374,99 +376,25 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                         </div>
                     </div>
 
-
-
                     <Grid container spacing={2} className={classes.fieldWrapper}>
-                        {/* <Grid item xs={6} >
-                            <TextField
-                                inputRef={inputRef}
-                                label={t('depositAmount')}
-                                type="number"
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                    },
-                                }}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                    endAdornment: <InputAdornment position="end"><IconButton className={classes.allIn} onClick={allIn} position="end">{t('all')}</IconButton></InputAdornment>
-                                }}
-                                onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => { setWarning('') }}
-                                variant="standard"
-                                value={depositAmount}
-                                helperText={warning}
-                                FormHelperTextProps={{
-                                    className: classes.helperText
-                                }}
-                                error={warning !== ''}
-                            />
-                        </Grid> */}
-
-                        {/* <Grid item xs={6} >
-                            <TextField
-                                select
-                                label={`${t('availableCapital')} ${loggedIn ? roundingDown(capital.free, 4) : '--'} ${capital.token}`}
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                        width: 'max-content'
-                                    },
-                                }}
-                                value={coin}
-                                onChange={handleCoinChange}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                }}
-                            >
-                                {coins.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        <Grid container >
-                                            <Grid item xs={6} >
-                                                <Avatar alt="Travis Howard" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />                            </Grid>
-                                            <Grid item xs={6} >
-                                                {option.label}
-                                            </Grid>
-                                        </Grid>
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid> */}
                         <Grid item xs={12} style={{ marginTop: 24 }}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
+                                    <CustomButton buttonstyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                         {button1}
                                     </CustomButton> : null
                             }
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <CustomButton  style={{ width: '100%' }}  onClick={confirmDeposit} disabled={cantDeposit}>
+                                        <CustomButton  style={{ opacity: cantDeposit ? 0.2 : 1, width: '100%' }}  onClick={confirmDeposit} disabled={cantDeposit}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }
                         </Grid>
-
-                        {/* <CustomButton style={{width:'100%'}} onClick={!isMetaMaskInstalled() ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                        >
-                            {button1}
-                        </CustomButton> */}
                     </Grid>
                 </div>
             </div>
@@ -487,37 +415,40 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             >
                 <Fade in={openCallback}>
                     <div className={classes.paper}>
-                        <h2 id="server-modal-title">{depositSucceed && depositFinished ? t('depositSucceed') : t('confirming')}</h2>
-                        <Grid container spacing={2} >
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('depositAmount')}: ${depositAmount}`}</p>
-
-                            </Grid>
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('time')}: ${time}`}</p>
-                            </Grid>
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
-                            </Grid>
-                            <Grid item xs={12} >
-                                <p id="server-modal-description">{`${t('status')}: ${depositFinished && depositSucceed ? t('depositSucceed') : t('loading')}`}</p>
-                            </Grid>
-                            {
-                                Object.keys(depositReceipt).length > 0 ?
+                        <h2 id="server-modal-title">{depositSucceed?  t('depositSucceed') : depositHash.length > 0 ? t('depositSucceed') : depositMsg !== '' ? t(depositMsg) : t('confirming') }</h2>
+                        {
+                            depositMsg === '' ?
+                                <Grid container spacing={2} >
                                     <Grid item xs={12} >
-                                        <p id="server-modal-description">{`${t('confirmedBlock')}: ${depositReceipt.blockNumber}`}</p>
-                                    </Grid> : null
+                                        <p id="server-modal-description">{`${t('depositAmount')}: ${depositAmount}`}</p>
 
-                            }
-                            {
-                                depositHash.length > 1 ?
+                                    </Grid>
                                     <Grid item xs={12} >
-                                        <Button target="_blank" href={"https:/ropsten.etherscan.io/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
-                                            {t('checkEtherscan')}
-                                        </Button>
-                                    </Grid> : null
-                            }
-                        </Grid>
+                                        <p id="server-modal-description">{`${t('time')}: ${time}`}</p>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('action')}: ${t('depositAction')}`}</p>
+                                    </Grid>
+                                    <Grid item xs={12} >
+                                        <p id="server-modal-description">{`${t('status')}: ${depositSucceed ? t('succeed') : Object.keys(depositReceipt).length > 0 ? t('submitted') : t('loading')}`}</p>
+                                    </Grid>
+                                    {
+                                        Object.keys(depositReceipt).length > 0 ?
+                                            <Grid item xs={12} >
+                                                <p id="server-modal-description">{`${t('confirmedBlock')}: ${depositReceipt.blockNumber}`}</p>
+                                            </Grid> : null
+
+                                    }
+                                    {
+                                        depositHash.length > 0 ?
+                                            <Grid item xs={12} >
+                                                <Button target="_blank" href={getChain(network, chainId) === 'ETH' ? "https:/ropsten.etherscan.io/tx/" + depositHash : "https://testnet.hecoinfo.com/tx/" + depositHash} style={{ width: 180 }} className={classes.btn} >
+                                                    {t('checkEtherscan')}
+                                                </Button>
+                                            </Grid> : null
+                                    }
+                                </Grid> : null
+                        }
                     </div>
                 </Fade>
             </Modal>

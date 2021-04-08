@@ -121,7 +121,7 @@ function Records({ t, navBarHeight, address, chainId, network,
     const dispatch = useDispatch()
     const location = useLocation();
 
-    const { token, loggedIn, registered } = useSelector(state => state.auth)
+    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
     const { tokenIcons, transactionRecords } = useSelector(state => state.wallet)
 
     const [time, setTime] = useState('')
@@ -131,6 +131,7 @@ function Records({ t, navBarHeight, address, chainId, network,
     const [hash, setHash] = useState('')
     const [openRecordDetail, setOpenRecordDetail] = useState(false)
     const [coin, setCoin] = useState('')
+    const [arrangedRecords, setArrangedRecords] = useState([])
 
     const handleOpenRecordDetail= (item) => {
         setOpenRecordDetail(true);
@@ -190,7 +191,6 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
 
         return () => {
-            console.log('clear initialization')
         }
     }, [])
 
@@ -200,9 +200,32 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
 
         return () => {
-            console.log('clear login')
         }
     }, [loggedIn])
+
+    useEffect(() => {
+        let temRecords = []
+        if (transactionRecords !== undefined) {
+            for ( let i = 0; i < transactionRecords.length; i++) {
+                if (transactionRecords[i].type === 1 || transactionRecords[i].type === 2) {
+                    let temRecord = transactionRecords[i]
+                    let chain = transactionRecords[i].token.substr(transactionRecords[i].token.indexOf('_'))
+                    if (!chain.includes('_')) {
+                        chain = '_ETH'
+                    } else {
+                        temRecord.token = transactionRecords[i].token.substr(0, transactionRecords[i].token.indexOf('_'))
+                    }
+                    temRecord.chain = chain.substr(1)
+                    temRecords.push(temRecord)
+                }
+            }
+            setArrangedRecords(temRecords)
+        }
+        return () => {
+        }
+    }, [transactionRecords])
+
+    console.log('records: ', transactionRecords)
 
     return (
         <div className={classes.root}>
@@ -224,17 +247,18 @@ function Records({ t, navBarHeight, address, chainId, network,
 
                         <Grid item xs={12} >
                             <div className={classes.wrapper}>
-                                {!loggedIn ? null : transactionRecords === undefined || transactionRecords.length <= 0 ?
+                                {!loggedIn ? null : arrangedRecords === undefined || arrangedRecords.length <= 0 ?
                                     <Typography style={{ fontSize: 13 }}>{t('noRecords')}</Typography> :
                                     <List className={classes.capitalList}>
                                         {
-                                            transactionRecords.map(item => (
+                                            arrangedRecords.map(item => (
                                                 <ListItem key={item.id} button onClick={() => handleOpenRecordDetail(item)}>
-                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white'} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
-                                                    <ListItemText style={{ color: color[item.status] }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
-                                                    <ListItemText>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</ListItemText>
+                                                    <ListItemText  secondaryTypographyProps={{ style: {color: 'white', minWidth: width * 0.12} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
+                                                    {/*  Disabled for now  -- Richard 210408 */}
+                                                    {/*<ListItemText style={{ color: 'white' }} >{`${item.chain} ${t('chain')}`}</ListItemText>*/}
+                                                    <ListItemText style={{ color: color[item.status], minWidth: width * 0.1 }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
                                                     <ListItemSecondaryAction>
-                                                        <Typography>{roundingDown(item.free, 4)}</Typography>
+                                                        <Typography>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</Typography>
                                                     </ListItemSecondaryAction>
                                                 </ListItem>
                                             ))
@@ -246,8 +270,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12}>
                                 {
                                     address.length < 42 || !isValidAddress(address) ?
-                                        <CustomButton style={{ width: '100%' }} onClick={!isMetaMaskInstalled()  ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : onClickConnect}
-                                        >
+                                        <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                             {button1}
                                         </CustomButton> : null
                                 }
@@ -255,7 +278,7 @@ function Records({ t, navBarHeight, address, chainId, network,
                                     address.length === 42 && isValidAddress(address) ?
                                         loggedIn ?
                                             null :
-                                            <CustomButton style={{ width: '100%' }} onClick={() => unlock('unlock', address, chainId, network, Web3, registered, dispatch)} disabled={button2Disabled}>
+                                            <CustomButton buttonStyle="unlockStyle" style={{ width: '100%'}} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                                 {t('unlock')}
                                             </CustomButton> : null
                                 }
@@ -292,14 +315,15 @@ function Records({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${type === 1 ? t(depositStatus[state]) : t(status[state])}`}</p>
                             </Grid>
-                            {
-                                hash > 1 ?
-                                    <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >
-                                            {t('checkEtherscan')}
-                                        </Button>
-                                    </Grid> : null
-                            }
+                            {/*  Disabled for now  -- Richard 210408 */}
+                            {/*{*/}
+                            {/*    hash > 1 ?*/}
+                            {/*        <Grid item xs={12} >*/}
+                            {/*            <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >*/}
+                            {/*                {t('checkEtherscan')}*/}
+                            {/*            </Button>*/}
+                            {/*        </Grid> : null*/}
+                            {/*}*/}
                         </Grid>
                     </div>
                 </Fade>

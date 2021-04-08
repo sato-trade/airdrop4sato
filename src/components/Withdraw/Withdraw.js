@@ -12,7 +12,7 @@ import {roundingDown} from '../../utils/RoundingDown'
 import {countDecimals, formDateString, getChain, getIcons} from "../../utils/Common";
 import backArrow from '../../images/backArrow.png'
 import {history} from '../../utils/History';
-import {onClickConnect, onClickInstall, unlock} from '../../utils/Sign'
+import {onClickConnect, onClickInstall, unlock, withdraw} from '../../utils/Sign'
 import {isValidAddress} from "ethereumjs-util";
 import CustomButton from '../CommonElements/CustomButton';
 import CustomDropBox from '../CommonElements/CustomDropBox';
@@ -20,9 +20,8 @@ import CustomDropBox from '../CommonElements/CustomDropBox';
 const Web3 = require("web3");
 let web3 = new Web3(window.ethereum)
 
-function Withdraw({ t, navBarHeight, address, chainId, network,
-    sendBackButton1, sendBackButton1Disabled, button1, button1Disabled,
-    sendBackButton2, sendBackButton2Disabled, button2, button2Disabled
+function Withdraw({ t, address, chainId, network,
+    sendBackButton1, sendBackButton1Disabled, button1, button2Disabled
 }) {
     const { height, width } = useWindowDimensions();
     const useStyles = makeStyles((theme) => ({
@@ -138,7 +137,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     }));
     const classes = useStyles();
 
-    const [withdrawTo, setWithdrawTo] = useState(address)
+    const [withdrawTo, setWithdrawTo] = useState('')
     const [withdrawAmount, setWithdrawAmount] = useState('')
     const [addrWarning, setAddrWarning] = React.useState('')
     const [coin, setCoin] = React.useState('');
@@ -150,9 +149,8 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawFinished, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
-    const location = useLocation();
     const inputRef = React.useRef();
 
     const [openNote, setOpenNote] = useState(false)
@@ -211,47 +209,16 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
         let coinInfo = coins.find(item => item.label === event.target.value)
         let _coinWithdrawInfo = tokenList.find(item => item.token === event.target.value + '_' + getChain(network, chainId))
         setCoinWithdrawInfo(_coinWithdrawInfo)
+        setWarning('')
         handleAmountChange('')
         dispatch(walletActions.getFee({ token, amount: '1', action: coinInfo.contractWithdrawKey }))
 
     };
 
     const confirmWithdraw = async () => {
-        try {
-            let msg = 'Withdraw Request'
-            const from = address
-            const _msg = Web3.utils.soliditySha3(msg);
-            dispatch(walletActions.walletSigning())
-            if (!walletSigning) {
-                setTime(formDateString(new Date().getTime()))
-                handleOpenNote()
-
-                const sign = await window.ethereum.request({
-                    method: 'personal_sign',
-                    params: [_msg, from],
-                })
-                let payload = {
-                    personalSign: {
-                        data: msg,
-                        sig: sign,
-                        pubKeyAddress: address,
-                        chainId: Web3.utils.hexToNumber(chainId),
-                        networkId: Number(network),
-                    },
-                    currency: coin,
-                    chain: chain,
-                    amount: withdrawAmount,
-                    address: withdrawTo,
-                    token: token
-                }
-                dispatch(walletActions.withdraw(payload))
-            }
-
-        } catch (err) {
-            console.error('withdraw request cancelled: ', err)
-            dispatch(walletActions.walletSigningCancelled())
-
-        }
+        await withdraw('withdraw', address, chainId, network, Web3,
+            registered, dispatch, walletSigning, setTime, handleOpenNote,
+            coin, chain, withdrawAmount, withdrawTo, token)
     }
 
     const clear = () => {
@@ -294,6 +261,8 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
     useEffect(() => {
         let _coins = []
         let _capital = userCapitals.find(item => item.token === coin)
+        let chain = '_' + getChain(network, chainId)
+        let token
         if (_capital === undefined) {
             _capital = {
                 free: 0,
@@ -303,7 +272,18 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
         setCapital(_capital)
 
         for (let i = 0; i < userCapitals.length; i++) {
-            let token = tokenList.find(item => item.token === userCapitals[i].token)
+            if (getChain(network, chainId) === 'ETH') {
+                token = tokenList.find(item => item.token === userCapitals[i].token)
+
+            }
+
+            if (getChain(network, chainId) === 'HECO') {
+                token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            }
+
+            if (getChain(network, chainId) === 'BSC') {
+                token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            }
             if (token === undefined) {
                 token = {
                     token: userCapitals[i].token,
@@ -313,12 +293,13 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
             if (token.contractWithdrawIsOn) {
                 let chain = getChain(Number(network), Web3.utils.toDecimal(chainId))
                 _coins.push({
-                    label: token.token,
-                    value: token.token,
-                    contractWithdrawKey: token.token + '_' + chain + '_CONTRACT_WITHDRAW_FEE'
+                    label: userCapitals[i].token,
+                    value: userCapitals[i].token,
+                    contractWithdrawKey: userCapitals[i].token + '_' + chain + '_CONTRACT_WITHDRAW_FEE'
                 })
                 setChain(chain)
             }
+
         }
         setCoins(_coins)
         return () => {
@@ -351,10 +332,12 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
             if (withdrawAmount === "") {
                 setValidAmount(false)
                 setWarning('')
+                setReceivingAmount('--')
             }
             else if (!parseFloat(withdrawAmount)) {
                 setValidAmount(false)
                 setWarning(t('invalidInput'))
+                setReceivingAmount('--')
             }
             else if (withdrawAmount <= capital.free) {
                 if (receivingBase === coin) {
@@ -365,6 +348,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                     } else {
                         setValidAmount(false)
                         setWarning(t('enterAmountHigherThanFee'))
+                        setReceivingAmount('--')
                     }
                 } else {
                     if (feeCapital.free > withdrawFeeObj.amount) {
@@ -413,19 +397,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                     }} >
                         <Avatar alt="Travis Howard" src={backArrow} className={classes.backArrow} />
                     </Button>
-                    {/* <Grid container spacing={2} >
-                        <Grid item xs={12} >
-                            <Typography className={classes.wrapper} color="textSecondary" gutterBottom>
-                                {t('withdraw')}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <Typography className={classes.contentWrapper} color="textSecondary" gutterBottom>
-                                {t('withdrawContent')}
-                            </Typography>
-                        </Grid>
-                    </Grid> */}
-
                     <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                         <Typography style={{ textTransform: 'none', fontSize: 24, fontWeight: '600', color: 'white' }} gutterBottom>
                             {t('withdraw')}
@@ -438,130 +409,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                     </div>
                     <div style={{ height: 1, marginTop: 20, marginBottom: 20, backgroundColor: '#2435AC' }} />
                     <Grid container spacing={2} className={classes.fieldWrapper}>
-                        {/* <Grid item xs={12} >
-                            <TextField
-                                inputRef={inputRef}
-                                label={t('withdrawAddress')}
-                                type="text"
-                                fullWidth
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                    },
-                                }}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                    endAdornment: <InputAdornment position="end">
-                                        <IconButton className={classes.fillAddress} onClick={fillAddress} position="end">{t('l1Wallet')}</IconButton>
-                                        <CancelIcon onClick={clear} />
-                                    </InputAdornment>
-                                }}
-                                onChange={(e) => handleAddressChange(e.target.value)}
-                                onBlur={() => handleFinish(false)}
-                                variant="standard"
-                                value={withdrawTo}
-                                helperText={addrWarning}
-                                FormHelperTextProps={{
-                                    className: classes.helperText
-                                }}
-                                error={addrWarning !== ''}
-                            />
-                        </Grid> */}
-
-
-
-                        {/* <Grid item xs={8} >
-                            <TextField
-                                inputRef={inputRef}
-                                label={t('withdrawAmount')}
-                                type="number"
-                                fullWidth
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                    },
-                                }}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                    endAdornment: <InputAdornment position="end"><IconButton className={classes.fillAddress} onClick={allIn} position="end">{t('all')}</IconButton></InputAdornment>
-                                }}
-                                onChange={(e) => handleAmountChange(e.target.value)}
-                                onBlur={() => handleFinish(true)}
-                                variant="standard"
-                                value={withdrawAmount}
-                                helperText={warning}
-                                FormHelperTextProps={{
-                                    className: classes.helperText
-                                }}
-                                error={warning !== ''}
-                                disabled={!loggedIn || coin === ''}
-                            />
-                        </Grid> */}
-                        {/* <Grid item xs={4} >
-                            <TextField
-                                select
-                                fullWidth
-                                label={`${t('l2Amount')} ${capital.token !== undefined ? roundingDown(capital.free, 4) : '--'} ${capital.token === undefined ? '' : capital.token}`}
-                                InputLabelProps={{
-                                    shrink: true,
-                                    style: {
-                                        color: 'white',
-                                        borderBottom: 'white',
-                                        width: 'max-content'
-                                    },
-                                }}
-                                value={coin ? coin : ''}
-                                onChange={handleCoinChange}
-                                InputProps={{
-                                    style: {
-                                        color: 'white',
-                                        backgroundColor: 'transparent',
-                                        borderBottom: 'transparent'
-                                    },
-                                }}
-                                defaultValue={'--'}
-                                disabled={!loggedIn}
-                            >
-                                {coins.map((option) => (
-                                    <MenuItem key={option.value} value={option.value}>
-                                        <Grid container >
-                                            <Grid item xs={3} >
-                                                <Avatar alt="Coin Icon" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
-                                            </Grid>
-                                            <Grid item xs={9} >
-                                                {option.label}
-                                            </Grid>
-                                        </Grid>
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        </Grid> */}
-                        {/* <Grid className={classes.feeContentLeft} item xs={6} >
-                            <p>{t('fee')}</p>
-                        </Grid>
-                        <Grid className={classes.feeContentRight} item xs={6} >
-                            <p>{`${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || coin === '' ? '--' : roundingDown(withdrawFeeObj.amount, 4)} ${!withdrawFeeObj || Object.keys(withdrawFeeObj).length === 0 || coin === '' ? '' : withdrawFeeObj.base}`}</p>
-                        </Grid>
-                        <Grid className={classes.feeContentLeft} item xs={6} >
-                            <p>{t('amountReceiving')}</p>
-                        </Grid>
-                        <Grid className={classes.feeContentRight} item xs={6} >
-                            <p>{`${receivingAmount} ${receivingBase}`}</p>
-                        </Grid> */}
-
-
                         <div style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' }}>
                             <CustomTextField
                                 inputRef={inputRef}
@@ -578,16 +425,14 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                 // variant="standard"
                                 value={withdrawTo}
                                 helperText={addrWarning}
-
+                                disabled={!loggedIn}
                                 error={addrWarning !== ''}
-                            >
-
-
-                            </CustomTextField>
+                            />
 
                             <Button
-                                style={{ backgroundColor: '#1DF0A9', height: 60, bottom: 10, borderRadius: 16, width: '18%' }}
+                                style={{ opacity: !loggedIn ? 0.2: 1,  backgroundColor: '#1DF0A9', height: 60, bottom: 10, borderRadius: 16, width: '18%' }}
                                 onClick={fillAddress}
+                                disabled={!loggedIn}
                             >
                                 <Typography style={{ fontSize: 14, fontWeight: 'bold', color: '#010746' }}>
                                     {t('l1Wallet')}
@@ -610,7 +455,7 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
 
                                 error={warning !== ''}
                                 rightbuttonlabel={t(capital.free > 0.0001 ?'all' :null)}
-                                onRightButtonClick={allIn}
+                                onrightbuttonclick={allIn}
 
                             >
 
@@ -662,17 +507,17 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                         <Grid item xs={12}>
                             {
                                 address.length < 42 || !isValidAddress(address) ?
-                                    <CustomButton buttonStyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
+                                    <CustomButton buttonstyle="connectStyle" style={{ width: '100%' }}  onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, address, dispatch)}>
                                         {button1}
                                     </CustomButton> : null
                             }
                             {
                                 address.length === 42 && isValidAddress(address) ?
                                     loggedIn ?
-                                        <CustomButton style={{ width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
+                                        <CustomButton style={{ opacity: !validAmount || !validAddress ? 0.2 : 1, width: '100%' }} onClick={confirmWithdraw} disabled={!validAmount || !validAddress}>
                                             {t('confirm')}
                                         </CustomButton> :
-                                        <CustomButton buttonStyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
+                                        <CustomButton buttonstyle="unlockStyle" style={{ width: '100%' }} onClick={(!registered || !loggedIn) && !loading ? () => unlock('unlock', address, chainId, network, Web3, registered, dispatch) : null} disabled={button2Disabled}>
                                             {t('unlock')}
                                         </CustomButton> : null
                             }
@@ -715,7 +560,6 @@ function Withdraw({ t, navBarHeight, address, chainId, network,
                                         <p id="server-modal-description">{`${t('status')}: ${walletSigning ? t('loading') : withdrawSucceed ? t(withdrawMsg) : t(walletMsg)}`}</p>
                                     </Grid>
                                 </Grid> : null
-
                         }
                     </div>
                 </Fade>

@@ -4,6 +4,7 @@ import sapIcon from '../images/smallIcons/sapIcon.png';
 import unknowCoinIcon from '../images/unknowCoinIcon.png';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
+import Web3 from "web3";
 
 export const FormatNumber = (number) => {
     if (!isNaN(number)) {
@@ -59,7 +60,11 @@ export const formDateString = (timeStamp) => {
 }
 
 export const getChain = (networkId, chainId) => {
-    switch (networkId && chainId) {
+    let _chainId = chainId
+    if (typeof chainId === 'string') {
+        _chainId = Web3.utils.hexToNumber(chainId)
+    }
+    switch (networkId && _chainId) {
         case (1 & 1) :
             return 'ETH'
         case (128 & 128):
