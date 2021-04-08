@@ -225,6 +225,8 @@ function Records({ t, navBarHeight, address, chainId, network,
         }
     }, [transactionRecords])
 
+    console.log('records: ', transactionRecords)
+
     return (
         <div className={classes.root}>
             <div className='deposit__container'>
@@ -252,7 +254,8 @@ function Records({ t, navBarHeight, address, chainId, network,
                                             arrangedRecords.map(item => (
                                                 <ListItem key={item.id} button onClick={() => handleOpenRecordDetail(item)}>
                                                     <ListItemText  secondaryTypographyProps={{ style: {color: 'white', minWidth: width * 0.12} }}  primary={`${transactionType[item.type].name} ${item.token}`} secondary={convertTimeString(item.createdAt)} />
-                                                    <ListItemText style={{ color: 'white' }} >{`${item.chain} ${t('chain')}`}</ListItemText>
+                                                    {/*  Disabled for now  -- Richard 210408 */}
+                                                    {/*<ListItemText style={{ color: 'white' }} >{`${item.chain} ${t('chain')}`}</ListItemText>*/}
                                                     <ListItemText style={{ color: color[item.status], minWidth: width * 0.1 }}>{item.type === 1 ? depositStatus[item.status] : status[item.status]}</ListItemText>
                                                     <ListItemSecondaryAction>
                                                         <Typography>{transactionType[item.type].sign + roundingDown(item.amount, 4)}</Typography>
@@ -312,14 +315,15 @@ function Records({ t, navBarHeight, address, chainId, network,
                             <Grid item xs={12} >
                                 <p id="server-modal-description">{`${t('status')}: ${type === 1 ? t(depositStatus[state]) : t(status[state])}`}</p>
                             </Grid>
-                            {
-                                hash > 1 ?
-                                    <Grid item xs={12} >
-                                        <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >
-                                            {t('checkEtherscan')}
-                                        </Button>
-                                    </Grid> : null
-                            }
+                            {/*  Disabled for now  -- Richard 210408 */}
+                            {/*{*/}
+                            {/*    hash > 1 ?*/}
+                            {/*        <Grid item xs={12} >*/}
+                            {/*            <Button target="_blank" href={"https://ropsten.etherscan.io/tx/" + hash} style={{ width: 180 }} className={classes.btn} >*/}
+                            {/*                {t('checkEtherscan')}*/}
+                            {/*            </Button>*/}
+                            {/*        </Grid> : null*/}
+                            {/*}*/}
                         </Grid>
                     </div>
                 </Fade>

@@ -284,8 +284,6 @@ function Withdraw({ t, address, chainId, network,
             if (getChain(network, chainId) === 'BSC') {
                 token = tokenList.find(item => item.token === userCapitals[i].token + chain)
             }
-
-            console.log('userCapitals: ', userCapitals)
             if (token === undefined) {
                 token = {
                     token: userCapitals[i].token,
@@ -295,9 +293,9 @@ function Withdraw({ t, address, chainId, network,
             if (token.contractWithdrawIsOn) {
                 let chain = getChain(Number(network), Web3.utils.toDecimal(chainId))
                 _coins.push({
-                    label: token.token,
-                    value: token.token,
-                    contractWithdrawKey: token.token + '_' + chain + '_CONTRACT_WITHDRAW_FEE'
+                    label: userCapitals[i].token,
+                    value: userCapitals[i].token,
+                    contractWithdrawKey: userCapitals[i].token + '_' + chain + '_CONTRACT_WITHDRAW_FEE'
                 })
                 setChain(chain)
             }
