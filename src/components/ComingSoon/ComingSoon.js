@@ -83,18 +83,14 @@ function ComingSoon({ t }) {
     }));
     const classes = useStyles();
 
-    console.log('comingSoon: ', t('comingSoon'))
-
     return (
         <div className={classes.root}>
             <div className='comingSoon__container '>
                 <div className='comingSoon__wrapper'>
-                    <div className='comingSoon__title__wrapper' style={{ justifyContent: 'center' }}>
-                        <img className='comingSoon__background' src={bg} />
-                        <Typography className={classes.textLarge} style={{textTransform:'none'}}>
-                            {t('comingSoon')}
-                        </Typography>
-                    </div>
+                    <img className='comingSoon__background' src={bg} style={{ width: 300, height: 300 }}/>
+                    <Typography className={classes.textLarge} style={{textTransform:'none'}}>
+                        {t('comingSoon')}
+                    </Typography>
                 </div>
             </div>
         </div>
