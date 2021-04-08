@@ -149,7 +149,7 @@ function Withdraw({ t, address, chainId, network,
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
-    const { tokenList, tokenIcons, userCapitals, withdrawSucceed, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
+    const { tokenList, tokenIcons, userCapitals, withdrawSucceed, withdrawFinished, withdrawMsg, withdrawFeeObj, walletSigning, walletMsg } = useSelector(state => state.wallet)
     const dispatch = useDispatch();
     const inputRef = React.useRef();
 
@@ -388,6 +388,9 @@ function Withdraw({ t, address, chainId, network,
         }
     }, [withdrawFeeObj])
 
+    // useEffect(() => {
+    // }, [withdrawMsg])
+
     return (
         <div className={classes.root}>
             <div className="deposit__container">
@@ -539,10 +542,12 @@ function Withdraw({ t, address, chainId, network,
                 BackdropProps={{
                     timeout: 500,
                 }}
+                disableEscapeKeyDown={!withdrawFinished}
+                disableBackdropClick={!withdrawFinished}
             >
                 <Fade in={openNote}>
                     <div className={classes.paper}>
-                        <h2 id="server-modal-title">{walletSigning ? t('confirming') : withdrawSucceed?  t(withdrawMsg) : t(walletMsg) }</h2>
+                        <h2 id="server-modal-title">{walletSigning ? t('confirming') : withdrawFinished?  t(withdrawMsg) : t(walletMsg) }</h2>
                         {
                             walletSigning ?
                                 <Grid container spacing={2} >

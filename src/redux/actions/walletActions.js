@@ -90,22 +90,24 @@ function withdraw(payload) {
                     dispatch(success('withdrawSucceed'));
                 },
                 error => {
+                    console.log('error: ', error)
                     let toast = ''
-                    if (error.data === 'Service unavailable') {
+                    if (error.message === 'Service unavailable') {
                         toast = 'withdrawNotAvailable'
                     } else if (error.status === 503) {
                         toast = 'intercepted'
                     } else if (error.status === 409) {
                         toast = 'airdropping'
-                    } else if (error.data === 'TooFrequentError') {
+                    } else if (error.message === 'TooFrequentError') {
                         toast = 'tooFrequent'
-                    } else if (error.data === 'LessThanMinimumAmount') {
+                    } else if (error.message === 'LessThanMinimumAmount') {
                         toast = 'lessThanMin'
-                    } else if (error.data === 'Over limit') {
+                    } else if (error.message === 'Over limit') {
                         toast = 'overLimit'
-                    } else if (error.data === 'Need deposit before withdraw') {
+                    } else if (error.message === 'Need deposit before withdraw') {
+                        console.log(error.message === 'Need deposit before withdraw')
                         toast = 'noDepositBeforeWithdraw'
-                    } else if (error.data === 'Need deposit before transfer') {
+                    } else if (error.message === 'Need deposit before transfer') {
                         toast = 'noDepositBeforeTransfer'
                     } else {
                         toast = 'unCaught'

@@ -412,6 +412,8 @@ function Deposit({ t, navBarHeight, address, chainId, network,
                 BackdropProps={{
                     timeout: 500,
                 }}
+                disableEscapeKeyDown={!depositFinished}
+                disableBackdropClick={!depositFinished}
             >
                 <Fade in={openCallback}>
                     <div className={classes.paper}>
