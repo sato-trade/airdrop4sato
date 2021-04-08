@@ -88,7 +88,7 @@ function App({t}){
         if (window.ethereum === undefined) {
             setButton1(t('noWallet'))
             setButton1Disabled(false)
-        } else if (isValidAddress(address)) {
+        } else if (address.length === 42 && isValidAddress(address)) {
             setButton1(t('connected'))
             setButton1Disabled(true)
             if (onBoard) {
