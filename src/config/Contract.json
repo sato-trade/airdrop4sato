@@ -1762,7 +1762,7 @@
             ]
         },
         "coins": {
-            "ETH": {
+            "BNB": {
                 "decimals": 18
             },
             "USDT": {
