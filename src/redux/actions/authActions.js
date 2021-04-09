@@ -94,7 +94,6 @@ function logIn(payload) {
                     dispatch(success(res));
                 },
                 error => {
-                    console.log('here: ', error.data === 'Wrong net work')
                     if (error.data === 'Wrong net work') {
                         dispatch(failure('wrongNetwork'));
                     } else {
