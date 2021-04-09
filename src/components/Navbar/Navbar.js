@@ -453,7 +453,7 @@ function Navbar({ width, t, sendBackHeight, sendBackAddr, sendBackChainId, sendB
                 <Button style={{ marginRight: 0, borderRadius: 0, backgroundColor: '#1DF0A9' }}
                         onClick={!window.ethereum ? () => onClickInstall(sendBackButton1, sendBackButton1Disabled) : () => onClickConnect(network, chainId, addr, dispatch, handleOpen, registered, loggedIn, loading) }
                         variant="contained">
-                    <img style={{ width: 37, height: 34, marginLeft: 4 }} src={mataLogo} />
+                    {/*<img style={{ width: 37, height: 34, marginLeft: 4 }} src={mataLogo} />*/}
 
                     <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column', marginLeft: 12, marginRight: 24 }}>
                         <Typography style={{ fontSize: 16, color: '#000F93', fontWeight: 'bold' }}>
