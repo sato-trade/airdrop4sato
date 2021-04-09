@@ -238,38 +238,39 @@ function Deposit({ t, navBarHeight, address, chainId, network,
             if (tokenList[i].depositIsOn) {
                 let coinChain = tokenList[i].token.substr(tokenList[i].token.indexOf('_') )
                 let token = tokenList[i].token.substr(0, tokenList[i].token.indexOf('_'))
-                if (getChain(network, chainId) === 'ETH') {
-                    if (tokenList[i].token === 'USDT_ERC20') {
-                        if (_coins.find(item => item.label === 'USDT') === undefined) {
-                            _coins.push({
-                                label: 'USDT',
-                                value: 'USDT'
-                            })
-                        }
-                    }
-                    if (coinChain === chain) {
-                        _coins.push({
-                            label: token,
-                            value: token
-                        })
-                    }
+
+                if (coinChain === chain) {
+                    _coins.push({
+                        label: token,
+                        value: token
+                    })
                 }
-                if (getChain(network, chainId) === 'HECO') {
-                    if (coinChain === chain) {
-                        _coins.push({
-                            label: token,
-                            value: token
-                        })
-                    }
-                }
-                if (getChain(network, chainId) === 'BSC') {
-                    if (coinChain === chain) {
-                        _coins.push({
-                            label: token,
-                            value: token
-                        })
-                    }
-                }
+                // if (getChain(network, chainId) === 'ETH') {
+                //     if (tokenList[i].token === 'USDT_ERC20') {
+                //         if (_coins.find(item => item.label === 'USDT') === undefined) {
+                //             _coins.push({
+                //                 label: 'USDT',
+                //                 value: 'USDT'
+                //             })
+                //         }
+                //     }
+                // }
+                // if (getChain(network, chainId) === 'HECO') {
+                //     if (coinChain === chain) {
+                //         _coins.push({
+                //             label: token,
+                //             value: token
+                //         })
+                //     }
+                // }
+                // if (getChain(network, chainId) === 'BSC') {
+                //     if (coinChain === chain) {
+                //         _coins.push({
+                //             label: token,
+                //             value: token
+                //         })
+                //     }
+                // }
             }
         }
         setCoins(_coins)
