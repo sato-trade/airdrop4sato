@@ -1338,6 +1338,9 @@
             "GPB": {
                 "address": "0xCCE8e2c43dD21ac700fDdffc2Dd551fA2819f66e",
                 "decimals": 18
+            },
+            "USDT": {"address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+                "decimals": 6
             }
         },
         "balanceChecker": {
@@ -1613,6 +1616,10 @@
         "coins": {
             "HT": {
                 "decimals": 18
+            },
+            "USDT": {
+                "address": "0xa71EdC38d189767582C38A3145b5873052c3e47a",
+                "decimals": 18
             }
         }
     },
@@ -1827,6 +1834,15 @@
                     "type": "function"
                 }
             ]
+        },
+        "coins": {
+            "BNB": {
+                "decimals": 18
+            },
+            "USDT": {
+                "address": "0x55d398326f99059fF775485246999027B3197955",
+                "decimals": 18
+            }
         }
     },
     "transferErc20": {

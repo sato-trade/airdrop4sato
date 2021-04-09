@@ -146,6 +146,7 @@ function Withdraw({ t, address, chainId, network,
     const [validAddress, setValidAddress] = React.useState(false)
     const [validAmount, setValidAmount] = React.useState(false)
     const [coins, setCoins] = React.useState([])
+    const [coinInfo, setCoinInfo] = React.useState({})
 
 
     const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
@@ -157,7 +158,6 @@ function Withdraw({ t, address, chainId, network,
     const [time, setTime] = useState('')
     const [receivingAmount, setReceivingAmount] = useState('--')
     const [receivingBase, setReceivingBase] = useState('')
-    const [coinWithdrawInfo, setCoinWithdrawInfo] = useState({})
     const [chain, setChain] = useState('')
 
     const allIn = () => {
@@ -207,8 +207,7 @@ function Withdraw({ t, address, chainId, network,
     const handleCoinChange = (event) => {
         setCoin(event.target.value);
         let coinInfo = coins.find(item => item.label === event.target.value)
-        let _coinWithdrawInfo = tokenList.find(item => item.token === event.target.value + '_' + getChain(network, chainId))
-        setCoinWithdrawInfo(_coinWithdrawInfo)
+        setCoinInfo(coinInfo)
         setWarning('')
         handleAmountChange('')
         dispatch(walletActions.getFee({ token, amount: '1', action: coinInfo.contractWithdrawKey }))
@@ -216,9 +215,10 @@ function Withdraw({ t, address, chainId, network,
     };
 
     const confirmWithdraw = async () => {
+        console.log('payload: ',  coinInfo.value)
         await withdraw(address, chainId, network, Web3,
             registered, dispatch, walletSigning, setTime, handleOpenNote,
-            coin, chain, withdrawAmount, withdrawTo, token)
+            coinInfo.value, chain, withdrawAmount, withdrawTo, token)
     }
 
     const clear = () => {
@@ -272,18 +272,22 @@ function Withdraw({ t, address, chainId, network,
         setCapital(_capital)
 
         for (let i = 0; i < userCapitals.length; i++) {
-            if (getChain(network, chainId) === 'ETH') {
-                token = tokenList.find(item => item.token === userCapitals[i].token)
-
-            }
-
-            if (getChain(network, chainId) === 'HECO') {
-                token = tokenList.find(item => item.token === userCapitals[i].token + chain)
-            }
-
-            if (getChain(network, chainId) === 'BSC') {
-                token = tokenList.find(item => item.token === userCapitals[i].token + chain)
-            }
+            token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            // if (getChain(network, chainId) === 'ETH') {
+            //     if ((userCapitals[i].token) === 'USDT') {
+            //         token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            //     } else {
+            //         token = tokenList.find(item => (item.token === userCapitals[i].token))
+            //     }
+            // }
+            //
+            // if (getChain(network, chainId) === 'HECO') {
+            //     token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            // }
+            //
+            // if (getChain(network, chainId) === 'BSC') {
+            //     token = tokenList.find(item => item.token === userCapitals[i].token + chain)
+            // }
             if (token === undefined) {
                 token = {
                     token: userCapitals[i].token,
@@ -299,7 +303,6 @@ function Withdraw({ t, address, chainId, network,
                 })
                 setChain(chain)
             }
-
         }
         setCoins(_coins)
         return () => {
@@ -466,8 +469,8 @@ function Withdraw({ t, address, chainId, network,
 
                             <div style={{ width: '25%', display: 'flex', flexDirection: 'column', alignItems: 'start', marginTop: 12 }}>
                                 <Typography style={{ textTransform: 'none', color: 'white', fontSize: 12, fontWeight: 'bold', marginLeft: 12 }}>
-
-                                    {`${t('l2Amount')} ${capital.token !== undefined ? roundingDown(capital.free, 4) : '--'} ${capital.token === undefined ? '' : capital.token}`}                                </Typography>
+                                    {`${t('l2Amount')} ${capital.token !== undefined ? roundingDown(capital.free, 4) : '--'} ${capital.token === undefined ? '' : capital.token}`}
+                                </Typography>
                                 <CustomDropBox
                                     label={t('selectCoin')}
                                     onChange={handleCoinChange}
@@ -476,7 +479,7 @@ function Withdraw({ t, address, chainId, network,
                                     disabled={!loggedIn}
                                 >
                                     {coins.map((option) => (
-                                        <MenuItem key={option.value} value={option.value}>
+                                        <MenuItem key={option.value} value={option.label}>
                                             <Grid container >
                                                 <Grid item xs={3} >
                                                     <Avatar alt="Coin Icon" style={{ width: 20, height: 20 }} src={getIcons(option.label, tokenIcons, true)} />
