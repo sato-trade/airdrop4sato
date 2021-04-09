@@ -139,17 +139,27 @@ function App({t}){
             <Navbar width={width} button1={button1} sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled}
                     sendBackAddr={sendBackAddr} sendBackChainId={sendBackChainId} sendBackNetworkId={sendBackNetworkId} sendBackHeight={sendBackHeight} />
             <Switch>
-                <Route exact path='/' >
-                    <Home sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                          sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                          address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight} />
+                {/*<Route exact path='/' >*/}
+                {/*    <Home sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}*/}
+                {/*          sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}*/}
+                {/*          address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight} />*/}
+                {/*</Route>*/}
+                <Route exact path='/' component={CollectReward} >
+                    <CollectReward sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                   sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                   address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                 </Route>
                 <Route  path='/wallet' render={({ match: { url } }) => (
                     <>
+                        {/*<Route path={`${url}/`} exact >*/}
+                        {/*    <Wallet  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}*/}
+                        {/*             sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}*/}
+                        {/*             address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />*/}
+                        {/*</Route>*/}
                         <Route path={`${url}/`} exact >
-                            <Wallet  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
-                                     sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
-                                     address={address}  network={network} chainId={chainId}  navBarHeight={navBarHeight} />
+                            <ComingSoon sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
+                                        sendBackButton2={sendBackButton2} sendBackButton2Disabled={sendBackButton2Disabled} button2={button2} button2Disabled={button2Disabled}
+                                        address={address}  network={network} chainId={chainId} navBarHeight={navBarHeight}   navBarHeight={navBarHeight} />
                         </Route>
                         <Route path={`${url}/withdraw`} >
                             <Withdraw  sendBackButton1={sendBackButton1} sendBackButton1Disabled={sendBackButton1Disabled} button1={button1} button1Disabled={button1Disabled}
