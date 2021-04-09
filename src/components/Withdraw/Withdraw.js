@@ -215,7 +215,6 @@ function Withdraw({ t, address, chainId, network,
     };
 
     const confirmWithdraw = async () => {
-        console.log('payload: ',  coinInfo.value)
         await withdraw(address, chainId, network, Web3,
             registered, dispatch, walletSigning, setTime, handleOpenNote,
             coinInfo.value, chain, withdrawAmount, withdrawTo, token)
