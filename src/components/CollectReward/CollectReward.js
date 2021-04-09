@@ -92,9 +92,10 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
     }));
     const classes = useStyles();
     const prevMessageRef = useRef();
+    const prevAuthMsgRef = useRef();
 
     const dispatch = useDispatch();
-    const { token, loggedIn, registered, loading } = useSelector(state => state.auth)
+    const { token, loggedIn, registered, loading, authMsg } = useSelector(state => state.auth)
     const { amplRewardsInfo, rewardMessage, walletLoading } = useSelector(state => state.wallet)
 
     const [openFailedModal, setOpenFailedModal] = useState(false)
@@ -142,10 +143,15 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
             handleOpenSucceedModal()
             dispatch(walletActions.getAmplRewards(token))
         }
+        if (prevAuthMsgRef.current === '' && authMsg === 'wrongNetwork') {
+            handleOpenFailedModal()
+        }
         prevMessageRef.current = rewardMessage;
+        prevAuthMsgRef.current = authMsg;
         return () => {
         }
-    }, [rewardMessage, walletLoading])
+    }, [rewardMessage, walletLoading, authMsg])
+
 
     return (
         <div className={classes.root}>
@@ -262,10 +268,10 @@ function CollectReward({ t, navBarHeight, address, network, chainId,
             >
                 <Fade in={openFailedModal}>
                     <div className={classes.paper}>
-                        <h2 id="server-modal-title">{t('registerRewardFailed')}</h2>
+                        <h2 id="server-modal-title">{authMsg !== '' ? t(authMsg) : t('registerRewardFailed')}</h2>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
-                                <p id="server-modal-description">{rewardMessage === "NotEligibleError" ? t('registerRewardFailedContent') : t(rewardMessage)}</p>
+                                <p id="server-modal-description">{authMsg !== '' ? authMsg === 'wrongNetwork' ? t('wrongNetworkContent') : null : rewardMessage === "NotEligibleError" ? t('registerRewardFailedContent') : t(rewardMessage)}</p>
                             </Grid>
                         </Grid>
                     </div>

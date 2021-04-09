@@ -21,7 +21,7 @@ export function auth (state = {
     loggingIn: false,
     loading: false,
     registered: false,
-    message: ''
+    authMsg: ''
 }, action) {
     switch (action.type) {
         case AUTH_SIGNING:
@@ -32,7 +32,8 @@ export function auth (state = {
         case SIGNUP:
             return {
                 ...state,
-                loading: true
+                loading: true,
+                authMsg: ''
             }
         case SIGNUP_SUCCEED:
             return {
@@ -43,14 +44,14 @@ export function auth (state = {
         case SIGNUP_FAILED:
             return {
                 ...state,
-                message: action.message,
+                authMsg: action.message,
                 loading: false
             }
         case CHECK_EXIST:
             return {
                 ...state,
                 loading: true,
-                message: ''
+                authMsg: ''
             }
         case CHECK_SUCCEED:
             return {
@@ -61,13 +62,14 @@ export function auth (state = {
         case CHECK_FAILED:
             return {
                 ...state,
-                message: action,
+                authMsg: '',
                 loading: false
             }
         case LOGIN:
             return {
                 ...state,
                 loggingIn: true,
+                authMsg: '',
                 errors: action.error ? action.payload.errors : null
             };
         case LOGIN_SUCCEED:
@@ -86,7 +88,9 @@ export function auth (state = {
                 ...state,
                 loggedIn: false,
                 loggingIn: false,
-                errors: action
+                errors: action,
+                authMsg: action.message,
+                loading: false
             };
         case LOGOUT:
             return {

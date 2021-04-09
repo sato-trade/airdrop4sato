@@ -69,8 +69,11 @@ function signUp(payload) {
                     }
                 },
                 error => {
-                    dispatch(failure(error.data));
-                    dispatch(alertActions.error(error.data));
+                    if (error.data === 'Wrong net work') {
+                        dispatch(failure('wrongNetwork'));
+                    } else {
+                        dispatch(failure(error.data));
+                    }
                 }
             );
     };
@@ -91,15 +94,19 @@ function logIn(payload) {
                     dispatch(success(res));
                 },
                 error => {
-                    dispatch(failure(error.toString()));
-                    dispatch(alertActions.error(error.toString()));
+                    console.log('here: ', error.data === 'Wrong net work')
+                    if (error.data === 'Wrong net work') {
+                        dispatch(failure('wrongNetwork'));
+                    } else {
+                        dispatch(failure(error.data));
+                    }
                 }
             );
     };
 
     function request(payload) { return { type: LOGIN, payload } }
     function success(data) { return { type: LOGIN_SUCCEED, data } }
-    function failure(error) { return { type: LOGIN_FAILED, error } }
+    function failure(message) { return { type: LOGIN_FAILED, message } }
 }
 
 function logOut() {
